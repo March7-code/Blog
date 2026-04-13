@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"march-7th.tech","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="混淆没解全靠猜 真解不动混淆了。   拿地图信息  第一步：找驱动基址（绕过 DKOM 摘链） 驱动摘掉了自己的链表（lm m ShadowGateSys 返回空），所以不能用常规模块枚举找基址，改走设备对象反查： 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748491:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TencentGameSecurity2026-Windows">
+<meta property="og:url" content="https://march-7th.tech/2026/04/13/TencentGameSecurity2026-Windows/index.html">
+<meta property="og:site_name" content="三顺七的笔记">
+<meta property="og:description" content="混淆没解全靠猜 真解不动混淆了。   拿地图信息  第一步：找驱动基址（绕过 DKOM 摘链） 驱动摘掉了自己的链表（lm m ShadowGateSys 返回空），所以不能用常规模块枚举找基址，改走设备对象反查： 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748491:">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://march-7th.tech/uploads/image-20260412130048553.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/image-20260412125759768.png">
+<meta property="article:published_time" content="2026-04-13T05:54:02.000Z">
+<meta property="article:modified_time" content="2026-04-13T06:02:29.158Z">
+<meta property="article:author" content="March-7th">
+<meta property="article:tag" content="游戏安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://march-7th.tech/uploads/image-20260412130048553.png">
+
+<link rel="canonical" href="https://march-7th.tech/2026/04/13/TencentGameSecurity2026-Windows/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>TencentGameSecurity2026-Windows | 三顺七的笔记</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">三顺七的笔记</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-videos">
+
+    <a href="/videos/" rel="section"><i class="fa fa-video fa-fw"></i>视频展示</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://march-7th.tech/2026/04/13/TencentGameSecurity2026-Windows/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/march7th.jpg">
+      <meta itemprop="name" content="March-7th">
+      <meta itemprop="description" content="信键鼠真神得永生">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="三顺七的笔记">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TencentGameSecurity2026-Windows
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-04-13 13:54:02 / 修改时间：14:02:29" itemprop="dateCreated datePublished" datetime="2026-04-13T13:54:02+08:00">2026-04-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="混淆没解全靠猜"><a class="markdownIt-Anchor" href="#混淆没解全靠猜"></a> 混淆没解全靠猜</h2>
+<p>真解不动混淆了。</p>
+<img src="\uploads\image-20260412130048553.png" style="zoom: 70%;" />
+<h2 id="拿地图信息"><a class="markdownIt-Anchor" href="#拿地图信息"></a> 拿地图信息</h2>
+<h3 id="第一步找驱动基址绕过-dkom-摘链"><a class="markdownIt-Anchor" href="#第一步找驱动基址绕过-dkom-摘链"></a> 第一步：找驱动基址（绕过 DKOM 摘链）</h3>
+<p>驱动摘掉了自己的链表（<code>lm m ShadowGateSys</code> 返回空），所以不能用常规模块枚举找基址，改走设备对象反查：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">1: kd&gt; !object \Device\ShadowGate</span><br><span class="line">Object: ffffc68c1eb4e6a0  Type: (ffffc68c19cb1400) Device</span><br><span class="line">    ObjectHeader: ffffc68c1eb4e670 (new version)</span><br><span class="line">    HandleCount: 0  PointerCount: 2</span><br><span class="line">    Directory Object: ffff800f81c44dc0  Name: ShadowGate</span><br><span class="line"></span><br><span class="line">1: kd&gt; dt nt!_DEVICE_OBJECT ffffc68c1eb4e6a0</span><br><span class="line">   +0x000 Type             : 0n3</span><br><span class="line">   +0x002 Size             : 0x150</span><br><span class="line">   +0x004 ReferenceCount   : 0n0</span><br><span class="line">   +0x008 DriverObject     : 0xffffc68c`201b8e30 _DRIVER_OBJECT</span><br><span class="line">   +0x010 NextDevice       : (null) </span><br><span class="line">   +0x018 AttachedDevice   : (null) </span><br><span class="line">   +0x020 CurrentIrp       : (null) </span><br><span class="line">   +0x028 Timer            : (null) </span><br><span class="line">   +0x030 Flags            : 0x44</span><br><span class="line">   +0x034 Characteristics  : 0x100</span><br><span class="line">   +0x038 Vpb              : (null) </span><br><span class="line">   +0x040 DeviceExtension  : (null) </span><br><span class="line">   +0x048 DeviceType       : 0x22</span><br><span class="line">   +0x04c StackSize        : 1 &#x27;&#x27;</span><br><span class="line">   +0x050 Queue            : &lt;anonymous-tag&gt;</span><br><span class="line">   +0x098 AlignmentRequirement : 0</span><br><span class="line">   +0x0a0 DeviceQueue      : _KDEVICE_QUEUE</span><br><span class="line">   +0x0c8 Dpc              : _KDPC</span><br><span class="line">   +0x108 ActiveThreadCount : 0</span><br><span class="line">   +0x110 SecurityDescriptor : 0xffff800f`81cf4a60 Void</span><br><span class="line">   +0x118 DeviceLock       : _KEVENT</span><br><span class="line">   +0x130 SectorSize       : 0</span><br><span class="line">   +0x132 Spare1           : 0</span><br><span class="line">   +0x138 DeviceObjectExtension : 0xffffc68c`1eb4e7f0 _DEVOBJ_EXTENSION</span><br><span class="line">   +0x140 Reserved         : (null) </span><br><span class="line"></span><br><span class="line">1: kd&gt; dt nt!_DRIVER_OBJECT 0xffffc68c`201b8e30</span><br><span class="line">   +0x000 Type             : 0n4</span><br><span class="line">   +0x002 Size             : 0n336</span><br><span class="line">   +0x008 DeviceObject     : 0xffffc68c`1eb4e6a0 _DEVICE_OBJECT</span><br><span class="line">   +0x010 Flags            : 0x12</span><br><span class="line">   +0x018 DriverStart      : 0xfffff803`05c80000 Void</span><br><span class="line">   +0x020 DriverSize       : 0x40b000</span><br><span class="line">   +0x028 DriverSection    : 0xffffc68c`20f686a0 Void</span><br><span class="line">   +0x030 DriverExtension  : 0xffffc68c`201b8f80 _DRIVER_EXTENSION</span><br><span class="line">   +0x038 DriverName       : _UNICODE_STRING &quot;\Driver\ShadowGate&quot;</span><br><span class="line">   +0x048 HardwareDatabase : 0xfffff803`04f2e990 _UNICODE_STRING &quot;\REGISTRY\MACHINE\HARDWARE\DESCRIPTION\SYSTEM&quot;</span><br><span class="line">   +0x050 FastIoDispatch   : (null) </span><br><span class="line">   +0x058 DriverInit       : 0xfffff803`05c88000     long  +fffff80305c88000</span><br><span class="line">   +0x060 DriverStartIo    : (null) </span><br><span class="line">   +0x068 DriverUnload     : 0xfffff803`05c81840     void  +fffff80305c81840</span><br><span class="line">   +0x070 MajorFunction    : [28] 0xfffff803`05c814b0     long  +fffff80305c814b0</span><br></pre></td></tr></table></figure>
+<p>获取移动码和checksum等：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">1: kd&gt; bp 0xfffff80305f974c6 &quot;.printf \&quot;[DIR] dir=%02x token=%08x checksum=%08x expect=%08x\\n\&quot;,  by(@r14), dwo(@r14+4), dwo(@r14+8), @edx; gc&quot;</span><br><span class="line">breakpoint 0 redefined</span><br><span class="line">1: kd&gt; u 0xfffff80305f97502 L6</span><br><span class="line">fffff803`05f97502 4881c1c0010000  add     rcx,1C0h</span><br><span class="line">fffff803`05f97509 e900000000      jmp     fffff803`05f9750e</span><br><span class="line">fffff803`05f9750e ff151ccbceff    call    qword ptr [fffff803`05c84030]</span><br><span class="line">fffff803`05f97514 488b0d9ddbceff  mov     rcx,qword ptr [fffff803`05c850b8]</span><br><span class="line">fffff803`05f9751b 8ad0            mov     dl,al</span><br><span class="line">fffff803`05f9751d ff81bc000000    inc     dword ptr [rcx+0BCh]</span><br><span class="line">1: kd&gt; g</span><br><span class="line">[DIR] dir=d3 token=00000000 checksum=dead13e4 expect=dead13e4 S</span><br><span class="line">[DIR] dir=53 token=00000001 checksum=dead1365 expect=dead1365 A</span><br><span class="line">[DIR] dir=d0 token=00000002 checksum=dead13e5 expect=dead13e5 D</span><br><span class="line">[DIR] dir=52 token=00000003 checksum=dead1366 expect=dead1366 W</span><br></pre></td></tr></table></figure>
+<p>拿地图信息：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">1: kd&gt; r @$t1 = poi(fffff80305c850b8)</span><br><span class="line">1: kd&gt; ? @$t1</span><br><span class="line">Evaluate expression: -63169849477728 = ffffc68c`1f8fb5a0</span><br><span class="line">1: kd&gt; dq @$t1 L3B</span><br><span class="line">ffffc68c`1f8fb5a0  01000000`00000000 01010100`00000000</span><br><span class="line">ffffc68c`1f8fb5b0  00010101`00010101 01000000`00000001</span><br><span class="line">ffffc68c`1f8fb5c0  00000100`00000000 01010101`00010101</span><br><span class="line">ffffc68c`1f8fb5d0  00000100`00010101 01000000`00000000</span><br><span class="line">ffffc68c`1f8fb5e0  01010001`00010000 01000001`00010101</span><br><span class="line">ffffc68c`1f8fb5f0  01000000`01000100 01010001`00000100</span><br><span class="line">ffffc68c`1f8fb600  00010101`00010001 01000000`00000100</span><br><span class="line">ffffc68c`1f8fb610  01010000`00000100 00010001`01010101</span><br><span class="line">ffffc68c`1f8fb620  00000100`00000101 01000100`01000100</span><br><span class="line">ffffc68c`1f8fb630  00010001`00010001 00000000`00010001</span><br><span class="line">ffffc68c`1f8fb640  00000000`01000100 00000000`00000000</span><br><span class="line">ffffc68c`1f8fb650  00000000`00000000 00000002`00000002</span><br><span class="line">ffffc68c`1f8fb660  00000000`00000000 00000000`00000000</span><br><span class="line">ffffc68c`1f8fb670  00000000`00000000 00000000`00000000</span><br><span class="line">ffffc68c`1f8fb680  00000000`00000000 00000000`00000000</span><br><span class="line">ffffc68c`1f8fb690  00000000`00000000 00000000`00000000</span><br><span class="line">ffffc68c`1f8fb6a0  00000000`00000000 00000000`00000000</span><br><span class="line">ffffc68c`1f8fb6b0  00000000`00000000 00000000`00000000</span><br><span class="line">ffffc68c`1f8fb6c0  00000000`00000000 00000000`00000000</span><br><span class="line">ffffc68c`1f8fb6d0  00000000`00000000 00000000`00000000</span><br><span class="line">ffffc68c`1f8fb6e0  00000000`00000000 00000000`00000000</span><br><span class="line">ffffc68c`1f8fb6f0  00000000`00000000 00000000`00000000</span><br><span class="line">ffffc68c`1f8fb700  00000000`00000000 00000000`00000000</span><br><span class="line">ffffc68c`1f8fb710  00000000`00000000 00000000`00000000</span><br><span class="line">ffffc68c`1f8fb720  00000000`00000000 00000000`00000000</span><br><span class="line">ffffc68c`1f8fb730  00000000`00000000 00000000`00000000</span><br><span class="line">ffffc68c`1f8fb740  00000000`00000000 00000000`00000000</span><br><span class="line">ffffc68c`1f8fb750  00000000`00000000 00000000`00000000</span><br><span class="line">ffffc68c`1f8fb760  00000000`00000000 00000000`000007ec</span><br><span class="line">ffffc68c`1f8fb770  00000000`00000e94</span><br></pre></td></tr></table></figure>
+<p>写bfs求最短路径：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">ShadowGate 迷宫解析 + 最短路径求解</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">用法:</span></span><br><span class="line"><span class="string">  python maze_solve.py maze.txt     # 从文件读取 WinDbg dq 输出</span></span><br><span class="line"><span class="string">  python maze_solve.py              # 从 stdin 粘贴 dq 输出，Ctrl+Z 结束</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">WinDbg 操作步骤:</span></span><br><span class="line"><span class="string">  r @$t1 = poi(fffff80305c850b8)</span></span><br><span class="line"><span class="string">  dq @$t1 L3B</span></span><br><span class="line"><span class="string">  （把输出复制保存为 maze.txt）</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> deque</span><br><span class="line"></span><br><span class="line">CHECKSUM_MAGIC = <span class="number">0xDEAD1337</span></span><br><span class="line">DIR_CODE  = &#123;<span class="string">&#x27;W&#x27;</span>: <span class="number">0x52</span>, <span class="string">&#x27;A&#x27;</span>: <span class="number">0x53</span>, <span class="string">&#x27;S&#x27;</span>: <span class="number">0xD3</span>, <span class="string">&#x27;D&#x27;</span>: <span class="number">0xD0</span>&#125;</span><br><span class="line">DIR_DELTA = &#123;<span class="string">&#x27;W&#x27;</span>: (-<span class="number">1</span>,<span class="number">0</span>), <span class="string">&#x27;S&#x27;</span>: (<span class="number">1</span>,<span class="number">0</span>), <span class="string">&#x27;A&#x27;</span>: (<span class="number">0</span>,-<span class="number">1</span>), <span class="string">&#x27;D&#x27;</span>: (<span class="number">0</span>,<span class="number">1</span>)&#125;</span><br><span class="line">DELTA_DIR = &#123;v: k <span class="keyword">for</span> k, v <span class="keyword">in</span> DIR_DELTA.items()&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">parse_dq</span>(<span class="params">text</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;把 WinDbg dq 输出转成 bytearray（自动跳过地址前缀）&quot;&quot;&quot;</span></span><br><span class="line">    raw = <span class="built_in">bytearray</span>()</span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> text.splitlines():</span><br><span class="line">        line = line.strip()</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> line:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        parts = line.split()</span><br><span class="line">        <span class="comment"># 跳过第一列（地址）</span></span><br><span class="line">        <span class="keyword">for</span> token <span class="keyword">in</span> parts[<span class="number">1</span>:]:</span><br><span class="line">            token = token.replace(<span class="string">&#x27;`&#x27;</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(token) != <span class="number">16</span>:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            <span class="keyword">if</span> <span class="string">&#x27;?&#x27;</span> <span class="keyword">in</span> token:</span><br><span class="line">                raw += <span class="string">b&#x27;\x00&#x27;</span> * <span class="number">8</span></span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            v = <span class="built_in">int</span>(token, <span class="number">16</span>)</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">                raw.append((v &gt;&gt; (i * <span class="number">8</span>)) &amp; <span class="number">0xFF</span>)</span><br><span class="line">    <span class="keyword">return</span> raw</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">bfs</span>(<span class="params">grid, W, H, start, end</span>):</span><br><span class="line">    queue = deque([(start, [start])])</span><br><span class="line">    visited = &#123;start&#125;</span><br><span class="line">    <span class="keyword">while</span> queue:</span><br><span class="line">        (r, c), path = queue.popleft()</span><br><span class="line">        <span class="keyword">if</span> (r, c) == end:</span><br><span class="line">            <span class="keyword">return</span> path</span><br><span class="line">        <span class="keyword">for</span> dr, dc <span class="keyword">in</span> [(-<span class="number">1</span>,<span class="number">0</span>),(<span class="number">1</span>,<span class="number">0</span>),(<span class="number">0</span>,-<span class="number">1</span>),(<span class="number">0</span>,<span class="number">1</span>)]:</span><br><span class="line">            nr, nc = r + dr, c + dc</span><br><span class="line">            <span class="keyword">if</span> <span class="number">0</span> &lt;= nr &lt; H <span class="keyword">and</span> <span class="number">0</span> &lt;= nc &lt; W <span class="keyword">and</span> grid[nr][nc] == <span class="number">0</span> <span class="keyword">and</span> (nr, nc) <span class="keyword">not</span> <span class="keyword">in</span> visited:</span><br><span class="line">                visited.add((nr, nc))</span><br><span class="line">                queue.append(((nr, nc), path + [(nr, nc)]))</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">print_maze</span>(<span class="params">grid, W, H, path_set, start, end</span>):</span><br><span class="line">    <span class="keyword">for</span> r <span class="keyword">in</span> <span class="built_in">range</span>(H):</span><br><span class="line">        row = <span class="string">&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> <span class="built_in">range</span>(W):</span><br><span class="line">            <span class="keyword">if</span>   (r, c) == start:      row += <span class="string">&#x27;S&#x27;</span></span><br><span class="line">            <span class="keyword">elif</span> (r, c) == end:        row += <span class="string">&#x27;E&#x27;</span></span><br><span class="line">            <span class="keyword">elif</span> (r, c) <span class="keyword">in</span> path_set:   row += <span class="string">&#x27;*&#x27;</span></span><br><span class="line">            <span class="keyword">elif</span> grid[r][c]:           row += <span class="string">&#x27;#&#x27;</span></span><br><span class="line">            <span class="keyword">else</span>:                      row += <span class="string">&#x27;.&#x27;</span></span><br><span class="line">        <span class="built_in">print</span>(row)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="comment"># 读取 dq 数据</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(sys.argv) &gt; <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(sys.argv[<span class="number">1</span>], <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">            text = f.read()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;[*] 粘贴 WinDbg dq 输出，结束后按 Ctrl+Z (Windows) / Ctrl+D (Linux):&#x27;</span>)</span><br><span class="line">        text = sys.stdin.read()</span><br><span class="line"></span><br><span class="line">    raw = parse_dq(text)</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(raw) &lt; <span class="number">169</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;[!] 数据不足，只解析到 <span class="subst">&#123;<span class="built_in">len</span>(raw)&#125;</span> 字节，至少需要 169 字节（13×13）&#x27;</span>)</span><br><span class="line">        sys.exit(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 迷宫参数（硬编码本次确认值，可按需改）</span></span><br><span class="line">    W, H   = <span class="number">13</span>, <span class="number">13</span></span><br><span class="line">    start  = (<span class="number">0</span>, <span class="number">0</span>)    <span class="comment"># (row, col) = EntryY, EntryX</span></span><br><span class="line">    end    = (<span class="number">12</span>, <span class="number">12</span>)  <span class="comment"># ExitY, ExitX</span></span><br><span class="line"></span><br><span class="line">    maze_bytes = raw[:W * H]</span><br><span class="line">    grid = [<span class="built_in">list</span>(maze_bytes[r * W:(r + <span class="number">1</span>) * W]) <span class="keyword">for</span> r <span class="keyword">in</span> <span class="built_in">range</span>(H)]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 验证起终点是否可通</span></span><br><span class="line">    <span class="keyword">if</span> grid[start[<span class="number">0</span>]][start[<span class="number">1</span>]] != <span class="number">0</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;[!] 警告: 起点是墙，数据可能有误&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> grid[end[<span class="number">0</span>]][end[<span class="number">1</span>]] != <span class="number">0</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;[!] 警告: 终点是墙，数据可能有误&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># BFS</span></span><br><span class="line">    path = bfs(grid, W, H, start, end)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> path:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;[!] BFS 未找到路径，请检查地图数据&#x27;</span>)</span><br><span class="line">        sys.exit(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    moves = [DELTA_DIR[(path[i][<span class="number">0</span>]-path[i-<span class="number">1</span>][<span class="number">0</span>], path[i][<span class="number">1</span>]-path[i-<span class="number">1</span>][<span class="number">1</span>])]</span><br><span class="line">             <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(path))]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 输出地图</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;\n=== 迷宫地图 <span class="subst">&#123;W&#125;</span>x<span class="subst">&#123;H&#125;</span>  (#=墙 .=通 *=路径 S=起 E=终) ===&#x27;</span>)</span><br><span class="line">    print_maze(grid, W, H, <span class="built_in">set</span>(path), start, end)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 输出路径</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;\n最短步数: <span class="subst">&#123;<span class="built_in">len</span>(moves)&#125;</span>&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;方向序列: <span class="subst">&#123;<span class="string">&quot;&quot;</span>.join(moves)&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 输出 IOCTL 发包表（token 固定 0）</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;\n=== IOCTL_MAZE_MOVE 发包序列 (token=0) ===&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;<span class="string">&quot;步&quot;</span>:&gt;<span class="number">4</span>&#125;</span>  <span class="subst">&#123;<span class="string">&quot;向&quot;</span>:&gt;<span class="number">2</span>&#125;</span>  <span class="subst">&#123;<span class="string">&quot;dir&quot;</span>:&gt;<span class="number">4</span>&#125;</span>  <span class="subst">&#123;<span class="string">&quot;checksum&quot;</span>:&gt;<span class="number">10</span>&#125;</span>  <span class="subst">&#123;<span class="string">&quot;12字节包(hex)&quot;</span>:&#125;</span>&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;-&#x27;</span> * <span class="number">60</span>)</span><br><span class="line">    <span class="keyword">for</span> i, d <span class="keyword">in</span> <span class="built_in">enumerate</span>(moves):</span><br><span class="line">        code = DIR_CODE[d]</span><br><span class="line">        ck   = code ^ CHECKSUM_MAGIC</span><br><span class="line">        pkt  = struct.pack(<span class="string">&#x27;&lt;BxxxII&#x27;</span>, code, <span class="number">0</span>, ck)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;i+<span class="number">1</span>:4d&#125;</span>  <span class="subst">&#123;d:&gt;<span class="number">2</span>&#125;</span>  0x<span class="subst">&#123;code:02X&#125;</span>  0x<span class="subst">&#123;ck:08X&#125;</span>  <span class="subst">&#123;pkt.<span class="built_in">hex</span>()&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">python .\maze_solve.py .\maze.txt</span><br><span class="line"></span><br><span class="line">=== 迷宫地图 13x13  (#=墙 .=通 *=路径 S=起 E=终) ===</span><br><span class="line">S******#..***</span><br><span class="line">######*###*#*</span><br><span class="line">.....#*****#*</span><br><span class="line">.###.#######*</span><br><span class="line">.#.........#*</span><br><span class="line">.#.#.#####.#*</span><br><span class="line">.#.#.#...#.#*</span><br><span class="line">.#.###.#.###*</span><br><span class="line">.#.....#.#***</span><br><span class="line">.#######.#*##</span><br><span class="line">...#...#.#*#.</span><br><span class="line">##.#.#.#.#*#.</span><br><span class="line">.....#.#..**E</span><br><span class="line"></span><br><span class="line">最短步数: 32</span><br><span class="line">方向序列: DDDDDDSSDDDDWWDDSSSSSSSSAASSSSDD</span><br><span class="line"></span><br><span class="line">=== IOCTL_MAZE_MOVE 发包序列 (token=0) ===</span><br><span class="line">   步   向   dir    checksum  12字节包(hex)</span><br><span class="line">------------------------------------------------------------</span><br><span class="line">   1   D  0xD0  0xDEAD13E7  d000000000000000e713adde</span><br><span class="line">   2   D  0xD0  0xDEAD13E7  d000000000000000e713adde</span><br><span class="line">   3   D  0xD0  0xDEAD13E7  d000000000000000e713adde</span><br><span class="line">   4   D  0xD0  0xDEAD13E7  d000000000000000e713adde</span><br><span class="line">   5   D  0xD0  0xDEAD13E7  d000000000000000e713adde</span><br><span class="line">   6   D  0xD0  0xDEAD13E7  d000000000000000e713adde</span><br><span class="line">   7   S  0xD3  0xDEAD13E4  d300000000000000e413adde</span><br><span class="line">   8   S  0xD3  0xDEAD13E4  d300000000000000e413adde</span><br><span class="line">   9   D  0xD0  0xDEAD13E7  d000000000000000e713adde</span><br><span class="line">  10   D  0xD0  0xDEAD13E7  d000000000000000e713adde</span><br><span class="line">  11   D  0xD0  0xDEAD13E7  d000000000000000e713adde</span><br><span class="line">  12   D  0xD0  0xDEAD13E7  d000000000000000e713adde</span><br><span class="line">  13   W  0x52  0xDEAD1365  52000000000000006513adde</span><br><span class="line">  14   W  0x52  0xDEAD1365  52000000000000006513adde</span><br><span class="line">  15   D  0xD0  0xDEAD13E7  d000000000000000e713adde</span><br><span class="line">  16   D  0xD0  0xDEAD13E7  d000000000000000e713adde</span><br><span class="line">  17   S  0xD3  0xDEAD13E4  d300000000000000e413adde</span><br><span class="line">  18   S  0xD3  0xDEAD13E4  d300000000000000e413adde</span><br><span class="line">  19   S  0xD3  0xDEAD13E4  d300000000000000e413adde</span><br><span class="line">  20   S  0xD3  0xDEAD13E4  d300000000000000e413adde</span><br><span class="line">  21   S  0xD3  0xDEAD13E4  d300000000000000e413adde</span><br><span class="line">  22   S  0xD3  0xDEAD13E4  d300000000000000e413adde</span><br><span class="line">  23   S  0xD3  0xDEAD13E4  d300000000000000e413adde</span><br><span class="line">  24   S  0xD3  0xDEAD13E4  d300000000000000e413adde</span><br><span class="line">  25   A  0x53  0xDEAD1364  53000000000000006413adde</span><br><span class="line">  26   A  0x53  0xDEAD1364  53000000000000006413adde</span><br><span class="line">  27   S  0xD3  0xDEAD13E4  d300000000000000e413adde</span><br><span class="line">  28   S  0xD3  0xDEAD13E4  d300000000000000e413adde</span><br><span class="line">  29   S  0xD3  0xDEAD13E4  d300000000000000e413adde</span><br><span class="line">  30   S  0xD3  0xDEAD13E4  d300000000000000e413adde</span><br><span class="line">  31   D  0xD0  0xDEAD13E7  d000000000000000e713adde</span><br><span class="line">  32   D  0xD0  0xDEAD13E7  d000000000000000e713adde</span><br></pre></td></tr></table></figure>
+<p>成功拿到并解密flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">  =============================================</span><br><span class="line">  ACCESS GRANTED - Credential extracted!</span><br><span class="line">=============================================</span><br><span class="line">[CREDENTIAL] flag&#123;SHAD0WNT_HYPERVMX&#125;</span><br><span class="line">[*] Your input (32 ops sent): RRRRRRDDRRRRUURRDDDDDDDDLLDDDDRR</span><br><span class="line">[*] Note: blocked ops are included above; the driver only counts successful ones.</span><br></pre></td></tr></table></figure>
+<h2 id="shadowgate-隐匿信道逆向分析过程4信道详解"><a class="markdownIt-Anchor" href="#shadowgate-隐匿信道逆向分析过程4信道详解"></a> ShadowGate — 隐匿信道逆向分析过程（4信道详解）</h2>
+<blockquote>
+<p>分析对象：<code>ShadowGateSys.sys</code><br />
+IDA 静态基址：<code>0x140000000</code><br />
+运行时基址：<code>0xfffff80305c80000</code>（WinDbg 动态确认）<br />
+分析工具：IDA Pro（MCP 接入）、WinDbg 内核调试、手工 XOR 解密</p>
+</blockquote>
+<hr />
+<h2 id="一-工具链与分析方法论"><a class="markdownIt-Anchor" href="#一-工具链与分析方法论"></a> 一、工具链与分析方法论</h2>
+<p>本次逆向采用&quot;静态优先、动态验证&quot;的三段式方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">IDA Pro 静态分析</span><br><span class="line">  ├── MCP 工具导出反编译/反汇编结果</span><br><span class="line">  ├── 导入表 → 锁定高价值 API 调用点</span><br><span class="line">  ├── 全局变量槽（qword_140005080/90/98）→ 动态解析函数指针</span><br><span class="line">  └── 加密字符串 → 手工 XOR 0x4B 解密</span><br><span class="line"></span><br><span class="line">        ↓ 确认候选函数后</span><br><span class="line"></span><br><span class="line">WinDbg 断点验证</span><br><span class="line">  ├── bp &lt;运行时地址&gt; → 确认函数被调用</span><br><span class="line">  ├── dt/dq → 确认结构体字段读写</span><br><span class="line">  └── !process / !thread → 确认进程附加路径</span><br><span class="line"></span><br><span class="line">        ↓ 逻辑完整后</span><br><span class="line"></span><br><span class="line">用户层检测实现（channel_probe.c）</span><br><span class="line">  └── 对应每个信道部署检测原语，Reset 后前5步逐一验证</span><br></pre></td></tr></table></figure>
+<h3 id="混淆手段汇总影响分析路径的关键干扰"><a class="markdownIt-Anchor" href="#混淆手段汇总影响分析路径的关键干扰"></a> 混淆手段汇总（影响分析路径的关键干扰）</h3>
+<table>
+<thead>
+<tr>
+<th>手段</th>
+<th>位置</th>
+<th>影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>jmp $+5</code>（<code>E9 00 00 00 00</code>）跳花指令</td>
+<td>全段</td>
+<td>线性反汇编断裂，IDA 函数识别失败</td>
+</tr>
+<tr>
+<td><code>cmc/clc/stc/rcl/rcr</code> 无意义标志操作</td>
+<td>IOCTL handler 混淆段</td>
+<td>干扰符号执行和反编译类型推断</td>
+</tr>
+<tr>
+<td><code>66</code> 前缀 16 位寄存器混用</td>
+<td>混淆段</td>
+<td>IDA 类型推断失效，变量被错误截断</td>
+</tr>
+<tr>
+<td><code>_guard_dispatch_icall_fptr()</code> 间接跳转</td>
+<td>CH4 信道函数</td>
+<td>IDA 无法静态确定调用目标，显示为 CFG 保护调用</td>
+</tr>
+<tr>
+<td><code>qword_14000508x</code> 全局函数指针槽</td>
+<td>CH2/3/4 共用</td>
+<td>真实 API 名称运行时才写入，静态全为 0</td>
+</tr>
+<tr>
+<td>XMM XOR 字符串加密</td>
+<td>信号量名称数据段</td>
+<td>静态看不到明文，需手工解密</td>
+</tr>
+</tbody>
+</table>
+<p><strong>关键结论</strong>：因混淆严重，信道函数的发现路径是&quot;导入表 API 反查 xref → 候选函数 → 反编译验证逻辑 → WinDbg 确认执行&quot;，而非直接从 DriverEntry 顺序追踪。</p>
+<hr />
+<h2 id="二-驱动整体结构快速定位框架"><a class="markdownIt-Anchor" href="#二-驱动整体结构快速定位框架"></a> 二、驱动整体结构（快速定位框架）</h2>
+<h3 id="driverentry-链"><a class="markdownIt-Anchor" href="#driverentry-链"></a> DriverEntry 链</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">0x140008000  DriverEntry（IDA 识别的导出入口，仅 0x2C 字节）</span><br><span class="line">  ├── call sub_14000802C   ← 全局初始化（解密函数指针槽、初始化 SpinLock）</span><br><span class="line">  └── call sub_140003208   ← 真实 DriverEntry 实现</span><br><span class="line"></span><br><span class="line">0x140003208  sub_140003208（真实初始化）</span><br><span class="line">  ├── ExAllocatePool2(64, 472, &#x27;ezaM&#x27;)  ← 分配 472 字节 MazeContext，Tag=&#x27;MazeTag&#x27;</span><br><span class="line">  ├── P = Pool2                          ← P 是全局 MazeContext 指针</span><br><span class="line">  └── sub_1400018A0(Pool2)               ← 注册 DriverObject/DeviceObject/符号链接</span><br><span class="line"></span><br><span class="line">0x140001840  sub_140001840（DriverUnload）</span><br><span class="line">  ├── ExFreePoolWithTag(P, &#x27;MazeTag&#x27;)</span><br><span class="line">  ├── IoDeleteSymbolicLink(&amp;SymbolicLinkName)</span><br><span class="line">  └── IoDeleteDevice(DeviceObject)</span><br></pre></td></tr></table></figure>
+<h3 id="ioctl-dispatch-链"><a class="markdownIt-Anchor" href="#ioctl-dispatch-链"></a> IOCTL Dispatch 链</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">DriverObject-&gt;MajorFunction[IRP_MJ_DEVICE_CONTROL]</span><br><span class="line">  → 0x140001540  sub_140001540（thunk，仅 5 字节）</span><br><span class="line">      └── jmp sub_1403172AB   ← 混淆段真实 dispatch 入口（base+0x3172AB）</span><br></pre></td></tr></table></figure>
+<p><code>0x1403172AB</code> 是关键混淆段入口，大量花指令包裹，但 IDA MCP 反编译可提取出清晰的 switch 结构（见第三节）。</p>
+<h3 id="动态解析函数指针槽运行时-driverentry-写入"><a class="markdownIt-Anchor" href="#动态解析函数指针槽运行时-driverentry-写入"></a> 动态解析函数指针槽（运行时 DriverEntry 写入）</h3>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 静态值全为 0，运行时由 MmGetSystemRoutineAddress 填入</span></span><br><span class="line">qword_140005080  ← PsGetThreadTeb</span><br><span class="line">qword_140005090  ← ZwSetInformationObject</span><br><span class="line">qword_140005098  ← KeReleaseSemaphore（或信号量对象结构指针）</span><br></pre></td></tr></table></figure>
+<p>分析时遇到 <code>call qword_140005080</code> 形式的间接调用，结合导入表和 WinDbg 运行时读槽值来确定真实目标。</p>
+<hr />
+<h2 id="三-ioctl-协议逆向sub_1403172ab"><a class="markdownIt-Anchor" href="#三-ioctl-协议逆向sub_1403172ab"></a> 三、IOCTL 协议逆向（sub_1403172AB）</h2>
+<h3 id="发现路径"><a class="markdownIt-Anchor" href="#发现路径"></a> 发现路径</h3>
+<ol>
+<li>IDA 导入表中有 <code>IofCompleteRequest</code>，xref 追到 <code>sub_140001000</code>（IRP 完成封装）</li>
+<li><code>sub_140001000</code> 的调用者集中在 <code>sub_1403172AB</code></li>
+<li>对 <code>sub_1403172AB</code> 反编译，IDA 提取出完整 switch-case：</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// IDA 反编译（地址：0x1403172AB，size=0x52A）</span></span><br><span class="line"><span class="keyword">switch</span> (IoControlCode) &#123;                        <span class="comment">// v12 = IRP stack 参数中的 IOCTL code</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">case</span> <span class="number">0x80012004</span>:  <span class="comment">// IOCTL_MAZE_MOVE</span></span><br><span class="line">        <span class="comment">// 地址 0x140317488</span></span><br><span class="line">        <span class="keyword">if</span> (v15 &amp;&amp; InputBufferLength &gt;= <span class="number">0xC</span> &amp;&amp; OutputBufferLength &gt;= <span class="number">0x84</span>) &#123;</span><br><span class="line">            <span class="comment">// 地址 0x1403174CF：checksum 验证</span></span><br><span class="line">            <span class="keyword">if</span> (*(DWORD*)(v15+<span class="number">8</span>) == ((BYTE)*v15 ^ HIDWORD(*(QWORD*)v15) ^ <span class="number">0xDEAD1337</span>)) &#123;</span><br><span class="line">                <span class="comment">// checksum OK → 递增步进计数器，调用信道分发</span></span><br><span class="line">                ++MazeContext-&gt;StepCount;                      <span class="comment">// MazeContext+0xBC</span></span><br><span class="line">                v22 = ROTL8(direction, <span class="number">5</span>) ^ <span class="number">0x5A</span>;             <span class="comment">// 内部方向编码</span></span><br><span class="line">                sub_140002161(MazeContext, v22);               <span class="comment">// ★ 信道分发函数</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 无论 checksum 是否通过，都填充输出缓冲区（LCG 噪声）</span></span><br><span class="line">            sub_1400038C0(v15, <span class="number">0</span>, <span class="number">132</span>);   <span class="comment">// 清零 132 字节</span></span><br><span class="line">            sub_140002038(v15);            <span class="comment">// 填 LCG 噪声（见下）</span></span><br><span class="line">            return_bytes = <span class="number">132</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">case</span> <span class="number">0x80012008</span>:  <span class="comment">// IOCTL_RESET_POS（重置位置）</span></span><br><span class="line">        <span class="comment">// 地址 0x14031744C</span></span><br><span class="line">        sub_140001A7C(MazeContext, ...);   <span class="comment">// 清零 MazeContext 状态字段</span></span><br><span class="line">        sub_14031A53E();                   <span class="comment">// 重置全局步进计数器</span></span><br><span class="line">        return_bytes = <span class="number">0</span>;                  <span class="comment">// ★ 无输出</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">case</span> <span class="number">0x8001200C</span>:  <span class="comment">// IOCTL_GET_INFO（获取迷宫信息）</span></span><br><span class="line">        <span class="comment">// 地址 0x1403173DD</span></span><br><span class="line">        <span class="keyword">if</span> (v15 &amp;&amp; OutputBufferLength &gt;= <span class="number">0x18</span>) &#123;</span><br><span class="line">            <span class="comment">// 直接写 6 个 DWORD 到输出缓冲</span></span><br><span class="line">            v15[<span class="number">0</span>] = <span class="number">13</span>;    <span class="comment">// Width</span></span><br><span class="line">            v15[<span class="number">1</span>] = <span class="number">13</span>;    <span class="comment">// Height   （注：以 int64 写入，高32位=0）</span></span><br><span class="line">            v15[<span class="number">3</span>] = <span class="number">0</span>;     <span class="comment">// EntryY</span></span><br><span class="line">            v15[<span class="number">4</span>] = <span class="number">12</span>;    <span class="comment">// ExitX</span></span><br><span class="line">            v15[<span class="number">5</span>] = <span class="number">12</span>;    <span class="comment">// ExitY</span></span><br><span class="line">            return_bytes = <span class="number">24</span>;             <span class="comment">// ★ 返回 24 字节</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>关键发现</strong>：</p>
+<ul>
+<li><code>0x80012008</code>（RESET）无输出；<code>0x8001200C</code>（GET_INFO）返回24字节——与原始文档记录相反，以反编译代码为准。</li>
+<li>输出缓冲区的132字节<strong>全部是 LCG 噪声</strong>，不含任何信道信号（见下）。</li>
+</ul>
+<h3 id="lcg-噪声函数sub_140002038"><a class="markdownIt-Anchor" href="#lcg-噪声函数sub_140002038"></a> LCG 噪声函数（sub_140002038）</h3>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// IDA 地址：0x140002038，size=0x3F</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">sub_140002038</span><span class="params">(<span class="type">unsigned</span> <span class="type">int</span> *OutBuffer)</span> &#123;</span><br><span class="line">    <span class="comment">// 种子 = KeTickCount（KUSER_SHARED_DATA+0x320） ^ 0xBAADF00D</span></span><br><span class="line">    DWORD seed = MEMORY[<span class="number">0xFFFFF78000000320</span>] ^ <span class="number">0xBAADF00D</span>;</span><br><span class="line">    OutBuffer[<span class="number">0</span>] = seed;          <span class="comment">// 前4字节 = 种子明文（可见但无信道价值）</span></span><br><span class="line">    BYTE *p = (BYTE*)OutBuffer + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">56</span>; i &gt; <span class="number">0</span>; i--) &#123;</span><br><span class="line">        seed = <span class="number">1103515245</span> * seed + <span class="number">12345</span>;   <span class="comment">// 标准 glibc LCG</span></span><br><span class="line">        *p++ = BYTE2(seed);                 <span class="comment">// 取第2字节</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>含义</strong>：每次 IOCTL 响应的132字节输出是纯随机噪声，用于干扰基于输出差异的信道检测。真实信号通过完全独立的5条隐匿路径传递。</p>
+<h3 id="checksum-验证与-bsod"><a class="markdownIt-Anchor" href="#checksum-验证与-bsod"></a> checksum 验证与 BSOD</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">IOCTL 输入（12字节）:  [ direction(1B) | pad(3B) | token(4B) | checksum(4B) ]</span><br><span class="line"></span><br><span class="line">验证逻辑（0x1403174CF）:</span><br><span class="line">  expected = (uint8_t)direction ^ token ^ 0xDEAD1337</span><br><span class="line">  if checksum != expected → 不调用 sub_140002161</span><br><span class="line">  </span><br><span class="line">  实际 BSOD 触发点在 0x1403174C6 附近的汇编路径中（混淆段，IDA 反编译未完整捕获）：</span><br><span class="line">    cmp [r14+8], edx       ; edx = expected checksum</span><br><span class="line">    jne → call KeBugCheckEx</span><br></pre></td></tr></table></figure>
+<p>自动化程序固定 <code>token=0</code>，则 <code>checksum = direction ^ 0xDEAD1337</code>，无需维护序列号。</p>
+<hr />
+<h2 id="四-信道分发机制sub_140002161"><a class="markdownIt-Anchor" href="#四-信道分发机制sub_140002161"></a> 四、信道分发机制（sub_140002161）</h2>
+<h3 id="发现路径-2"><a class="markdownIt-Anchor" href="#发现路径-2"></a> 发现路径</h3>
+<p>IOCTL MAZE_MOVE 的 checksum 验证通过后调用 <code>sub_140002161(MazeContext, v22)</code>。该函数内部维护一个<strong>步进计数器</strong>，每次调用递增，模5循环，决定本轮激活哪个信道函数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">sub_140002161（地址 0x140002161）：</span><br><span class="line">  ├── 大量花指令（jmp+junk、pushfq/popfq、无效常量运算）</span><br><span class="line">  ├── 核心：读取 MazeContext 内部计数器（StepCount mod 5）</span><br><span class="line">  └── 根据计数器路由到对应信道函数：</span><br><span class="line">       0 → sub_1400022B0   CH1: 命名事件</span><br><span class="line">       1 → sub_140319A37   CH2: 命名信号量</span><br><span class="line">       2 → sub_140316ADF   CH3: TEB 直写</span><br><span class="line">       3 → sub_14031857E   CH4: 句柄标志</span><br><span class="line">       4 → （CH5 QVM，待确认）</span><br></pre></td></tr></table></figure>
+<p><strong>注</strong>：此函数因混淆严重，IDA 反编译失败（<code>Decompilation failed at 0x1400021b7</code>），分发逻辑通过 WinDbg 断点在各信道函数入口逐一触发确认。</p>
+<hr />
+<h2 id="五-信道1命名内核事件ch1"><a class="markdownIt-Anchor" href="#五-信道1命名内核事件ch1"></a> 五、信道1：命名内核事件（CH1）</h2>
+<h3 id="ida-静态分析"><a class="markdownIt-Anchor" href="#ida-静态分析"></a> IDA 静态分析</h3>
+<p><strong>发现路径</strong>：导入表有 <code>ZwOpenEvent</code>（<code>0x140004098</code>）和 <code>ZwSetEvent</code>（<code>0x1400040D8</code>），反查 xref → 唯一调用点在 <code>sub_1400022B0</code>（<code>0x1400022B0</code>，base+0x22B0）。</p>
+<p><strong>IDA 反编译（完整，0x1400022B0，size=0xD5）：</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">sub_1400022B0</span><span class="params">(__int64 MazeContext, <span class="type">int</span> n2)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">const</span> WCHAR *name;</span><br><span class="line">    UNICODE_STRING us;</span><br><span class="line">    OBJECT_ATTRIBUTES oa;</span><br><span class="line">    <span class="type">void</span> *EventHandle;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// n2=0（成功）或 n2=2（出口）→ MazeMoveOK</span></span><br><span class="line">    <span class="comment">// n2=1（碰墙）              → MazeMoveWall</span></span><br><span class="line">    <span class="keyword">if</span> (!n2 || n2 == <span class="number">2</span>)                                         <span class="comment">// 0x140002311</span></span><br><span class="line">        name = <span class="string">L&quot;\\BaseNamedObjects\\MazeMoveOK&quot;</span>;               <span class="comment">// 0x140002313</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        name = <span class="string">L&quot;\\BaseNamedObjects\\MazeMoveWall&quot;</span>;</span><br><span class="line"></span><br><span class="line">    RtlInitUnicodeString(&amp;us, name);                            <span class="comment">// 0x14000231E</span></span><br><span class="line">    oa.Length          = <span class="number">48</span>;                                    <span class="comment">// 0x140002328</span></span><br><span class="line">    oa.ObjectName      = &amp;us;                                   <span class="comment">// 0x140002332</span></span><br><span class="line">    oa.RootDirectory   = <span class="literal">NULL</span>;                                  <span class="comment">// 0x14000233A</span></span><br><span class="line">    oa.Attributes      = <span class="number">576</span>;  <span class="comment">// OBJ_CASE_INSENSITIVE|OBJ_KERNEL_HANDLE  // 0x140002347</span></span><br><span class="line"></span><br><span class="line">    EventHandle = <span class="literal">NULL</span>;</span><br><span class="line">    ZwOpenEvent(&amp;EventHandle, EVENT_MODIFY_STATE, &amp;oa);         <span class="comment">// 0x14000235F</span></span><br><span class="line">    <span class="keyword">if</span> (NT_SUCCESS(result)) &#123;</span><br><span class="line">        ZwSetEvent(EventHandle, <span class="literal">NULL</span>);                          <span class="comment">// 0x14000236F（★ 信号发出）</span></span><br><span class="line">        ZwClose(EventHandle);                                   <span class="comment">// 0x140002379</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>关键观察</strong>：</p>
+<ul>
+<li>对象名<strong>明文硬编码</strong>（无加密），IDA 直接可读。</li>
+<li><code>ZwOpenEvent</code> 而非 <code>NtCreateEvent</code>：驱动不创建对象，<strong>依赖用户层先创建</strong>，否则 <code>ZwOpenEvent</code> 失败，信道静默跳过。</li>
+<li><code>Attributes=576</code>：<code>OBJ_CASE_INSENSITIVE(0x40) | OBJ_KERNEL_HANDLE(0x200)</code>。</li>
+</ul>
+<h3 id="windbg-验证"><a class="markdownIt-Anchor" href="#windbg-验证"></a> WinDbg 验证</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">bp 0xfffff80305c822B0       ; 断在信道函数入口</span><br><span class="line">运行迷宫，第1步移动触发</span><br><span class="line">  → r rdx                   ; 查看 n2 参数</span><br><span class="line">  → dq rsp+0x20 L1          ; 确认 EventHandle 被填入</span><br><span class="line">继续执行至 ZwSetEvent 返回</span><br><span class="line">  → !object \BaseNamedObjects\MazeMoveOK   ; 确认事件已触发</span><br></pre></td></tr></table></figure>
+<h3 id="用户层检测原语"><a class="markdownIt-Anchor" href="#用户层检测原语"></a> 用户层检测原语</h3>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 必须在 IOCTL 之前创建（手动重置型，初始未触发）</span></span><br><span class="line">HANDLE hOK   = CreateEventW(<span class="literal">NULL</span>, TRUE, FALSE, <span class="string">L&quot;Global\\MazeMoveOK&quot;</span>);</span><br><span class="line">HANDLE hWall = CreateEventW(<span class="literal">NULL</span>, TRUE, FALSE, <span class="string">L&quot;Global\\MazeMoveWall&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 每步前清除基线</span></span><br><span class="line">ResetEvent(hOK);</span><br><span class="line">ResetEvent(hWall);</span><br><span class="line"></span><br><span class="line"><span class="comment">// IOCTL 后采样</span></span><br><span class="line">BOOL ev_ok   = (WaitForSingleObject(hOK,  <span class="number">0</span>) == WAIT_OBJECT_0);</span><br><span class="line">BOOL ev_wall = (WaitForSingleObject(hWall, <span class="number">0</span>) == WAIT_OBJECT_0);</span><br></pre></td></tr></table></figure>
+<p><strong>必须用手动重置（<code>bManualReset=TRUE</code>）</strong>：自动重置型会在 <code>WaitForSingleObject</code> 返回时消费信号，后续步骤的基线判断会被污染。</p>
+<hr />
+<h2 id="六-信道2命名内核信号量ch2"><a class="markdownIt-Anchor" href="#六-信道2命名内核信号量ch2"></a> 六、信道2：命名内核信号量（CH2）</h2>
+<h3 id="ida-静态分析-2"><a class="markdownIt-Anchor" href="#ida-静态分析-2"></a> IDA 静态分析</h3>
+<p><strong>发现路径</strong>：导入表有 <code>ObReferenceObjectByName</code>（<code>0x1400040E0</code>）和 <code>KeReleaseSemaphore</code>（<code>0x140004018</code>），反查 xref → 均指向 <code>sub_140319A37</code>（<code>0x140319A37</code>，base+0x319A37，位于混淆大段内）。</p>
+<p><strong>IDA 反编译（0x140319A37，size=0x2E4，含大量混淆残留）：</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">__int64 <span class="title function_">sub_140319A37</span><span class="params">(<span class="type">char</span> _CL, <span class="type">int</span> n2)</span></span><br><span class="line">&#123;</span><br><span class="line">    WCHAR SourceString[<span class="number">76</span>];   <span class="comment">// 栈上明文缓冲区（解密输出）</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 混淆噪声：_BitScanForward64, rcl di cl 等（无实际作用）</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (qword_140005098 &amp;&amp; *(_QWORD*)qword_140005098) &#123;  <span class="comment">// 0x140319A7E</span></span><br><span class="line">        <span class="comment">// 选择加密数据源</span></span><br><span class="line">        <span class="comment">// n2=0 或 n2=2 → unk_140004160（Sem1 加密名）</span></span><br><span class="line">        <span class="comment">// n2=1          → unk_1400041E0（Sem2 加密名）</span></span><br><span class="line">        _BYTE *src = (n2 == <span class="number">0</span> || n2 == <span class="number">2</span>) ? &amp;unk_140004160   <span class="comment">// 0x140319B3D</span></span><br><span class="line">                                           : &amp;unk_1400041E0;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// ★ XOR 解密循环（0x140319B68~0x140319B91）</span></span><br><span class="line">        <span class="comment">// 57 次迭代，每次解密一个 WCHAR（2字节），key=0x4B</span></span><br><span class="line">        WCHAR *dst = SourceString;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">57</span>; i &gt; <span class="number">0</span>; i--) &#123;</span><br><span class="line">            *dst = *(WCHAR*)src ^ <span class="number">0x4B</span>;        <span class="comment">// XOR 0x4B 解密</span></span><br><span class="line">            dst++;</span><br><span class="line">            src++;   <span class="comment">// 实际步进由 v9 偏移控制</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 用解密出的名称打开信号量对象</span></span><br><span class="line">        RtlInitUnicodeString(&amp;DestinationString_, SourceString); <span class="comment">// 0x140319C07</span></span><br><span class="line">        ObReferenceObjectByName(&amp;DestinationString_, <span class="number">64</span>, <span class="literal">NULL</span>);  <span class="comment">// 0x140319C76</span></span><br><span class="line">        <span class="comment">// KeReleaseSemaphore 通过 qword_140005098 间接调用（CFG 保护）</span></span><br><span class="line"></span><br><span class="line">        <span class="built_in">memset</span>(SourceString, <span class="number">0</span>, <span class="number">0x72</span>);  <span class="comment">// 清除栈上明文（防内存扫描）  // 0x140319C93</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="加密数据定位与手工解密"><a class="markdownIt-Anchor" href="#加密数据定位与手工解密"></a> 加密数据定位与手工解密</h3>
+<p>加密数据存放于数据段：</p>
+<ul>
+<li><code>unk_140004160</code>：Sem1 名称密文（57 × WCHAR = 114字节）</li>
+<li><code>unk_1400041E0</code>：Sem2 名称密文（57 × WCHAR = 114字节）</li>
+</ul>
+<p><strong>解密方法</strong>（每字节 XOR 0x4B）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 以 WCHAR 为单位，低字节 XOR 0x4B，高字节（通常为0）不变</span></span><br><span class="line"><span class="comment"># 解密结果：</span></span><br><span class="line">Sem1: <span class="string">&quot;Global\\&#123;A7F3B2C1-9E4D-4C8A-B5D6-1F2E3A4B5C6D&#125;&quot;</span></span><br><span class="line">Sem2: <span class="string">&quot;Global\\&#123;B8E2C3D0-0F5A-5D9B-C6E7-2A3F4B5C6D7E&#125;&quot;</span></span><br></pre></td></tr></table></figure>
+<p><strong>为何用 XOR 加密</strong>：防止字符串扫描工具（如 Strings.exe）直接找到信号量名称，增加静态分析难度。<code>memset</code> 清除栈帧则防止运行时内存扫描。</p>
+<h3 id="windbg-验证-2"><a class="markdownIt-Anchor" href="#windbg-验证-2"></a> WinDbg 验证</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">bp 0xfffff80305f99A37       ; 断在信道函数入口（运行时 = base+0x319A37）</span><br><span class="line">触发第2步移动</span><br><span class="line">  → p（单步至 RtlInitUnicodeString 调用后）</span><br><span class="line">  → du rcx                  ; 读 UNICODE_STRING.Buffer，确认解密后的 GUID 字符串</span><br><span class="line">  → p（至 ObReferenceObjectByName 返回后查 rax 是否成功）</span><br></pre></td></tr></table></figure>
+<h3 id="用户层检测原语-2"><a class="markdownIt-Anchor" href="#用户层检测原语-2"></a> 用户层检测原语</h3>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 先创建信号量（初始计数=0），驱动 KeReleaseSemaphore 后计数变为1</span></span><br><span class="line">HANDLE hS1 = CreateSemaphoreW(<span class="literal">NULL</span>, <span class="number">0</span>, <span class="number">16</span>, <span class="string">L&quot;Global\\&#123;A7F3B2C1-9E4D-4C8A-B5D6-1F2E3A4B5C6D&#125;&quot;</span>);</span><br><span class="line">HANDLE hS2 = CreateSemaphoreW(<span class="literal">NULL</span>, <span class="number">0</span>, <span class="number">16</span>, <span class="string">L&quot;Global\\&#123;B8E2C3D0-0F5A-5D9B-C6E7-2A3F4B5C6D7E&#125;&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 信道触发后采样（0超时，非阻塞）</span></span><br><span class="line">BOOL s1 = (WaitForSingleObject(hS1, <span class="number">0</span>) == WAIT_OBJECT_0);</span><br><span class="line">BOOL s2 = (WaitForSingleObject(hS2, <span class="number">0</span>) == WAIT_OBJECT_0);</span><br><span class="line"><span class="comment">// s1=TRUE 表示成功/出口，s2=TRUE 表示碰墙</span></span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong>：<code>WaitForSingleObject</code> 在信号量上成功会自动将计数减1（消费），无需手动 Reset。但若信号量计数已经 &gt; 0（前一步未消费），则采样结果会有误——每步后必须消费干净。</p>
+<hr />
+<h2 id="七-信道3teb-lasterror-直写ch3"><a class="markdownIt-Anchor" href="#七-信道3teb-lasterror-直写ch3"></a> 七、信道3：TEB LastError 直写（CH3）</h2>
+<h3 id="ida-静态分析-3"><a class="markdownIt-Anchor" href="#ida-静态分析-3"></a> IDA 静态分析</h3>
+<p><strong>发现路径</strong>：导入表有 <code>KeStackAttachProcess</code>（<code>0x1400040B0</code>）、<code>ProbeForWrite</code>（<code>0x140004058</code>）、<code>PsLookupProcessByProcessId</code>（<code>0x1400040C0</code>）、<code>PsLookupThreadByThreadId</code>（<code>0x1400040C8</code>），四个 API 的 xref 均汇聚于 <code>sub_140316ADF</code>（<code>0x140316ADF</code>，base+0x316ADF）。</p>
+<p><strong>IDA 反编译（0x140316ADF，size=0x295）：</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">sub_140316ADF</span><span class="params">(__int64 MazeContext, <span class="type">int</span> n2)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// MazeContext+0x1D0 = 存储的 ThreadId（调用 IOCTL 的线程）</span></span><br><span class="line">    <span class="comment">// MazeContext+0x1C8 = 存储的 ProcessId</span></span><br><span class="line">    <span class="type">void</span> *ThreadId = *(<span class="type">void</span>**)(MazeContext + <span class="number">464</span>);   <span class="comment">// 464=0x1D0  // 0x140316B32</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ThreadId &amp;&amp; *(QWORD*)(MazeContext + <span class="number">456</span>)) &#123;  <span class="comment">// 456=0x1C8  // 0x140316B45/B4B</span></span><br><span class="line">        <span class="keyword">if</span> (qword_140005080) &#123;                       <span class="comment">// = PsGetThreadTeb（运行时填入）</span></span><br><span class="line">            PETHREAD Thread = <span class="literal">NULL</span>;</span><br><span class="line">            PsLookupThreadByThreadId(ThreadId, &amp;Thread);     <span class="comment">// 0x140316B82</span></span><br><span class="line">            <span class="keyword">if</span> (NT_SUCCESS) &#123;</span><br><span class="line">                PEPROCESS Process = <span class="literal">NULL</span>;</span><br><span class="line">                PsLookupProcessByProcessId(*(HANDLE*)(MazeContext+<span class="number">0x1C8</span>), &amp;Process); <span class="comment">// 0x140316BC1</span></span><br><span class="line"></span><br><span class="line">                KeStackAttachProcess(Process, &amp;ApcState);    <span class="comment">// 0x140316BD9（进入用户进程地址空间）</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">// qword_140005080 = PsGetThreadTeb（CFG 间接调用）</span></span><br><span class="line">                __int64 Teb = qword_140005080(Thread);       <span class="comment">// 0x140316BFD</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">// ★ 核心：TEB+0x68 = LastErrorValue（Win32 LastError）</span></span><br><span class="line">                <span class="type">int</span> *Address = (<span class="type">int</span>*)(Teb + <span class="number">104</span>);            <span class="comment">// 104=0x68  // 0x140316C11</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">// 根据移动结果写入不同魔数</span></span><br><span class="line">                <span class="type">int</span> v10;</span><br><span class="line">                <span class="keyword">if</span> (n2 == <span class="number">0</span>)      v10 = <span class="number">-1059192831</span>;  <span class="comment">// = 0xC0DE0001（成功）</span></span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (n2 == <span class="number">2</span>) v10 = <span class="number">-1059192830</span>;  <span class="comment">// = 0xC0DE0002（出口）</span></span><br><span class="line">                <span class="keyword">else</span>              v10 = <span class="number">-1059192832</span>;  <span class="comment">// = 0xC0DE0000（碰墙）  // 0x140316CA8~CCD</span></span><br><span class="line"></span><br><span class="line">                ProbeForWrite(Address, <span class="number">4</span>, <span class="number">4</span>);                <span class="comment">// 0x140316CFF（安全性校验）</span></span><br><span class="line">                *Address = v10;                              <span class="comment">// 0x140316D05（★ 写入）</span></span><br><span class="line"></span><br><span class="line">                KeUnstackDetachProcess(&amp;ApcState);           <span class="comment">// 0x140316D11</span></span><br><span class="line">                ObfDereferenceObject(Process);               <span class="comment">// 0x140316D1C</span></span><br><span class="line">            &#125;</span><br><span class="line">            ObfDereferenceObject(Thread);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="关键常数推导"><a class="markdownIt-Anchor" href="#关键常数推导"></a> 关键常数推导</h3>
+<p>IDA 反编译中看到的有符号十进制值，换算为十六进制魔数：</p>
+<table>
+<thead>
+<tr>
+<th>IDA 显示值（有符号 int32）</th>
+<th>十六进制</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-1059192831</code></td>
+<td><code>0xC0DE0001</code></td>
+<td>成功（n2=0）</td>
+</tr>
+<tr>
+<td><code>-1059192830</code></td>
+<td><code>0xC0DE0002</code></td>
+<td>出口（n2=2）</td>
+</tr>
+<tr>
+<td><code>-1059192832</code></td>
+<td><code>0xC0DE0000</code></td>
+<td>碰墙（n2=1）</td>
+</tr>
+</tbody>
+</table>
+<p>换算方式：<code>0xC0DE0001 = 3235774465</code>，<code>3235774465 - 4294967296 = -1059192831</code>。</p>
+<p><strong>TEB+0x68 = LastErrorValue</strong> 是 Windows TEB 的固定偏移，<code>GetLastError()</code> 的本质就是读取此偏移。驱动通过 <code>PsGetThreadTeb</code> 获取 TEB 指针后直接修改，完全绕过用户层 API 调用链。</p>
+<h3 id="mazecontext-结构由此信道确认的字段"><a class="markdownIt-Anchor" href="#mazecontext-结构由此信道确认的字段"></a> MazeContext 结构（由此信道确认的字段）</h3>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 从 sub_140316ADF 推导：</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">MazeContext</span> &#123;</span></span><br><span class="line">    <span class="comment">// ...（前部字段待确认）</span></span><br><span class="line">    <span class="comment">/* +0x1C8 */</span> HANDLE   CallerProcessId;   <span class="comment">// PsGetCurrentProcessId() 存入</span></span><br><span class="line">    <span class="comment">/* +0x1D0 */</span> HANDLE   CallerThreadId;    <span class="comment">// PsGetCurrentThreadId() 存入</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// MazeContext 大小：472字节（ExAllocatePool2 参数确认）</span></span><br></pre></td></tr></table></figure>
+<h3 id="windbg-验证-3"><a class="markdownIt-Anchor" href="#windbg-验证-3"></a> WinDbg 验证</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">bp 0xfffff80305f96ADF       ; 断在信道函数入口（base+0x316ADF）</span><br><span class="line">触发第3步移动</span><br><span class="line">  → dq @rcx+0x1C8 L1        ; 确认 ProcessId 被存储</span><br><span class="line">  → dq @rcx+0x1D0 L1        ; 确认 ThreadId 被存储</span><br><span class="line">  → p（单步至 *Address = v10 之后）</span><br><span class="line">  → dd &lt;Teb+0x68&gt;            ; 直接读 TEB 确认写入值</span><br><span class="line">用户层同时执行 GetLastError()，观察到 0xC0DE0001 / 0xC0DE0000 / 0xC0DE0002</span><br></pre></td></tr></table></figure>
+<h3 id="用户层检测原语-3"><a class="markdownIt-Anchor" href="#用户层检测原语-3"></a> 用户层检测原语</h3>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// IOCTL 前设置明确的哨兵值（区分&quot;驱动未触发&quot;和&quot;返回0&quot;）</span></span><br><span class="line">SetLastError(<span class="number">0xDEADBEEF</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// IOCTL 后立即采样</span></span><br><span class="line">DWORD lerr = GetLastError();</span><br><span class="line"><span class="keyword">if</span>      (lerr == <span class="number">0xC0DE0001</span>) <span class="comment">// 成功</span></span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (lerr == <span class="number">0xC0DE0000</span>) <span class="comment">// 碰墙</span></span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (lerr == <span class="number">0xC0DE0002</span>) <span class="comment">// 出口</span></span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (lerr == <span class="number">0xDEADBEEF</span>) <span class="comment">// 未触发（非本轮信道）</span></span><br></pre></td></tr></table></figure>
+<p><code>GetLastError()</code> 在 IOCTL 后可能被 Win32 内部机制覆写，因此 <code>DeviceIoControl</code> 使用同步模式（无 OVERLAPPED），返回后立即读取，时间窗口极小。</p>
+<hr />
+<h2 id="八-信道4teb-句柄标志ch4"><a class="markdownIt-Anchor" href="#八-信道4teb-句柄标志ch4"></a> 八、信道4：TEB 句柄标志（CH4）</h2>
+<h3 id="ida-静态分析-4"><a class="markdownIt-Anchor" href="#ida-静态分析-4"></a> IDA 静态分析</h3>
+<p><strong>发现路径</strong>：导入表有 <code>ProbeForRead</code>（<code>0x140004050</code>）、已知 <code>qword_140005080=PsGetThreadTeb</code>、<code>qword_140005090=ZwSetInformationObject</code>（均动态解析）。在 <code>sub_14031857E</code>（<code>0x14031857E</code>，base+0x31857E）找到这三者的组合使用。</p>
+<p><strong>IDA 反编译（0x14031857E，size=0x1F5）：</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">sub_14031857E</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// qword_140005080 = PsGetThreadTeb（CFG 保护的间接调用）</span></span><br><span class="line">    <span class="keyword">if</span> (qword_140005080) &#123;</span><br><span class="line">        <span class="keyword">if</span> (qword_140005090) &#123;                              <span class="comment">// = ZwSetInformationObject</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">// ★ 调用 PsGetThreadTeb(CurrentThread) → 获取调用者 TEB 地址</span></span><br><span class="line">            __int64 Teb = _guard_dispatch_icall_fptr();    <span class="comment">// 0x1403185E4</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (Teb) &#123;</span><br><span class="line">                <span class="comment">// ★ TEB+0x1748（= 5960 = 0x1748）</span></span><br><span class="line">                _QWORD *v1 = (_QWORD*)(Teb + <span class="number">5960</span>);        <span class="comment">// 0x1403185EF</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">// 安全读取：确认该地址可读（在用户地址空间内）</span></span><br><span class="line">                ProbeForRead(v1, <span class="number">8</span>, <span class="number">8</span>);                    <span class="comment">// 0x140318621</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">// ★ 若用户层在此槽放置了 handle，则调用 ZwSetInformationObject</span></span><br><span class="line">                <span class="keyword">if</span> (*v1) &#123;                                  <span class="comment">// 0x140318627</span></span><br><span class="line">                    <span class="comment">// qword_140005090 = ZwSetInformationObject（CFG 间接调用）</span></span><br><span class="line">                    _guard_dispatch_icall_fptr();           <span class="comment">// 0x140318750</span></span><br><span class="line">                    <span class="comment">// 效果：修改 *v1（句柄值）所对应的句柄表项的 Inherit 标志位</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="关键偏移推导"><a class="markdownIt-Anchor" href="#关键偏移推导"></a> 关键偏移推导</h3>
+<ul>
+<li><code>5960 = 0x1748</code>：<code>TEB+0x1748</code> 在 Windows 10/11 x64 中是 <code>Win32ClientInfo</code> 扩展区域的槽位，非标准 TEB 字段，驱动借用此偏移传递句柄。</li>
+<li><code>_guard_dispatch_icall_fptr()</code>：IDA 对 CFG 保护间接调用的标准表示，实际调用目标由 <code>qword_14000508x</code> 中的函数指针决定，运行时才可知。</li>
+</ul>
+<h3 id="驱动侧行为windbg-确认"><a class="markdownIt-Anchor" href="#驱动侧行为windbg-确认"></a> 驱动侧行为（WinDbg 确认）</h3>
+<p>驱动读取 <code>TEB+0x1748</code> 处的值（视为 HANDLE），然后：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ZwSetInformationObject(</span><br><span class="line">    *(TEB+0x1748),               // 用户层放置的 handle</span><br><span class="line">    ObjectHandleFlagInformation, // class = 4</span><br><span class="line">    &amp;&#123;Inherit=1, ProtectFromClose=0&#125;,</span><br><span class="line">    sizeof(OBJECT_HANDLE_FLAG_INFORMATION)  // = 2</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>效果：将该 handle 的 <code>HANDLE_FLAG_INHERIT</code> 位置1，用户层通过 <code>GetHandleInformation</code> 可观察到变化。</p>
+<h3 id="用户层检测原语-4"><a class="markdownIt-Anchor" href="#用户层检测原语-4"></a> 用户层检测原语</h3>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 步骤1：创建一个普通 event 作为&quot;靶子句柄&quot;</span></span><br><span class="line">HANDLE hFlagProbe = CreateEventW(<span class="literal">NULL</span>, FALSE, FALSE, <span class="literal">NULL</span>);</span><br><span class="line"><span class="comment">// 步骤2：清除初始标志（建立基线：flags=0）</span></span><br><span class="line">SetHandleInformation(hFlagProbe, HANDLE_FLAG_INHERIT | HANDLE_FLAG_PROTECT_FROM_CLOSE, <span class="number">0</span>);</span><br><span class="line"><span class="comment">// 步骤3：将 handle 值放入本线程 TEB+0x1748</span></span><br><span class="line">BYTE *teb = (BYTE*)NtCurrentTeb();</span><br><span class="line">*(HANDLE*)(teb + <span class="number">0x1748</span>) = hFlagProbe;</span><br><span class="line"></span><br><span class="line"><span class="comment">// --- IOCTL 前：每步重置基线 ---</span></span><br><span class="line">SetHandleInformation(hFlagProbe, HANDLE_FLAG_INHERIT | HANDLE_FLAG_PROTECT_FROM_CLOSE, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// --- IOCTL 后：采样 ---</span></span><br><span class="line">DWORD hflags = <span class="number">0</span>;</span><br><span class="line">GetHandleInformation(hFlagProbe, &amp;hflags);</span><br><span class="line">BOOL hflag_changed = (hflags != <span class="number">0</span>);  <span class="comment">// INHERIT 位被置1 = 信道触发</span></span><br></pre></td></tr></table></figure>
+<p><strong>为何选 HANDLE_FLAG_INHERIT</strong>：<code>ZwSetInformationObject</code> 的 <code>ObjectHandleFlagInformation</code> 只控制两个位（Inherit 和 ProtectFromClose），初始清零后任何变化都说明驱动修改了句柄属性。</p>
+<p><strong>使用后清理</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 探测完毕后清除 TEB 槽，防止后续步骤干扰</span></span><br><span class="line">*(HANDLE*)(teb + <span class="number">0x1748</span>) = <span class="literal">NULL</span>;</span><br></pre></td></tr></table></figure>
+<hr />
+<h2 id="九-四信道对比汇总"><a class="markdownIt-Anchor" href="#九-四信道对比汇总"></a> 九、四信道对比汇总</h2>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>CH1：命名事件</th>
+<th>CH2：命名信号量</th>
+<th>CH3：TEB 直写</th>
+<th>CH4：句柄标志</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>IDA 偏移</strong></td>
+<td><code>base+0x22B0</code></td>
+<td><code>base+0x319A37</code></td>
+<td><code>base+0x316ADF</code></td>
+<td><code>base+0x31857E</code></td>
+</tr>
+<tr>
+<td><strong>核心内核 API</strong></td>
+<td><code>ZwOpenEvent</code> + <code>ZwSetEvent</code></td>
+<td><code>ObReferenceObjectByName</code> + <code>KeReleaseSemaphore</code></td>
+<td><code>KeStackAttachProcess</code> + <code>PsGetThreadTeb</code> + <code>ProbeForWrite</code></td>
+<td><code>PsGetThreadTeb</code> + <code>ZwSetInformationObject</code></td>
+</tr>
+<tr>
+<td><strong>对象名来源</strong></td>
+<td>明文硬编码</td>
+<td>XOR 0x4B 加密，运行时解密后清零</td>
+<td>无对象名（直接写内存）</td>
+<td>无对象名（用户层预置 handle）</td>
+</tr>
+<tr>
+<td><strong>信号传递介质</strong></td>
+<td>内核事件对象状态</td>
+<td>信号量计数</td>
+<td>TEB+0x68 LastErrorValue</td>
+<td>句柄表 Inherit 标志位</td>
+</tr>
+<tr>
+<td><strong>用户层检测 API</strong></td>
+<td><code>WaitForSingleObject(hEvent, 0)</code></td>
+<td><code>WaitForSingleObject(hSem, 0)</code></td>
+<td><code>GetLastError()</code></td>
+<td><code>GetHandleInformation()</code></td>
+</tr>
+<tr>
+<td><strong>用户层前置操作</strong></td>
+<td><code>CreateEvent(手动重置)</code> + <code>ResetEvent</code></td>
+<td><code>CreateSemaphore(初始0)</code></td>
+<td><code>SetLastError(哨兵值)</code></td>
+<td>预置 handle + <code>SetHandleInformation</code> 清零</td>
+</tr>
+<tr>
+<td><strong>静态分析难度</strong></td>
+<td>★☆☆☆（明文，逻辑清晰）</td>
+<td>★★★☆（XOR加密+混淆残留+CFG间接调用）</td>
+<td>★★☆☆（偏移推导+CFG间接调用）</td>
+<td>★★★★（全CFG+动态槽+TEB非标偏移）</td>
+</tr>
+<tr>
+<td><strong>WinDbg 验证方式</strong></td>
+<td>断点确认 ZwSetEvent 调用</td>
+<td>断点确认解密字符串内容</td>
+<td>断点后读 TEB+0x68</td>
+<td>断点后查 handle 标志位</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="十-reset-后轮转顺序与步进计数器"><a class="markdownIt-Anchor" href="#十-reset-后轮转顺序与步进计数器"></a> 十、Reset 后轮转顺序与步进计数器</h2>
+<p>题目提示：“after each reset, the first five successful moves reveal each flaw exactly once, in a fixed order”。</p>
+<ul>
+<li><code>IOCTL_RESET_POS</code>（<code>0x80012008</code>）调用 <code>sub_14031A53E()</code> 重置全局步进计数器归零</li>
+<li>每次 checksum 验证通过的 MAZE_MOVE 调用，计数器 +1，传入 <code>sub_140002161</code></li>
+<li>计数器 mod 5 决定激活信道，顺序固定：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Reset → 计数器=0</span><br><span class="line">第1次合法移动 → 计数器=1 → CH1（事件）</span><br><span class="line">第2次合法移动 → 计数器=2 → CH2（信号量）</span><br><span class="line">第3次合法移动 → 计数器=3 → CH3（TEB直写）</span><br><span class="line">第4次合法移动 → 计数器=4 → CH4（句柄标志）</span><br><span class="line">第5次合法移动 → 计数器=5 → CH5（QVM，待确认）</span><br><span class="line">第6次合法移动 → 计数器=0（循环）→ CH1</span><br></pre></td></tr></table></figure>
+<p><strong>“合法移动”</strong>：checksum 验证通过的移动，无论是否实际移动（碰墙也算步进计数）</p>
+<h2 id="信道五呢猜测是zwqueryvirtualmemory没了做不动"><a class="markdownIt-Anchor" href="#信道五呢猜测是zwqueryvirtualmemory没了做不动"></a> 信道五呢：猜测是ZwQueryVirtualMemory，没了，做不动。</h2>
+<p>完整检测和自动化：</p>
+<img src="\uploads\image-20260412125759768.png" style="zoom: 70%;" />
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * channel_probe.c — ShadowGate 信道探测</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 编译: gcc channel_probe.c -o channel_probe.exe -lkernel32</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Reset 后前5次成功移动，顺序固定地各激活一个隐匿信道：</span></span><br><span class="line"><span class="comment"> *   轮1: EVT   — ZwSetEvent(MazeMoveOK)</span></span><br><span class="line"><span class="comment"> *                检测: WaitForSingleObject(event, 0)</span></span><br><span class="line"><span class="comment"> *   轮2: SEM   — KeReleaseSemaphore(Sem1)</span></span><br><span class="line"><span class="comment"> *                检测: WaitForSingleObject(sem, 0)</span></span><br><span class="line"><span class="comment"> *   轮3: WRITE — PsGetThreadTeb → TEB+0x68 = LastError</span></span><br><span class="line"><span class="comment"> *                检测: GetLastError() == 0xC0DE0001</span></span><br><span class="line"><span class="comment"> *   轮4: HFLAG — ZwSetInformationObject(*(TEB+0x1748), ObjectHandleFlagInformation, ...)</span></span><br><span class="line"><span class="comment"> *                检测: 在 TEB+0x1748 放真实 handle，IOCTL 后查 GetHandleInformation</span></span><br><span class="line"><span class="comment"> *   轮5: QVM   — ZwQueryVirtualMemory（机制待确认）</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdint.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* ───── 常量 ──────────────────────────────────────────────────────── */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> IOCTL_MAZE_MOVE  0x80012004</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> IOCTL_RESET_POS  0x80012008</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> IOCTL_GET_INFO   0x8001200C</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CHECKSUM_MAGIC   0xDEAD1337</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> WIN_MAGIC        0x57494E21</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* WRITE 信道魔数 */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CODE_SUCCESS  0xC0DE0001u</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CODE_WALL     0xC0DE0000u</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CODE_EXIT     0xC0DE0002u</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* HFLAG 信道：driver 从 TEB+0x1748 读出 handle，对该 handle 调 ZwSetInformationObject */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TEB_HANDLE_OFFSET  0x1748</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* ───── 方向码 ──────────────────────────────────────────────────── */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DIR_W 0x52</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DIR_A 0x53</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DIR_S 0xD3</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DIR_D 0xD0</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* ───── 命名对象 ────────────────────────────────────────────────── */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EVT_OK   <span class="string">L&quot;Global\\MazeMoveOK&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EVT_WALL <span class="string">L&quot;Global\\MazeMoveWall&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SEM1     <span class="string">L&quot;Global\\&#123;A7F3B2C1-9E4D-4C8A-B5D6-1F2E3A4B5C6D&#125;&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SEM2     <span class="string">L&quot;Global\\&#123;B8E2C3D0-0F5A-5D9B-C6E7-2A3F4B5C6D7E&#125;&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* ───── 最短路径（32步）──────────────────────────────────────────── */</span></span><br><span class="line"><span class="type">static</span> <span class="type">const</span> <span class="type">uint8_t</span> PATH[<span class="number">32</span>] = &#123;</span><br><span class="line">    DIR_D,DIR_D,DIR_D,DIR_D,DIR_D,DIR_D,</span><br><span class="line">    DIR_S,DIR_S,</span><br><span class="line">    DIR_D,DIR_D,DIR_D,DIR_D,</span><br><span class="line">    DIR_W,DIR_W,</span><br><span class="line">    DIR_D,DIR_D,</span><br><span class="line">    DIR_S,DIR_S,DIR_S,DIR_S,</span><br><span class="line">    DIR_S,DIR_S,DIR_S,DIR_S,</span><br><span class="line">    DIR_A,DIR_A,</span><br><span class="line">    DIR_S,DIR_S,DIR_S,DIR_S,</span><br><span class="line">    DIR_D,DIR_D</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* ───── 发送单步移动 ──────────────────────────────────────────── */</span></span><br><span class="line"><span class="type">static</span> BOOL <span class="title function_">send_move</span><span class="params">(HANDLE hDev, <span class="type">uint8_t</span> dir,</span></span><br><span class="line"><span class="params">                      <span class="type">uint8_t</span> out[<span class="number">132</span>], <span class="type">uint64_t</span> *us_out)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint8_t</span> in[<span class="number">12</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    in[<span class="number">0</span>] = dir;</span><br><span class="line">    *(<span class="type">uint32_t</span>*)(in+<span class="number">4</span>) = <span class="number">0</span>;</span><br><span class="line">    *(<span class="type">uint32_t</span>*)(in+<span class="number">8</span>) = (<span class="type">uint32_t</span>)dir ^ CHECKSUM_MAGIC;</span><br><span class="line">    DWORD br;</span><br><span class="line">    LARGE_INTEGER t1, t2, freq;</span><br><span class="line">    QueryPerformanceFrequency(&amp;freq);</span><br><span class="line">    QueryPerformanceCounter(&amp;t1);</span><br><span class="line">    BOOL ok = DeviceIoControl(hDev, IOCTL_MAZE_MOVE,</span><br><span class="line">                              in, <span class="number">12</span>, out, <span class="number">132</span>, &amp;br, <span class="literal">NULL</span>);</span><br><span class="line">    QueryPerformanceCounter(&amp;t2);</span><br><span class="line">    <span class="keyword">if</span> (us_out)</span><br><span class="line">        *us_out = (<span class="type">uint64_t</span>)(t2.QuadPart - t1.QuadPart)</span><br><span class="line">                  * <span class="number">1000000ULL</span> / (<span class="type">uint64_t</span>)freq.QuadPart;</span><br><span class="line">    <span class="keyword">return</span> ok;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">const</span> <span class="type">char</span> *<span class="title function_">dir_name</span><span class="params">(<span class="type">uint8_t</span> d)</span> &#123;</span><br><span class="line">    <span class="keyword">switch</span>(d) &#123;</span><br><span class="line">        <span class="keyword">case</span> DIR_D: <span class="keyword">return</span> <span class="string">&quot;D(R)&quot;</span>; <span class="keyword">case</span> DIR_W: <span class="keyword">return</span> <span class="string">&quot;W(U)&quot;</span>;</span><br><span class="line">        <span class="keyword">case</span> DIR_S: <span class="keyword">return</span> <span class="string">&quot;S(D)&quot;</span>; <span class="keyword">case</span> DIR_A: <span class="keyword">return</span> <span class="string">&quot;A(L)&quot;</span>;</span><br><span class="line">        <span class="keyword">default</span>:    <span class="keyword">return</span> <span class="string">&quot;?&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* ───── 主程序 ──────────────────────────────────────────────── */</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* 1. 创建命名对象 */</span></span><br><span class="line">    HANDLE hOK   = CreateEventW(<span class="literal">NULL</span>, TRUE, FALSE, EVT_OK);</span><br><span class="line">    HANDLE hWall = CreateEventW(<span class="literal">NULL</span>, TRUE, FALSE, EVT_WALL);</span><br><span class="line">    HANDLE hS1   = CreateSemaphoreW(<span class="literal">NULL</span>, <span class="number">0</span>, <span class="number">16</span>, SEM1);</span><br><span class="line">    HANDLE hS2   = CreateSemaphoreW(<span class="literal">NULL</span>, <span class="number">0</span>, <span class="number">16</span>, SEM2);</span><br><span class="line">    <span class="keyword">if</span> (!hOK || !hWall || !hS1 || !hS2) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[!] Named objects failed (err=%lu)\n&quot;</span>, GetLastError());</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 2. CH4 信道：创建一个普通 event 作为 handle 放到 TEB+0x1748</span></span><br><span class="line"><span class="comment">     *    driver 读出此 handle，调 ZwSetInformationObject 修改其 INHERIT 标志 */</span></span><br><span class="line">    HANDLE hFlagProbe = CreateEventW(<span class="literal">NULL</span>, FALSE, FALSE, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span> (!hFlagProbe) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[!] CreateEvent for flag probe failed (err=%lu)\n&quot;</span>, GetLastError());</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* 清除 INHERIT 标志作为初始状态 */</span></span><br><span class="line">    SetHandleInformation(hFlagProbe, HANDLE_FLAG_INHERIT, <span class="number">0</span>);</span><br><span class="line">    <span class="comment">/* 把 handle 值放到 TEB+0x1748 */</span></span><br><span class="line">    &#123;</span><br><span class="line">        BYTE *teb = (BYTE*)NtCurrentTeb();</span><br><span class="line">        *(HANDLE*)(teb + TEB_HANDLE_OFFSET) = hFlagProbe;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[+] HFLAG probe: handle=0x%p installed at TEB+0x%X\n&quot;</span>,</span><br><span class="line">           hFlagProbe, TEB_HANDLE_OFFSET);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 3. 打开设备 */</span></span><br><span class="line">    HANDLE hDev = CreateFileW(<span class="string">L&quot;\\\\.\\ShadowGate&quot;</span>,</span><br><span class="line">                              GENERIC_READ | GENERIC_WRITE,</span><br><span class="line">                              <span class="number">0</span>, <span class="literal">NULL</span>, OPEN_EXISTING, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span> (hDev == INVALID_HANDLE_VALUE) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[!] Cannot open device (err=%lu)\n&quot;</span>, GetLastError());</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 4. 获取迷宫信息 + 重置位置 */</span></span><br><span class="line">    <span class="type">uint8_t</span> info[<span class="number">24</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    DWORD br;</span><br><span class="line">    DeviceIoControl(hDev, IOCTL_GET_INFO, <span class="literal">NULL</span>, <span class="number">0</span>, info, <span class="number">24</span>, &amp;br, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[+] Maze %ux%u  Exit=(%u,%u)\n&quot;</span>,</span><br><span class="line">           *(<span class="type">uint32_t</span>*)info, *(<span class="type">uint32_t</span>*)(info+<span class="number">4</span>),</span><br><span class="line">           *(<span class="type">uint32_t</span>*)(info+<span class="number">16</span>), *(<span class="type">uint32_t</span>*)(info+<span class="number">20</span>));</span><br><span class="line">    DeviceIoControl(hDev, IOCTL_RESET_POS, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="literal">NULL</span>, <span class="number">0</span>, &amp;br, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[+] Position reset\n\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Step | Dir  | Time(us) | CH1:EVT | CH2:SEM | CH3:WRITE(LastErr)  | CH4:HFLAG      | Detected\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;-----|------|----------|---------|---------|---------------------|----------------|----------\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">        <span class="comment">/* 每步前清状态 */</span></span><br><span class="line">        ResetEvent(hOK);</span><br><span class="line">        ResetEvent(hWall);</span><br><span class="line">        SetLastError(<span class="number">0xDEADBEEF</span>);</span><br><span class="line">        <span class="comment">/* CH4: 每步前清除所有 handle 标志，建立基线（driver 可能设 INHERIT 或 PROTECT_FROM_CLOSE）*/</span></span><br><span class="line">        SetHandleInformation(hFlagProbe,</span><br><span class="line">                             HANDLE_FLAG_INHERIT | HANDLE_FLAG_PROTECT_FROM_CLOSE, <span class="number">0</span>);</span><br><span class="line">        <span class="comment">/* CH5: 保存基线值 */</span></span><br><span class="line">        BYTE *teb5_pre = (BYTE*)NtCurrentTeb();</span><br><span class="line">        DWORD page404000_before = *(<span class="keyword">volatile</span> DWORD*)<span class="number">0x404000</span>;</span><br><span class="line"></span><br><span class="line">        <span class="type">uint8_t</span> out[<span class="number">132</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">        <span class="type">uint64_t</span> us = <span class="number">0</span>;</span><br><span class="line">        send_move(hDev, PATH[i], out, &amp;us);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* --- 信道1: 命名事件 --- */</span></span><br><span class="line">        BOOL ev_ok   = (WaitForSingleObject(hOK,   <span class="number">0</span>) == WAIT_OBJECT_0);</span><br><span class="line">        BOOL ev_wall = (WaitForSingleObject(hWall,  <span class="number">0</span>) == WAIT_OBJECT_0);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* --- 信道2: 命名信号量 --- */</span></span><br><span class="line">        BOOL s1 = (WaitForSingleObject(hS1, <span class="number">0</span>) == WAIT_OBJECT_0);</span><br><span class="line">        BOOL s2 = (WaitForSingleObject(hS2, <span class="number">0</span>) == WAIT_OBJECT_0);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* --- 信道3: WRITE → LastErrorValue (TEB+0x68) --- */</span></span><br><span class="line">        DWORD lerr = GetLastError();</span><br><span class="line">        <span class="type">char</span> write_buf[<span class="number">24</span>];</span><br><span class="line">        <span class="keyword">if</span>      (lerr == CODE_SUCCESS) <span class="built_in">strcpy</span>(write_buf, <span class="string">&quot;0xC0DE0001 OK  &quot;</span>);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (lerr == CODE_WALL)    <span class="built_in">strcpy</span>(write_buf, <span class="string">&quot;0xC0DE0000 WALL&quot;</span>);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (lerr == CODE_EXIT)    <span class="built_in">strcpy</span>(write_buf, <span class="string">&quot;0xC0DE0002 EXIT&quot;</span>);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (lerr == <span class="number">0xDEADBEEF</span>)  <span class="built_in">strcpy</span>(write_buf, <span class="string">&quot;(no change)    &quot;</span>);</span><br><span class="line">        <span class="keyword">else</span>                           <span class="built_in">sprintf</span>(write_buf, <span class="string">&quot;0x%08X      &quot;</span>, lerr);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* --- 信道4: HFLAG → GetHandleInformation 检查 INHERIT 标志 ---</span></span><br><span class="line"><span class="comment">         * ZwSetInformationObject(hFlagProbe, ObjectHandleFlagInformation, &amp;flags, 2)</span></span><br><span class="line"><span class="comment">         * 驱动根据移动结果修改 Inherit 位，用户层查询验证 */</span></span><br><span class="line">        DWORD hflags = <span class="number">0</span>;</span><br><span class="line">        GetHandleInformation(hFlagProbe, &amp;hflags);</span><br><span class="line">        BOOL hflag_changed = (hflags != <span class="number">0</span>);   <span class="comment">/* 任何标志位被设置 = 信道触发 */</span></span><br><span class="line">        <span class="type">char</span> hflag_buf[<span class="number">24</span>];</span><br><span class="line">        <span class="keyword">if</span> (hflags &amp; HANDLE_FLAG_PROTECT_FROM_CLOSE)</span><br><span class="line">            <span class="built_in">sprintf</span>(hflag_buf, <span class="string">&quot;flags=0x%02X PROT!&quot;</span>, (<span class="type">unsigned</span>)hflags);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (hflags &amp; HANDLE_FLAG_INHERIT)</span><br><span class="line">            <span class="built_in">sprintf</span>(hflag_buf, <span class="string">&quot;flags=0x%02X INHERIT!&quot;</span>, (<span class="type">unsigned</span>)hflags);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="built_in">sprintf</span>(hflag_buf, <span class="string">&quot;flags=0x%02X no change&quot;</span>, (<span class="type">unsigned</span>)hflags);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* --- 信道5: QVM —— 监测 0x404000 内容 + TEB 附近槽位变化 ---</span></span><br><span class="line"><span class="comment">         * 驱动: ZwQueryVirtualMemory(NtCurrentProcess(), 0x404000, MBI, ...)</span></span><br><span class="line"><span class="comment">         * 假设: 驱动从 TEB+0x1750/0x1760/... 读用户提供的地址，QVM 验证后写结果 */</span></span><br><span class="line">        BYTE *teb5 = (BYTE*)NtCurrentTeb();</span><br><span class="line">        ULONGLONG slot1750_after = *(ULONGLONG*)(teb5 + <span class="number">0x1750</span>);</span><br><span class="line">        ULONGLONG slot1758_after = *(ULONGLONG*)(teb5 + <span class="number">0x1758</span>);</span><br><span class="line">        ULONGLONG slot1760_after = *(ULONGLONG*)(teb5 + <span class="number">0x1760</span>);</span><br><span class="line">        DWORD page404000_after = *(<span class="keyword">volatile</span> DWORD*)<span class="number">0x404000</span>;</span><br><span class="line">        <span class="type">char</span> qvm_buf[<span class="number">48</span>] = <span class="string">&quot;(no change)&quot;</span>;</span><br><span class="line">        <span class="keyword">if</span> (slot1750_after != <span class="number">0</span> || slot1758_after != <span class="number">0</span> || slot1760_after != <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="built_in">sprintf</span>(qvm_buf, <span class="string">&quot;TEB+0x1750=%llX +58=%llX +60=%llX&quot;</span>,</span><br><span class="line">                    slot1750_after, slot1758_after, slot1760_after);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* --- 推断激活信道 --- */</span></span><br><span class="line">        <span class="type">const</span> <span class="type">char</span> *detected = <span class="string">&quot;CH5:QVM(?)&quot;</span>;</span><br><span class="line">        <span class="keyword">if</span>      (ev_ok || ev_wall)   detected = <span class="string">&quot;CH1:EVT&quot;</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (s1 || s2)           detected = <span class="string">&quot;CH2:SEM&quot;</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (lerr == CODE_SUCCESS || lerr == CODE_WALL || lerr == CODE_EXIT)</span><br><span class="line">                                     detected = <span class="string">&quot;CH3:WRITE&quot;</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (hflag_changed)      detected = <span class="string">&quot;CH4:HFLAG&quot;</span>;</span><br><span class="line"></span><br><span class="line">        <span class="type">char</span> evt_str[<span class="number">8</span>], sem_str[<span class="number">8</span>];</span><br><span class="line">        <span class="keyword">if</span>      (ev_ok)   <span class="built_in">strcpy</span>(evt_str, <span class="string">&quot;OK  &quot;</span>);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (ev_wall) <span class="built_in">strcpy</span>(evt_str, <span class="string">&quot;WALL&quot;</span>);</span><br><span class="line">        <span class="keyword">else</span>              <span class="built_in">strcpy</span>(evt_str, <span class="string">&quot;----&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span>      (s1) <span class="built_in">strcpy</span>(sem_str, <span class="string">&quot;Sem1&quot;</span>);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (s2) <span class="built_in">strcpy</span>(sem_str, <span class="string">&quot;Sem2&quot;</span>);</span><br><span class="line">        <span class="keyword">else</span>         <span class="built_in">strcpy</span>(sem_str, <span class="string">&quot;----&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;  %d  | %s | %8llu | %-7s | %-7s | %-19s | %-14s | %s\n&quot;</span>,</span><br><span class="line">               i+<span class="number">1</span>, dir_name(PATH[i]), us,</span><br><span class="line">               evt_str, sem_str, write_buf, hflag_buf, detected);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 清理 TEB handle 槽 */</span></span><br><span class="line">    &#123;</span><br><span class="line">        BYTE *teb = (BYTE*)NtCurrentTeb();</span><br><span class="line">        *(HANDLE*)(teb + TEB_HANDLE_OFFSET) = <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 走完剩余路径，拿 flag */</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n[*] Completing maze (%d remaining moves)...\n&quot;</span>, <span class="number">32</span> - <span class="number">5</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">5</span>; i &lt; <span class="number">32</span>; i++) &#123;</span><br><span class="line">        <span class="type">uint8_t</span> out[<span class="number">132</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">        send_move(hDev, PATH[i], out, <span class="literal">NULL</span>);</span><br><span class="line">        <span class="type">uint32_t</span> magic;</span><br><span class="line">        <span class="built_in">memcpy</span>(&amp;magic, out + <span class="number">0x3C</span>, <span class="number">4</span>);</span><br><span class="line">        <span class="keyword">if</span> (magic == WIN_MAGIC) &#123;</span><br><span class="line">            <span class="type">uint32_t</span> clen;</span><br><span class="line">            <span class="built_in">memcpy</span>(&amp;clen, out + <span class="number">0x80</span>, <span class="number">4</span>);</span><br><span class="line">            <span class="keyword">if</span> (clen &gt; <span class="number">0</span> &amp;&amp; clen &lt;= <span class="number">63</span>) &#123;</span><br><span class="line">                <span class="type">char</span> cred[<span class="number">64</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">                <span class="built_in">memcpy</span>(cred, out + <span class="number">0x40</span>, clen);</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;[WIN] %s\n&quot;</span>, cred);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    CloseHandle(hFlagProbe);</span><br><span class="line">    CloseHandle(hDev);</span><br><span class="line">    CloseHandle(hOK); CloseHandle(hWall);</span><br><span class="line">    CloseHandle(hS1); CloseHandle(hS2);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%B8%B8%E6%88%8F%E5%AE%89%E5%85%A8/" rel="tag"># 游戏安全</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/04/13/TencentGameSecurity2026-Android/" rel="prev" title="TencentGameSecurity2026-Android">
+      <i class="fa fa-chevron-left"></i> TencentGameSecurity2026-Android
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B7%E6%B7%86%E6%B2%A1%E8%A7%A3%E5%85%A8%E9%9D%A0%E7%8C%9C"><span class="nav-number">1.</span> <span class="nav-text"> 混淆没解全靠猜</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%BF%E5%9C%B0%E5%9B%BE%E4%BF%A1%E6%81%AF"><span class="nav-number">2.</span> <span class="nav-text"> 拿地图信息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%E6%89%BE%E9%A9%B1%E5%8A%A8%E5%9F%BA%E5%9D%80%E7%BB%95%E8%BF%87-dkom-%E6%91%98%E9%93%BE"><span class="nav-number">2.1.</span> <span class="nav-text"> 第一步：找驱动基址（绕过 DKOM 摘链）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shadowgate-%E9%9A%90%E5%8C%BF%E4%BF%A1%E9%81%93%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E8%BF%87%E7%A8%8B4%E4%BF%A1%E9%81%93%E8%AF%A6%E8%A7%A3"><span class="nav-number">3.</span> <span class="nav-text"> ShadowGate — 隐匿信道逆向分析过程（4信道详解）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80-%E5%B7%A5%E5%85%B7%E9%93%BE%E4%B8%8E%E5%88%86%E6%9E%90%E6%96%B9%E6%B3%95%E8%AE%BA"><span class="nav-number">4.</span> <span class="nav-text"> 一、工具链与分析方法论</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%B7%E6%B7%86%E6%89%8B%E6%AE%B5%E6%B1%87%E6%80%BB%E5%BD%B1%E5%93%8D%E5%88%86%E6%9E%90%E8%B7%AF%E5%BE%84%E7%9A%84%E5%85%B3%E9%94%AE%E5%B9%B2%E6%89%B0"><span class="nav-number">4.1.</span> <span class="nav-text"> 混淆手段汇总（影响分析路径的关键干扰）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C-%E9%A9%B1%E5%8A%A8%E6%95%B4%E4%BD%93%E7%BB%93%E6%9E%84%E5%BF%AB%E9%80%9F%E5%AE%9A%E4%BD%8D%E6%A1%86%E6%9E%B6"><span class="nav-number">5.</span> <span class="nav-text"> 二、驱动整体结构（快速定位框架）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#driverentry-%E9%93%BE"><span class="nav-number">5.1.</span> <span class="nav-text"> DriverEntry 链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ioctl-dispatch-%E9%93%BE"><span class="nav-number">5.2.</span> <span class="nav-text"> IOCTL Dispatch 链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%A3%E6%9E%90%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E6%A7%BD%E8%BF%90%E8%A1%8C%E6%97%B6-driverentry-%E5%86%99%E5%85%A5"><span class="nav-number">5.3.</span> <span class="nav-text"> 动态解析函数指针槽（运行时 DriverEntry 写入）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89-ioctl-%E5%8D%8F%E8%AE%AE%E9%80%86%E5%90%91sub_1403172ab"><span class="nav-number">6.</span> <span class="nav-text"> 三、IOCTL 协议逆向（sub_1403172AB）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E7%8E%B0%E8%B7%AF%E5%BE%84"><span class="nav-number">6.1.</span> <span class="nav-text"> 发现路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lcg-%E5%99%AA%E5%A3%B0%E5%87%BD%E6%95%B0sub_140002038"><span class="nav-number">6.2.</span> <span class="nav-text"> LCG 噪声函数（sub_140002038）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#checksum-%E9%AA%8C%E8%AF%81%E4%B8%8E-bsod"><span class="nav-number">6.3.</span> <span class="nav-text"> checksum 验证与 BSOD</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B-%E4%BF%A1%E9%81%93%E5%88%86%E5%8F%91%E6%9C%BA%E5%88%B6sub_140002161"><span class="nav-number">7.</span> <span class="nav-text"> 四、信道分发机制（sub_140002161）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E7%8E%B0%E8%B7%AF%E5%BE%84-2"><span class="nav-number">7.1.</span> <span class="nav-text"> 发现路径</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94-%E4%BF%A1%E9%81%931%E5%91%BD%E5%90%8D%E5%86%85%E6%A0%B8%E4%BA%8B%E4%BB%B6ch1"><span class="nav-number">8.</span> <span class="nav-text"> 五、信道1：命名内核事件（CH1）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ida-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90"><span class="nav-number">8.1.</span> <span class="nav-text"> IDA 静态分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#windbg-%E9%AA%8C%E8%AF%81"><span class="nav-number">8.2.</span> <span class="nav-text"> WinDbg 验证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E5%B1%82%E6%A3%80%E6%B5%8B%E5%8E%9F%E8%AF%AD"><span class="nav-number">8.3.</span> <span class="nav-text"> 用户层检测原语</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD-%E4%BF%A1%E9%81%932%E5%91%BD%E5%90%8D%E5%86%85%E6%A0%B8%E4%BF%A1%E5%8F%B7%E9%87%8Fch2"><span class="nav-number">9.</span> <span class="nav-text"> 六、信道2：命名内核信号量（CH2）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ida-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90-2"><span class="nav-number">9.1.</span> <span class="nav-text"> IDA 静态分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E5%AF%86%E6%95%B0%E6%8D%AE%E5%AE%9A%E4%BD%8D%E4%B8%8E%E6%89%8B%E5%B7%A5%E8%A7%A3%E5%AF%86"><span class="nav-number">9.2.</span> <span class="nav-text"> 加密数据定位与手工解密</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#windbg-%E9%AA%8C%E8%AF%81-2"><span class="nav-number">9.3.</span> <span class="nav-text"> WinDbg 验证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E5%B1%82%E6%A3%80%E6%B5%8B%E5%8E%9F%E8%AF%AD-2"><span class="nav-number">9.4.</span> <span class="nav-text"> 用户层检测原语</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83-%E4%BF%A1%E9%81%933teb-lasterror-%E7%9B%B4%E5%86%99ch3"><span class="nav-number">10.</span> <span class="nav-text"> 七、信道3：TEB LastError 直写（CH3）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ida-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90-3"><span class="nav-number">10.1.</span> <span class="nav-text"> IDA 静态分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E5%B8%B8%E6%95%B0%E6%8E%A8%E5%AF%BC"><span class="nav-number">10.2.</span> <span class="nav-text"> 关键常数推导</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mazecontext-%E7%BB%93%E6%9E%84%E7%94%B1%E6%AD%A4%E4%BF%A1%E9%81%93%E7%A1%AE%E8%AE%A4%E7%9A%84%E5%AD%97%E6%AE%B5"><span class="nav-number">10.3.</span> <span class="nav-text"> MazeContext 结构（由此信道确认的字段）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#windbg-%E9%AA%8C%E8%AF%81-3"><span class="nav-number">10.4.</span> <span class="nav-text"> WinDbg 验证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E5%B1%82%E6%A3%80%E6%B5%8B%E5%8E%9F%E8%AF%AD-3"><span class="nav-number">10.5.</span> <span class="nav-text"> 用户层检测原语</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AB-%E4%BF%A1%E9%81%934teb-%E5%8F%A5%E6%9F%84%E6%A0%87%E5%BF%97ch4"><span class="nav-number">11.</span> <span class="nav-text"> 八、信道4：TEB 句柄标志（CH4）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ida-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90-4"><span class="nav-number">11.1.</span> <span class="nav-text"> IDA 静态分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E5%81%8F%E7%A7%BB%E6%8E%A8%E5%AF%BC"><span class="nav-number">11.2.</span> <span class="nav-text"> 关键偏移推导</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A9%B1%E5%8A%A8%E4%BE%A7%E8%A1%8C%E4%B8%BAwindbg-%E7%A1%AE%E8%AE%A4"><span class="nav-number">11.3.</span> <span class="nav-text"> 驱动侧行为（WinDbg 确认）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E5%B1%82%E6%A3%80%E6%B5%8B%E5%8E%9F%E8%AF%AD-4"><span class="nav-number">11.4.</span> <span class="nav-text"> 用户层检测原语</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%9D-%E5%9B%9B%E4%BF%A1%E9%81%93%E5%AF%B9%E6%AF%94%E6%B1%87%E6%80%BB"><span class="nav-number">12.</span> <span class="nav-text"> 九、四信道对比汇总</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81-reset-%E5%90%8E%E8%BD%AE%E8%BD%AC%E9%A1%BA%E5%BA%8F%E4%B8%8E%E6%AD%A5%E8%BF%9B%E8%AE%A1%E6%95%B0%E5%99%A8"><span class="nav-number">13.</span> <span class="nav-text"> 十、Reset 后轮转顺序与步进计数器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E9%81%93%E4%BA%94%E5%91%A2%E7%8C%9C%E6%B5%8B%E6%98%AFzwqueryvirtualmemory%E6%B2%A1%E4%BA%86%E5%81%9A%E4%B8%8D%E5%8A%A8"><span class="nav-number">14.</span> <span class="nav-text"> 信道五呢：猜测是ZwQueryVirtualMemory，没了，做不动。</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="March-7th"
+      src="/images/march7th.jpg">
+  <p class="site-author-name" itemprop="name">March-7th</p>
+  <div class="site-description" itemprop="description">信键鼠真神得永生</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+
+
+<div class="sidebar-footer-info motion-element">
+    <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">桂ICP备2023000644号-2</a>
+    </div>
+
+  <div class="copyright">
+    &copy; 2024 – 2025
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span>March-7th</span>
+  </div>
+</div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">桂ICP备2023000644号-2 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">March-7th</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+<!-- Visitor Tracker -->
+<script>
+(function() {
+  'use strict';
+
+  // 配置 - 本地开发指向 API 服务端口，生产环境使用相对路径
+  const TRACKER_API = window.location.hostname === 'localhost'
+    ? 'http://127.0.0.1:3721/track'
+    : '/api/track';
+
+  // 获取页面信息
+  function getPageInfo() {
+    return {
+      url: window.location.pathname,
+      title: document.title,
+      referrer: document.referrer,
+      ua: navigator.userAgent
+    };
+  }
+
+  // 发送访问记录（使用 sendBeacon 确保页面关闭时也能发送）
+  function trackVisit() {
+    const data = getPageInfo();
+
+    // 优先使用 sendBeacon（不会阻塞页面关闭）
+    if (navigator.sendBeacon) {
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      navigator.sendBeacon(TRACKER_API, blob);
+    } else {
+      // 降级到 fetch
+      fetch(TRACKER_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).catch(() => {}); // 静默失败，不影响用户体验
+    }
+  }
+
+  // 页面加载时记录
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', trackVisit);
+  } else {
+    trackVisit();
+  }
+
+  // 支持 PJAX 页面切换时记录（Next 主题支持 PJAX）
+  document.addEventListener('pjax:complete', function() {
+    setTimeout(trackVisit, 100);
+  });
+
+})();
+</script>
+
+<!-- 扇形菜单按钮 -->
+<div class="fan-menu-container" id="fanMenuContainer">
+  <button class="fan-menu-toggle" id="fanMenuToggle">
+    <i class="fa fa-bars"></i>
+    <i class="fa fa-times"></i>
+  </button>
+  <div class="fan-menu-items" id="fanMenuItems">
+    <!-- 菜单项将由 JS 动态生成 -->
+  </div>
+</div>
+
+<!-- 扇形菜单脚本 -->
+<script>
+(function() {
+  'use strict';
+
+  // 从主题配置读取菜单项
+  const menuItems = [
+    { path: '/about/', icon: 'fa fa-user', title: '关于' },
+    { path: '/categories/', icon: 'fa fa-th', title: '分类' },
+    { path: '/archives/', icon: 'fa fa-archive', title: '归档' },
+    { path: '/videos/', icon: 'fa fa-video', title: '视频' }
+  ];
+
+  const container = document.getElementById('fanMenuContainer');
+  const toggle = document.getElementById('fanMenuToggle');
+  const itemsContainer = document.getElementById('fanMenuItems');
+
+  // 生成扇形菜单项
+  function createMenuItems() {
+    const total = menuItems.length;
+    const radius = 70; // 扇形半径
+    // 右旋90度：原 -160~-20 变成 -70~70
+    const startAngle = -70;
+    const endAngle = 70;
+
+    menuItems.forEach((item, index) => {
+      const a = document.createElement('a');
+      a.className = 'fan-menu-item';
+      a.href = item.path;
+      a.dataset.title = item.title;
+
+      // 计算扇形位置
+      const angle = startAngle + (endAngle - startAngle) * (index / (total - 1 || 1));
+      const rad = angle * Math.PI / 180;
+      const tx = Math.cos(rad) * radius;
+      const ty = Math.sin(rad) * radius;
+
+      a.style.setProperty('--tx', tx + 'px');
+      a.style.setProperty('--ty', ty + 'px');
+      a.style.transitionDelay = (index * 0.05) + 's';
+
+      // 图标
+      const i = document.createElement('i');
+      i.className = item.icon;
+      a.appendChild(i);
+
+      itemsContainer.appendChild(a);
+    });
+  }
+
+  // 初始化
+  createMenuItems();
+
+  // 鼠标进入容器 - 展开菜单
+  container.addEventListener('mouseenter', function() {
+    toggle.classList.add('active');
+  });
+
+  // 鼠标离开容器 - 收起菜单
+  container.addEventListener('mouseleave', function() {
+    toggle.classList.remove('active');
+  });
+
+  // 检测侧边栏状态，侧边栏打开时隐藏菜单
+  function updateMenuVisibility() {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      // 检查侧边栏是否有 sidebar-active 类
+      const isActive = sidebar.classList.contains('sidebar-active');
+      container.style.opacity = isActive ? '0' : '1';
+      container.style.pointerEvents = isActive ? 'none' : 'auto';
+      container.style.visibility = isActive ? 'hidden' : 'visible';
+    }
+  }
+
+  // 初始检测
+  updateMenuVisibility();
+
+  // 监听侧边栏状态变化
+  const sidebar = document.querySelector('.sidebar');
+  if (sidebar) {
+    // 使用 MutationObserver 监听侧边栏 class 变化
+    const observer = new MutationObserver(updateMenuVisibility);
+    observer.observe(sidebar, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+  }
+
+  // 窗口大小变化时重新检测
+  window.addEventListener('resize', updateMenuVisibility);
+
+})();
+</script>
+
+</body>
+</html>
