@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"march-7th.tech","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言： BlueArchive是一款二次元游戏，最初的想法是试试看安卓逆向怎么玩，直到遇到上libtprt，艰难重重终于克服，在此前：对别人的修改做法也比较感兴趣，就花了点小钱入手一份样本来试试看。 作者还是有点实力的，感觉比较好笑随即打算写一篇样本分析。   分析： 打开第一眼，就是两个大大的问候，java层就没啥必要看了，也比较简陋，这种核心功能肯定是封装在native层里面去对其他进程做手">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BA手游外挂样本分析">
+<meta property="og:url" content="https://march-7th.tech/2026/02/20/BA%E6%89%8B%E6%B8%B8%E5%A4%96%E6%8C%82%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="三顺七的笔记">
+<meta property="og:description" content="前言： BlueArchive是一款二次元游戏，最初的想法是试试看安卓逆向怎么玩，直到遇到上libtprt，艰难重重终于克服，在此前：对别人的修改做法也比较感兴趣，就花了点小钱入手一份样本来试试看。 作者还是有点实力的，感觉比较好笑随即打算写一篇样本分析。   分析： 打开第一眼，就是两个大大的问候，java层就没啥必要看了，也比较简陋，这种核心功能肯定是封装在native层里面去对其他进程做手">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://march-7th.tech/uploads/f6d3b513-947f-4a7f-aa6b-5bdad39ac843.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/9193437b-b241-4f02-945b-c63b6c006694.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/51cfd61d-7587-4fc3-9dd0-d6136b8d26fc.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/ce159ea2-9b3d-4935-ba60-81c43152336a.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/52a0daee-21e8-4dce-b5ad-f3c0c398c651.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/fbd52f8d-859b-4765-a145-21f95ae53173.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/45b2b9ad-0af6-47ed-9e30-88aed21e33b7.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/81bf630c-a40f-4c8b-be97-3ec5d05a342e.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/image-20260220161123234.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/f98c0536-812f-42dc-8449-63724c1147e2.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/8ef87d91-0d8b-4988-8241-ca798c9fd1a1.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/aabcf4b3-0332-4e02-88bf-d9d8ce26200f.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/image-20260220164145517.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/4ee88bf6-2006-4873-afd3-c4286aa60a26.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/80dd7da4-ac43-4ffc-b071-b85f398c02b0.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/01e9cd07-b146-4f47-85e8-ca964d8d07a3.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/0f509f35-1e93-4059-abcf-d365b95c0442.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/113dae16-9f03-4b14-b8a2-d0bb6afba504.png">
+<meta property="article:published_time" content="2026-02-20T06:17:26.000Z">
+<meta property="article:modified_time" content="2026-02-24T18:35:11.225Z">
+<meta property="article:author" content="March-7th">
+<meta property="article:tag" content="安卓">
+<meta property="article:tag" content="Unity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://march-7th.tech/uploads/f6d3b513-947f-4a7f-aa6b-5bdad39ac843.png">
+
+<link rel="canonical" href="https://march-7th.tech/2026/02/20/BA%E6%89%8B%E6%B8%B8%E5%A4%96%E6%8C%82%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>BA手游外挂样本分析 | 三顺七的笔记</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">三顺七的笔记</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-videos">
+
+    <a href="/videos/" rel="section"><i class="fa fa-video fa-fw"></i>视频展示</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://march-7th.tech/2026/02/20/BA%E6%89%8B%E6%B8%B8%E5%A4%96%E6%8C%82%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/march7th.jpg">
+      <meta itemprop="name" content="March-7th">
+      <meta itemprop="description" content="信键鼠真神得永生">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="三顺七的笔记">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          BA手游外挂样本分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-02-20 14:17:26" itemprop="dateCreated datePublished" datetime="2026-02-20T14:17:26+08:00">2026-02-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-02-25 02:35:11" itemprop="dateModified" datetime="2026-02-25T02:35:11+08:00">2026-02-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AE%89%E5%8D%93/" itemprop="url" rel="index"><span itemprop="name">安卓</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言：</h2>
+<p>BlueArchive是一款二次元游戏，最初的想法是试试看安卓逆向怎么玩，直到遇到上libtprt，艰难重重终于克服，在此前：对别人的修改做法也比较感兴趣，就花了点小钱入手一份样本来试试看。<br />
+作者还是有点实力的，感觉比较好笑随即打算写一篇样本分析。</p>
+<img src="\uploads\f6d3b513-947f-4a7f-aa6b-5bdad39ac843.png" style="zoom: 50%;" />
+<h2 id="分析"><a class="markdownIt-Anchor" href="#分析"></a> 分析：</h2>
+<p>打开第一眼，就是两个大大的问候，java层就没啥必要看了，也比较简陋，这种核心功能肯定是封装在native层里面去对其他进程做手脚。</p>
+<p>打开IDA看一眼，存在着大概三种混淆：</p>
+<p>花指令跳转混淆：</p>
+<img src="\uploads\9193437b-b241-4f02-945b-c63b6c006694.png" alt="9193437b-b241-4f02-945b-c63b6c006694" style="zoom: 50%;" />
+<p>控制流平坦化混淆：</p>
+<img src="\uploads\51cfd61d-7587-4fc3-9dd0-d6136b8d26fc.png" alt="51cfd61d-7587-4fc3-9dd0-d6136b8d26fc" style="zoom:50%;" />
+<p>还有些比较奇怪的跳转混淆什么的。</p>
+<p>太多了混淆了，注定没法一眼丁真，那就跟着特征去追吧：跟着关键字符串“BlueArchive”，奇迹的起点来。</p>
+<img src="\uploads\ce159ea2-9b3d-4935-ba60-81c43152336a.png" style="zoom: 50%;" />
+<p>很轻松地追到这里，通过最高权限执行其他动态链接库的加载，然后隐藏进程(hide map、hide solist)，这个叫knm的其实就是一个加载器，用来把自己的外挂打入目标进程的内存中。</p>
+<p>分别执行了两个命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/data/data/com.ba.xxxx/zrq -pkg com.RoamingStar.BlueArchive -lib</span><br><span class="line">/data/data/com.ba.xxxx/so -dl_memfd -hide_maps -hide_solist -delay 500000</span><br></pre></td></tr></table></figure>
+<p>一个zrq（注入器）用来将动态链接库注入到目标进程中（名字就叫so），然后so自己再接受另外的命令去执行不同的行为。先看看注入器是什么情况，拖到IDA分析：</p>
+<p>（事后补充，找了一下，发现注射器的项目地址：<a target="_blank" rel="noopener" href="https://github.com/MJx0/AndKittyInjector.git">指路</a>）</p>
+<img src="\uploads\52a0daee-21e8-4dce-b5ad-f3c0c398c651.png" style="zoom: 50%;" />
+<p>可以确认到就是native层注入的工具，通过篡改链接器linker64，实现的so注入：</p>
+<img src="\uploads\fbd52f8d-859b-4765-a145-21f95ae53173.png" style="zoom: 50%;" />
+<p>结合我自己扒取的反作弊保护样本来看，这个思路是对的：tprt检测的是 进程、端口、还有adb调试状态、以及一些路径(/data/local/tmp)这类比较常见的特征，而作者采用链接器劫持的办法注入进去不是没道理。（游戏启动后会载入il2cpp这个核心逻辑，然后il2cpp.so的DT_NEEDED会要求载入更多动态链接库、相当于PE文件里面的IAT函数引入表一样要求加载必要的so，而执行这一步骤的核心组件就是linker链接器，通过hook篡改链接器这种系统组件可以把自定义的函数库加载到目标进程中）</p>
+<img src="\uploads\45b2b9ad-0af6-47ed-9e30-88aed21e33b7.png" alt="45b2b9ad-0af6-47ed-9e30-88aed21e33b7" style="zoom: 67%;" />
+<p>继续分析：</p>
+<p>这套更像“<strong>调用 linker 内部入口 + 篡改 linker 数据结构</strong>”，不是传统 inline hook。</p>
+<ul>
+<li><strong>内部接口调用链（本地/辅助侧）</strong>
+<ul>
+<li>sub_3D2A0 -&gt; sub_3EA40 -&gt; sub_3E920</li>
+<li>sub_3E920会解析 linker64，按 Android 版本找内部符号：__loader_dlopen / __dl__Z8__dlopenPKciPKv / __dl__ZL10dlopen_ext… / g_dl_mutex</li>
+<li>sub_3EA40再走这个内部函数指针去加载（而非单纯 libc dlopen），并在部分版本上加 g_dl_mutex 锁</li>
+</ul>
+</li>
+<li><strong>真正“劫持/篡改 linker”的核心（目标进程）</strong>
+<ul>
+<li>关键在 sub_2DF40 + sub_306C0（native）/sub_309E0（NativeBridge）</li>
+<li>sub_2DF40先定位 linker 内部全局：__dl__ZL6solist、__dl__ZL6sonext，再推断 soinfo-&gt;base 与 soinfo-&gt;next 偏移</li>
+<li>sub_306C0/sub_309E0在目标进程遍历 solist，找到当前注入 so 对应 soinfo 后，把它从链表摘掉；必要时也修 sonext</li>
+<li>这就是“隐藏在 linker 视角下的已加载库”</li>
+</ul>
+</li>
+<li><strong>隐藏手段</strong>
+<ul>
+<li>-hide_solist：上面这套 solist/sonext 摘链（最关键）</li>
+<li>-hide_maps：sub_31870 对每个段做“读出内容 -&gt; 重新匿名映射 -&gt; 写回内容”，让 /proc/pid/maps 不再显示原文件映射路径</li>
+<li>-dl_memfd：sub_2ECA0/sub_2F4E0 走 memfd + android_dlopen_ext，减少磁盘路径痕迹，失败再 fallback legacy dlopen</li>
+</ul>
+</li>
+<li><strong>一句话总结</strong>
+<ul>
+<li>它不是改 linker 代码流，而是：<strong>借 linker 内部入口完成加载，再改 linker 维护的 soinfo 链表 + maps 映射外观，实现“已注入但难被常规枚举看到”</strong>。</li>
+</ul>
+</li>
+</ul>
+<p>怎么远程调用linker呢？手工找内部符号，然后通过远程调用的办法去执行linker内部的函数（直接按函数指针调用），两个关键知识点：改 solist/sonext 链表、以及重映射段来影响 /proc/pid/maps 显示，白嫖隐藏技巧，真的笑了。到这里注入器已经分析完了，合理的。</p>
+<p>接下来是常规的游戏修改器(so)文件，要找到篡改的点，一般也就是Hook的位置嘛，总不可能直接动态patch游戏内部的逻辑，搜搜就有了入手点，用的是DobbyHook的框架（<a target="_blank" rel="noopener" href="https://github.com/jmpews/Dobby">指路</a>）<br />
+<img src="\uploads\81bf630c-a40f-4c8b-be97-3ec5d05a342e.png" alt="image-20260220161123234" style="zoom:50%;" /></p>
+<p>知道用的是什么框架之后就去看看DobbyHook是怎么实现的：和frida差不多，这个就熟悉了，一样是inlinehook，那么整个动态链接库里面必然存在一些特征码，也就是dobbyhook里面的函数，可以直接定位到修改器hook了哪里，从而找到这个外挂实现了什么功能。</p>
+<p>如下图，框架内部本身就有一些Hook的关键字符串定位到Hook代码的位置</p>
+<img src="\uploads\image-20260220161123234.png" alt="image-20260220161123234" style="zoom:50%;" />
+<p>不过翻了半天，看不懂（太多混淆了），换个思路：</p>
+<img src="\uploads\f98c0536-812f-42dc-8449-63724c1147e2.png" alt="f98c0536-812f-42dc-8449-63724c1147e2" style="zoom: 67%;" />
+<p>并且发现一个特征字符串：libcnm那么一切又回到了最开始的地方，说明libcnm是应用与钩子程序沟通通讯的端点，来选择是否启用外挂之类的，那么这个so也没啥好看的了，也就是一个类似于frida-agent一样的内部钩子，负责修改游戏逻辑，而外部的so控制器才决定了hook哪里。</p>
+<p>那么来到libcnm分析看看，由于存在一些混淆，直接看反汇编是不行滴，找找特征：</p>
+<img src="\uploads\8ef87d91-0d8b-4988-8241-ca798c9fd1a1.png" alt="f98c0536-812f-42dc-8449-63724c1147e2" style="zoom: 67%;" />
+<p>很容易就能想到肯定是hook il2cpp嘛。不过引用似乎被混淆了，没法直接定位关键的位置，主逻辑不行那就从DobbyHook下手，实在不行就用frida来hook你的hook，观察调用位置。</p>
+<img src="\uploads\aabcf4b3-0332-4e02-88bf-d9d8ce26200f.png" alt="aabcf4b3-0332-4e02-88bf-d9d8ce26200f" style="zoom:67%;" />
+<p>看看：<br />
+<img src="\uploads\image-20260220164145517.png" alt="aabcf4b3-0332-4e02-88bf-d9d8ce26200f" style="zoom:67%;" /></p>
+<p>知道这个就非常好办了。</p>
+<img src="\uploads\4ee88bf6-2006-4873-afd3-c4286aa60a26.png" alt="4ee88bf6-2006-4873-afd3-c4286aa60a26" style="zoom:67%;" />
+<p>显然是没法静态分析的，但是由于小作坊，我们可以hook你的hook去获取真实它想要hook的地址。</p>
+<p>到这里分析也就结束了，下面是一些小插曲：</p>
+<img src="\uploads\80dd7da4-ac43-4ffc-b071-b85f398c02b0.png" alt="80dd7da4-ac43-4ffc-b071-b85f398c02b0" style="zoom:67%;" />
+<p>可以看到，部分函数还是有控制流平坦化保护，导致看不太懂代码逻辑的。研究了下这部分其实是可以解的，通过分发器的变量，收集到达的真实块，从真实块尾部去patch就可以还原这部分的逻辑，如下图所示：</p>
+<img src="\uploads\01e9cd07-b146-4f47-85e8-ca964d8d07a3.png" alt="01e9cd07-b146-4f47-85e8-ca964d8d07a3" style="zoom:67%;" />
+<p>利用分发块的分发变量去模拟执行，跑通所有路径获取真实块的下一个跳转最后的结果：</p>
+<img src="\uploads\0f509f35-1e93-4059-abcf-d365b95c0442.png" alt="0f509f35-1e93-4059-abcf-d365b95c0442" style="zoom:67%;" />
+<p>示例的去混淆比较简单，真实的场景是这样的，不过由于控制流平坦化变种蛮多，一时半会我也懒得去解完这些混淆，能解部分关键的已经够用了，这些多出来的混淆块可能是dobby hook或者是其他通讯用的代码，看了意义也不是特别大。</p>
+<img src="\uploads\113dae16-9f03-4b14-b8a2-d0bb6afba504.png" style="zoom:67%;" />
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结：</h2>
+<p>以上！整个安卓外挂的流程就是：启动外挂应用app，载入注入器和外挂动态链接库，把动态链接库注入游戏进程并隐藏自身，通过DobbyHook框架、以及动态链接库自己实现的通讯协议来规避检测，然后在应用自身的so来与注入的动态链接库通讯，实现作弊功能的开关，并由应用自身的so来传递要hook的位置、参数什么的，最终实现作弊效果。</p>
+<p>作者使用了极大量的混淆，但是实际上关键特征都没隐藏起来，导致解析还是相对比较轻松的，要抄的话直接摘几个框架、Hook外挂的Hook地址，扒取下来自己用就行，难度也不大。整个外挂并没有对libtprt做手脚，在下篇我们将来挑战看看反作弊界最高的山！</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AE%89%E5%8D%93/" rel="tag"># 安卓</a>
+              <a href="/tags/Unity/" rel="tag"># Unity</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/02/07/Unity%E6%89%8B%E6%B8%B8%E9%80%86%E5%90%91%E8%A7%81%E8%A7%A3/" rel="prev" title="Unity手游逆向见解">
+      <i class="fa fa-chevron-left"></i> Unity手游逆向见解
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2026/02/21/Frida%E6%A3%80%E6%B5%8B%E5%AF%B9%E6%8A%97/" rel="next" title="Frida检测对抗">
+      Frida检测对抗 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text"> 前言：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text"> 分析：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text"> 总结：</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="March-7th"
+      src="/images/march7th.jpg">
+  <p class="site-author-name" itemprop="name">March-7th</p>
+  <div class="site-description" itemprop="description">信键鼠真神得永生</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+
+
+<div class="sidebar-footer-info motion-element">
+    <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">桂ICP备2023000644号-2</a>
+    </div>
+
+  <div class="copyright">
+    &copy; 2024 – 2025
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span>March-7th</span>
+  </div>
+</div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">桂ICP备2023000644号-2 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">March-7th</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+<!-- Visitor Tracker -->
+<script>
+(function() {
+  'use strict';
+
+  // 配置 - 本地开发指向 API 服务端口，生产环境使用相对路径
+  const TRACKER_API = window.location.hostname === 'localhost'
+    ? 'http://127.0.0.1:3721/track'
+    : '/api/track';
+
+  // 获取页面信息
+  function getPageInfo() {
+    return {
+      url: window.location.pathname,
+      title: document.title,
+      referrer: document.referrer,
+      ua: navigator.userAgent
+    };
+  }
+
+  // 发送访问记录（使用 sendBeacon 确保页面关闭时也能发送）
+  function trackVisit() {
+    const data = getPageInfo();
+
+    // 优先使用 sendBeacon（不会阻塞页面关闭）
+    if (navigator.sendBeacon) {
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      navigator.sendBeacon(TRACKER_API, blob);
+    } else {
+      // 降级到 fetch
+      fetch(TRACKER_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).catch(() => {}); // 静默失败，不影响用户体验
+    }
+  }
+
+  // 页面加载时记录
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', trackVisit);
+  } else {
+    trackVisit();
+  }
+
+  // 支持 PJAX 页面切换时记录（Next 主题支持 PJAX）
+  document.addEventListener('pjax:complete', function() {
+    setTimeout(trackVisit, 100);
+  });
+
+})();
+</script>
+
+<!-- 扇形菜单按钮 -->
+<div class="fan-menu-container" id="fanMenuContainer">
+  <button class="fan-menu-toggle" id="fanMenuToggle">
+    <i class="fa fa-bars"></i>
+    <i class="fa fa-times"></i>
+  </button>
+  <div class="fan-menu-items" id="fanMenuItems">
+    <!-- 菜单项将由 JS 动态生成 -->
+  </div>
+</div>
+
+<!-- 扇形菜单脚本 -->
+<script>
+(function() {
+  'use strict';
+
+  // 从主题配置读取菜单项
+  const menuItems = [
+    { path: '/about/', icon: 'fa fa-user', title: '关于' },
+    { path: '/categories/', icon: 'fa fa-th', title: '分类' },
+    { path: '/archives/', icon: 'fa fa-archive', title: '归档' },
+    { path: '/videos/', icon: 'fa fa-video', title: '视频' }
+  ];
+
+  const container = document.getElementById('fanMenuContainer');
+  const toggle = document.getElementById('fanMenuToggle');
+  const itemsContainer = document.getElementById('fanMenuItems');
+
+  // 生成扇形菜单项
+  function createMenuItems() {
+    const total = menuItems.length;
+    const radius = 70; // 扇形半径
+    // 右旋90度：原 -160~-20 变成 -70~70
+    const startAngle = -70;
+    const endAngle = 70;
+
+    menuItems.forEach((item, index) => {
+      const a = document.createElement('a');
+      a.className = 'fan-menu-item';
+      a.href = item.path;
+      a.dataset.title = item.title;
+
+      // 计算扇形位置
+      const angle = startAngle + (endAngle - startAngle) * (index / (total - 1 || 1));
+      const rad = angle * Math.PI / 180;
+      const tx = Math.cos(rad) * radius;
+      const ty = Math.sin(rad) * radius;
+
+      a.style.setProperty('--tx', tx + 'px');
+      a.style.setProperty('--ty', ty + 'px');
+      a.style.transitionDelay = (index * 0.05) + 's';
+
+      // 图标
+      const i = document.createElement('i');
+      i.className = item.icon;
+      a.appendChild(i);
+
+      itemsContainer.appendChild(a);
+    });
+  }
+
+  // 初始化
+  createMenuItems();
+
+  // 鼠标进入容器 - 展开菜单
+  container.addEventListener('mouseenter', function() {
+    toggle.classList.add('active');
+  });
+
+  // 鼠标离开容器 - 收起菜单
+  container.addEventListener('mouseleave', function() {
+    toggle.classList.remove('active');
+  });
+
+  // 检测侧边栏状态，侧边栏打开时隐藏菜单
+  function updateMenuVisibility() {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      // 检查侧边栏是否有 sidebar-active 类
+      const isActive = sidebar.classList.contains('sidebar-active');
+      container.style.opacity = isActive ? '0' : '1';
+      container.style.pointerEvents = isActive ? 'none' : 'auto';
+      container.style.visibility = isActive ? 'hidden' : 'visible';
+    }
+  }
+
+  // 初始检测
+  updateMenuVisibility();
+
+  // 监听侧边栏状态变化
+  const sidebar = document.querySelector('.sidebar');
+  if (sidebar) {
+    // 使用 MutationObserver 监听侧边栏 class 变化
+    const observer = new MutationObserver(updateMenuVisibility);
+    observer.observe(sidebar, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+  }
+
+  // 窗口大小变化时重新检测
+  window.addEventListener('resize', updateMenuVisibility);
+
+})();
+</script>
+
+</body>
+</html>

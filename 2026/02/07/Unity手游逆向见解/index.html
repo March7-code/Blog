@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"march-7th.tech","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="从简到难写一下Unity手游作弊思路，当作一个学习记录。  前置知识：Unity C#开发、il2cpp封装层。 为了开发效率和程序员的身心健康，Unity引擎游戏是使用C#脚本语言来写的，而要运行编译封装出来的C#程序，一般都要求.NET SDK的环境。这个对于用户来说就不太方便，想要开箱即用、点击即玩，Unity就提供了两种办法来解决：Mono、il2cp。  从简单的Mono开始： 这是一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity手游逆向见解">
+<meta property="og:url" content="https://march-7th.tech/2026/02/07/Unity%E6%89%8B%E6%B8%B8%E9%80%86%E5%90%91%E8%A7%81%E8%A7%A3/index.html">
+<meta property="og:site_name" content="三顺七的笔记">
+<meta property="og:description" content="从简到难写一下Unity手游作弊思路，当作一个学习记录。  前置知识：Unity C#开发、il2cpp封装层。 为了开发效率和程序员的身心健康，Unity引擎游戏是使用C#脚本语言来写的，而要运行编译封装出来的C#程序，一般都要求.NET SDK的环境。这个对于用户来说就不太方便，想要开箱即用、点击即玩，Unity就提供了两种办法来解决：Mono、il2cp。  从简单的Mono开始： 这是一个">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://march-7th.tech/uploads/image-20260207204559032.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/image-20260207204916727.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/image-20260207210333944.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/image-20260207211602219.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/image-20260207213552023.png">
+<meta property="article:published_time" content="2026-02-07T12:31:40.000Z">
+<meta property="article:modified_time" content="2026-02-21T15:33:33.098Z">
+<meta property="article:author" content="March-7th">
+<meta property="article:tag" content="安卓">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://march-7th.tech/uploads/image-20260207204559032.png">
+
+<link rel="canonical" href="https://march-7th.tech/2026/02/07/Unity%E6%89%8B%E6%B8%B8%E9%80%86%E5%90%91%E8%A7%81%E8%A7%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Unity手游逆向见解 | 三顺七的笔记</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">三顺七的笔记</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-videos">
+
+    <a href="/videos/" rel="section"><i class="fa fa-video fa-fw"></i>视频展示</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://march-7th.tech/2026/02/07/Unity%E6%89%8B%E6%B8%B8%E9%80%86%E5%90%91%E8%A7%81%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/march7th.jpg">
+      <meta itemprop="name" content="March-7th">
+      <meta itemprop="description" content="信键鼠真神得永生">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="三顺七的笔记">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Unity手游逆向见解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-02-07 20:31:40" itemprop="dateCreated datePublished" datetime="2026-02-07T20:31:40+08:00">2026-02-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-02-21 23:33:33" itemprop="dateModified" datetime="2026-02-21T23:33:33+08:00">2026-02-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AE%89%E5%8D%93/" itemprop="url" rel="index"><span itemprop="name">安卓</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>从简到难写一下Unity手游作弊思路，当作一个学习记录。</p>
+<h2 id="前置知识unity-c开发-il2cpp封装层"><a class="markdownIt-Anchor" href="#前置知识unity-c开发-il2cpp封装层"></a> 前置知识：Unity C#开发、il2cpp封装层。</h2>
+<p>为了开发效率和程序员的身心健康，Unity引擎游戏是使用C#脚本语言来写的，而要运行编译封装出来的C#程序，<a target="_blank" rel="noopener" href="http://xn--4gqp15e36oswgyvj.NET">一般都要求.NET</a> SDK的环境。这个对于用户来说就不太方便，想要开箱即用、点击即玩，Unity就提供了两种办法来解决：Mono、il2cp。</p>
+<h3 id="从简单的mono开始"><a class="markdownIt-Anchor" href="#从简单的mono开始"></a> 从简单的Mono开始：</h3>
+<p>这是一个开源的.NET框架实现，使得C#应用能够跨平台运行，相当于用户下载游戏的时候就提供了一个运行环境，如下所示：</p>
+<p><img src="/uploads/image-20260207204559032.png" alt="image-20260207204559032" /></p>
+<p>其中Assembly-CSharp包含了开发者在Unity引擎中写的C#逻辑代码，通过 dnspy 就可以直接解析大部分源代码：</p>
+<p><img src="/uploads/image-20260207204916727.png" alt="image-220260207204916727" /></p>
+<p>为什么能那么顺利？因为C#编译出来的字节码、很像Python的逻辑，没有什么混淆，直接反编译就能恢复原来的信息，至于Mono那部分的也就是为C#提供了一个运行环境，给程序跑起来，能看到这种结构的分析起来就非常轻松了。（经验之谈，毕竟这部分也不用关注太多），Unity手游现代开发倾向于放弃Mono而采用IL2CPP（Intermediate Language to C++），主要因为IL2CPP在性能、兼容性（特别是64位支持）、安全性以及跨平台维护上具有明显优势。Mono在不同平台移植时VM（虚拟机）维护成本极高，且在iOS等禁止代码动态加载的平台无法使用。</p>
+<h3 id="重点是il2cpp"><a class="markdownIt-Anchor" href="#重点是il2cpp"></a> 重点是IL2CPP：</h3>
+<p>笔者学识浅薄，加上il2cpp的机制比较复杂，就简单概括下il2cpp：类似于一种翻译机、将C#源码翻译成C++代码再来构建生成二进制文件，所以兼容性、性能都比Mono脚本好很多，加上并非字节码编译、而是原生的CPP编译，反编译安全性这块就比Mono好很多。其中游戏代码逻辑都是封装在 <a target="_blank" rel="noopener" href="http://il2cpp.so">il2cpp.so</a> 中。</p>
+<h2 id="正式开始"><a class="markdownIt-Anchor" href="#正式开始"></a> 正式开始：</h2>
+<p>就拿一个比较简单的传奇游戏来解释一下Unity手游的分析，之后逐渐提升难度到 碧蓝档案 国服。</p>
+<h3 id="part1"><a class="markdownIt-Anchor" href="#part1"></a> Part1：</h3>
+<p>我们的目标是完全分析出传奇手游的所有代码逻辑，来逆向实现私服。</p>
+<p><a target="_blank" rel="noopener" href="http://xn--IDAlibil2cpp-yz0xn45a015o6cb.so">通过IDA打开libil2cpp.so</a>，这部分是il2cpp翻译C#为cpp后编译出来的二进制文件，里面缺失了各种符号表信息。更神奇的是观察 字符串列表 里面，是没有任何游戏内有关的字符串</p>
+<p><img src="/uploads/image-20260207210333944.png" alt="image-20260207210333944" /></p>
+<p>想要简单地找到登录入口，篡改ip来登录在静态分析是非常难的事情，所以我通过抓包的办法来寻找、游戏的主逻辑是从哪里得到了服务器的ip地址然后进行通讯的（这部分截图丢了）。</p>
+<p>简单说就是游戏通过TCP 连接与 服务器进行指令通讯，客户端 发送 命令ID(例如登录8 + payload json、签到13 + payload json)这种形式发送给服务器，服务器也回传命令ID和payload给客户端， 这部分都可以通过抓包获取，没什么问题，既然服务器ip就在客户端内，那么通过特征查找的办法，很容易地就能在 global-meta.data中翻到。（如下）</p>
+<p><img src="/uploads/image-20260207211602219.png" alt="image-20260207211602219" /></p>
+<p>这个是什么？查了一番之后发现是一种字符串资源，或者是类似于il2cpp符号表的东西，里面包含了很多有用的信息。</p>
+<p>unity游戏启动 -&gt; il2cpp_init -&gt; metaLoader(加载global-meta.dat) -&gt; il2cpp主逻辑接管程序运行，大致这样一个逻辑。</p>
+<p>通过直接修改global meta里面的字符串信息 为 自己的域名 之后，发现竟然成功劫持到了客户端的连接。</p>
+<p>当然这一步通过il2cpp-dump实现起来就没什么难度了，详细原理以后有空再写。</p>
+<p>接下来就是frida hook libc通讯的函数查看调用堆栈、确定recv、send逻辑函数的位置，根据对应的命令ID和触发的UI位置来比对抓包payload确定逻辑就行了。</p>
+<p><img src="/uploads/image-20260207213552023.png" alt="image-20260207213552023" /></p>
+<p>逆向的代码：顺着逻辑一路往下追还能看到物品id什么的，结合assert studio解包出来的资源，很容易就能恢复。</p>
+<p>感觉上有些新奇：这种游戏的通信逻辑是这样写的，客户端和服务端并不期待特定的数据，而是客户端有另外的线程来处理socket连接，通过TCP随自己心意去发送命令ID接受服务端的响应来刷新、推进游戏主逻辑。</p>
+<p>接下来就是体力活，照着逆向代码来恢复服务端：连接管理、命令ID响应、物品表、还有和其他客户端的通讯什么的。</p>
+<h2 id="part2-难度上升"><a class="markdownIt-Anchor" href="#part2-难度上升"></a> part2 难度上升：</h2>
+<p>有空再写。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AE%89%E5%8D%93/" rel="tag"># 安卓</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/01/18/%E5%AE%89%E5%8D%93%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0/" rel="prev" title="安卓学习">
+      <i class="fa fa-chevron-left"></i> 安卓学习
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2026/02/20/BA%E6%89%8B%E6%B8%B8%E5%A4%96%E6%8C%82%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" rel="next" title="BA手游外挂样本分析">
+      BA手游外挂样本分析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86unity-c%E5%BC%80%E5%8F%91-il2cpp%E5%B0%81%E8%A3%85%E5%B1%82"><span class="nav-number">1.</span> <span class="nav-text"> 前置知识：Unity C#开发、il2cpp封装层。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8E%E7%AE%80%E5%8D%95%E7%9A%84mono%E5%BC%80%E5%A7%8B"><span class="nav-number">1.1.</span> <span class="nav-text"> 从简单的Mono开始：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E7%82%B9%E6%98%AFil2cpp"><span class="nav-number">1.2.</span> <span class="nav-text"> 重点是IL2CPP：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%BC%8F%E5%BC%80%E5%A7%8B"><span class="nav-number">2.</span> <span class="nav-text"> 正式开始：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#part1"><span class="nav-number">2.1.</span> <span class="nav-text"> Part1：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#part2-%E9%9A%BE%E5%BA%A6%E4%B8%8A%E5%8D%87"><span class="nav-number">3.</span> <span class="nav-text"> part2 难度上升：</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="March-7th"
+      src="/images/march7th.jpg">
+  <p class="site-author-name" itemprop="name">March-7th</p>
+  <div class="site-description" itemprop="description">信键鼠真神得永生</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+
+
+<div class="sidebar-footer-info motion-element">
+    <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">桂ICP备2023000644号-2</a>
+    </div>
+
+  <div class="copyright">
+    &copy; 2024 – 2025
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span>March-7th</span>
+  </div>
+</div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">桂ICP备2023000644号-2 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">March-7th</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+<!-- Visitor Tracker -->
+<script>
+(function() {
+  'use strict';
+
+  // 配置 - 本地开发指向 API 服务端口，生产环境使用相对路径
+  const TRACKER_API = window.location.hostname === 'localhost'
+    ? 'http://127.0.0.1:3721/track'
+    : '/api/track';
+
+  // 获取页面信息
+  function getPageInfo() {
+    return {
+      url: window.location.pathname,
+      title: document.title,
+      referrer: document.referrer,
+      ua: navigator.userAgent
+    };
+  }
+
+  // 发送访问记录（使用 sendBeacon 确保页面关闭时也能发送）
+  function trackVisit() {
+    const data = getPageInfo();
+
+    // 优先使用 sendBeacon（不会阻塞页面关闭）
+    if (navigator.sendBeacon) {
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      navigator.sendBeacon(TRACKER_API, blob);
+    } else {
+      // 降级到 fetch
+      fetch(TRACKER_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).catch(() => {}); // 静默失败，不影响用户体验
+    }
+  }
+
+  // 页面加载时记录
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', trackVisit);
+  } else {
+    trackVisit();
+  }
+
+  // 支持 PJAX 页面切换时记录（Next 主题支持 PJAX）
+  document.addEventListener('pjax:complete', function() {
+    setTimeout(trackVisit, 100);
+  });
+
+})();
+</script>
+
+<!-- 扇形菜单按钮 -->
+<div class="fan-menu-container" id="fanMenuContainer">
+  <button class="fan-menu-toggle" id="fanMenuToggle">
+    <i class="fa fa-bars"></i>
+    <i class="fa fa-times"></i>
+  </button>
+  <div class="fan-menu-items" id="fanMenuItems">
+    <!-- 菜单项将由 JS 动态生成 -->
+  </div>
+</div>
+
+<!-- 扇形菜单脚本 -->
+<script>
+(function() {
+  'use strict';
+
+  // 从主题配置读取菜单项
+  const menuItems = [
+    { path: '/about/', icon: 'fa fa-user', title: '关于' },
+    { path: '/categories/', icon: 'fa fa-th', title: '分类' },
+    { path: '/archives/', icon: 'fa fa-archive', title: '归档' },
+    { path: '/videos/', icon: 'fa fa-video', title: '视频' }
+  ];
+
+  const container = document.getElementById('fanMenuContainer');
+  const toggle = document.getElementById('fanMenuToggle');
+  const itemsContainer = document.getElementById('fanMenuItems');
+
+  // 生成扇形菜单项
+  function createMenuItems() {
+    const total = menuItems.length;
+    const radius = 70; // 扇形半径
+    // 右旋90度：原 -160~-20 变成 -70~70
+    const startAngle = -70;
+    const endAngle = 70;
+
+    menuItems.forEach((item, index) => {
+      const a = document.createElement('a');
+      a.className = 'fan-menu-item';
+      a.href = item.path;
+      a.dataset.title = item.title;
+
+      // 计算扇形位置
+      const angle = startAngle + (endAngle - startAngle) * (index / (total - 1 || 1));
+      const rad = angle * Math.PI / 180;
+      const tx = Math.cos(rad) * radius;
+      const ty = Math.sin(rad) * radius;
+
+      a.style.setProperty('--tx', tx + 'px');
+      a.style.setProperty('--ty', ty + 'px');
+      a.style.transitionDelay = (index * 0.05) + 's';
+
+      // 图标
+      const i = document.createElement('i');
+      i.className = item.icon;
+      a.appendChild(i);
+
+      itemsContainer.appendChild(a);
+    });
+  }
+
+  // 初始化
+  createMenuItems();
+
+  // 鼠标进入容器 - 展开菜单
+  container.addEventListener('mouseenter', function() {
+    toggle.classList.add('active');
+  });
+
+  // 鼠标离开容器 - 收起菜单
+  container.addEventListener('mouseleave', function() {
+    toggle.classList.remove('active');
+  });
+
+  // 检测侧边栏状态，侧边栏打开时隐藏菜单
+  function updateMenuVisibility() {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      // 检查侧边栏是否有 sidebar-active 类
+      const isActive = sidebar.classList.contains('sidebar-active');
+      container.style.opacity = isActive ? '0' : '1';
+      container.style.pointerEvents = isActive ? 'none' : 'auto';
+      container.style.visibility = isActive ? 'hidden' : 'visible';
+    }
+  }
+
+  // 初始检测
+  updateMenuVisibility();
+
+  // 监听侧边栏状态变化
+  const sidebar = document.querySelector('.sidebar');
+  if (sidebar) {
+    // 使用 MutationObserver 监听侧边栏 class 变化
+    const observer = new MutationObserver(updateMenuVisibility);
+    observer.observe(sidebar, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+  }
+
+  // 窗口大小变化时重新检测
+  window.addEventListener('resize', updateMenuVisibility);
+
+})();
+</script>
+
+</body>
+</html>

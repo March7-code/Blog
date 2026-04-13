@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"march-7th.tech","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="测试中… FX(x)&#x3D;{exp⁡(−exp⁡(−z(x)))if  ξ&#x3D;0exp⁡(−(1+ξz(x))−1&#x2F;ξ)if  ξ≠0F_{X}\left(x\right)&#x3D;\left\{\begin{array}{cl} \exp\Bigl(-\exp(-z(x))\Bigr) &amp; \text{if } ~ \xi&#x3D;0 \\\\\exp\Bigl(-(1+\xi z(x))^{-1&#x2F;\xi}\">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数学测试">
+<meta property="og:url" content="https://march-7th.tech/2024/08/10/Math-Test/index.html">
+<meta property="og:site_name" content="三顺七的笔记">
+<meta property="og:description" content="测试中… FX(x)&#x3D;{exp⁡(−exp⁡(−z(x)))if  ξ&#x3D;0exp⁡(−(1+ξz(x))−1&#x2F;ξ)if  ξ≠0F_{X}\left(x\right)&#x3D;\left\{\begin{array}{cl} \exp\Bigl(-\exp(-z(x))\Bigr) &amp; \text{if } ~ \xi&#x3D;0 \\\\\exp\Bigl(-(1+\xi z(x))^{-1&#x2F;\xi}\">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-08-09T23:39:10.000Z">
+<meta property="article:modified_time" content="2024-08-10T00:19:02.789Z">
+<meta property="article:author" content="March-7th">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://march-7th.tech/2024/08/10/Math-Test/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>数学测试 | 三顺七的笔记</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">三顺七的笔记</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-videos">
+
+    <a href="/videos/" rel="section"><i class="fa fa-video fa-fw"></i>视频展示</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://march-7th.tech/2024/08/10/Math-Test/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/march7th.jpg">
+      <meta itemprop="name" content="March-7th">
+      <meta itemprop="description" content="信键鼠真神得永生">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="三顺七的笔记">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数学测试
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-08-10 07:39:10 / 修改时间：08:19:02" itemprop="dateCreated datePublished" datetime="2024-08-10T07:39:10+08:00">2024-08-10</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>测试中…</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>F</mi><mi>X</mi></msub><mrow><mo fence="true">(</mo><mi>x</mi><mo fence="true">)</mo></mrow><mo>=</mo><mrow><mo fence="true">{</mo><mtable rowspacing="0.15999999999999992em" columnalign="center left" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>exp</mi><mo>⁡</mo><mo fence="true">(</mo><mo>−</mo><mi>exp</mi><mo>⁡</mo><mo stretchy="false">(</mo><mo>−</mo><mi>z</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo fence="true">)</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext>if  </mtext><mi>ξ</mi><mo>=</mo><mn>0</mn></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>exp</mi><mo>⁡</mo><mo fence="true">(</mo><mo>−</mo><mo stretchy="false">(</mo><mn>1</mn><mo>+</mo><mi>ξ</mi><mi>z</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><msup><mo stretchy="false">)</mo><mrow><mo>−</mo><mn>1</mn><mi mathvariant="normal">/</mi><mi>ξ</mi></mrow></msup><mo fence="true">)</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext>if  </mtext><mi>ξ</mi><mo mathvariant="normal">≠</mo><mn>0</mn></mrow></mstyle></mtd></mtr></mtable></mrow><mspace linebreak="newline"></mspace><mspace linebreak="newline"></mspace></mrow><annotation encoding="application/x-tex">F_{X}\left(x\right)=\left\{\begin{array}{cl} \exp\Bigl(-\exp(-z(x))\Bigr) &amp; \text{if } ~ \xi=0 \\\\\exp\Bigl(-(1+\xi z(x))^{-1/\xi}\Bigr) &amp; \text{if } ~ \xi \neq 0\end{array} \right.\\\\
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.07847em;">X</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">(</span><span class="mord mathnormal">x</span><span class="mclose delimcenter" style="top:0em;">)</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:4.800040000000001em;vertical-align:-2.1500200000000005em;"></span><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.6500200000000005em;"><span style="top:-1.8999899999999998em;"><span class="pstrut" style="height:3.15em;"></span><span class="delimsizinginner delim-size4"><span>⎩</span></span></span><span style="top:-1.89499em;"><span class="pstrut" style="height:3.15em;"></span><span class="delimsizinginner delim-size4"><span>⎪</span></span></span><span style="top:-2.18999em;"><span class="pstrut" style="height:3.15em;"></span><span class="delimsizinginner delim-size4"><span>⎪</span></span></span><span style="top:-2.20499em;"><span class="pstrut" style="height:3.15em;"></span><span class="delimsizinginner delim-size4"><span>⎪</span></span></span><span style="top:-3.15001em;"><span class="pstrut" style="height:3.15em;"></span><span class="delimsizinginner delim-size4"><span>⎨</span></span></span><span style="top:-4.2950099999999996em;"><span class="pstrut" style="height:3.15em;"></span><span class="delimsizinginner delim-size4"><span>⎪</span></span></span><span style="top:-4.59001em;"><span class="pstrut" style="height:3.15em;"></span><span class="delimsizinginner delim-size4"><span>⎪</span></span></span><span style="top:-4.60501em;"><span class="pstrut" style="height:3.15em;"></span><span class="delimsizinginner delim-size4"><span>⎪</span></span></span><span style="top:-4.90002em;"><span class="pstrut" style="height:3.15em;"></span><span class="delimsizinginner delim-size4"><span>⎧</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.15002em;"><span></span></span></span></span></span></span><span class="mord"><span class="mtable"><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.6500199999999996em;"><span style="top:-4.65002em;"><span class="pstrut" style="height:3.15em;"></span><span class="mord"><span class="mop">exp</span><span class="mopen"><span class="delimsizing size2">(</span></span><span class="mord">−</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop">exp</span><span class="mopen">(</span><span class="mord">−</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mclose">)</span><span class="mclose"><span class="delimsizing size2">)</span></span></span></span><span style="top:-3.1599999999999993em;"><span class="pstrut" style="height:3.15em;"></span><span class="mord"></span></span><span style="top:-1.6499999999999995em;"><span class="pstrut" style="height:3.15em;"></span><span class="mord"><span class="mop">exp</span><span class="mopen"><span class="delimsizing size2">(</span></span><span class="mord">−</span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathnormal" style="margin-right:0.04601em;">ξ</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8879999999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span><span class="mord mtight">/</span><span class="mord mathnormal mtight" style="margin-right:0.04601em;">ξ</span></span></span></span></span></span></span></span></span><span class="mclose"><span class="delimsizing size2">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.1500200000000005em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.6500199999999996em;"><span style="top:-4.65002em;"><span class="pstrut" style="height:3.15em;"></span><span class="mord"><span class="mord text"><span class="mord">if </span></span><span class="mspace nobreak"> </span><span class="mord mathnormal" style="margin-right:0.04601em;">ξ</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord">0</span></span></span><span style="top:-1.6500000000000004em;"><span class="pstrut" style="height:3.15em;"></span><span class="mord"><span class="mord text"><span class="mord">if </span></span><span class="mspace nobreak"> </span><span class="mord mathnormal" style="margin-right:0.04601em;">ξ</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel"><span class="mrel"><span class="mord vbox"><span class="thinbox"><span class="rlap"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="inner"><span class="mrel"></span></span><span class="fix"></span></span></span></span></span><span class="mrel">=</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.1500199999999996em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span></span></span><span class="mclose nulldelimiter"></span></span></span><span class="mspace newline"></span><span class="mspace newline"></span></span></span></span></p>
+<p>12345</p>
+<link href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/KaTeX/0.10.2/katex.min.css" rel="stylesheet">
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/05/20/2024-CISCN-Crypto-WP/" rel="prev" title="2024-CISCN-Crypto-WP">
+      <i class="fa fa-chevron-left"></i> 2024-CISCN-Crypto-WP
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/10/06/Unity%E5%BF%AB%E9%80%9F%E5%BC%80%E5%8F%91%E8%A7%81%E8%A7%A3/" rel="next" title="Unity快速开发">
+      Unity快速开发 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="March-7th"
+      src="/images/march7th.jpg">
+  <p class="site-author-name" itemprop="name">March-7th</p>
+  <div class="site-description" itemprop="description">信键鼠真神得永生</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+
+
+<div class="sidebar-footer-info motion-element">
+    <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">桂ICP备2023000644号-2</a>
+    </div>
+
+  <div class="copyright">
+    &copy; 2024 – 2025
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span>March-7th</span>
+  </div>
+</div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">桂ICP备2023000644号-2 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">March-7th</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+<!-- Visitor Tracker -->
+<script>
+(function() {
+  'use strict';
+
+  // 配置 - 本地开发指向 API 服务端口，生产环境使用相对路径
+  const TRACKER_API = window.location.hostname === 'localhost'
+    ? 'http://127.0.0.1:3721/track'
+    : '/api/track';
+
+  // 获取页面信息
+  function getPageInfo() {
+    return {
+      url: window.location.pathname,
+      title: document.title,
+      referrer: document.referrer,
+      ua: navigator.userAgent
+    };
+  }
+
+  // 发送访问记录（使用 sendBeacon 确保页面关闭时也能发送）
+  function trackVisit() {
+    const data = getPageInfo();
+
+    // 优先使用 sendBeacon（不会阻塞页面关闭）
+    if (navigator.sendBeacon) {
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      navigator.sendBeacon(TRACKER_API, blob);
+    } else {
+      // 降级到 fetch
+      fetch(TRACKER_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).catch(() => {}); // 静默失败，不影响用户体验
+    }
+  }
+
+  // 页面加载时记录
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', trackVisit);
+  } else {
+    trackVisit();
+  }
+
+  // 支持 PJAX 页面切换时记录（Next 主题支持 PJAX）
+  document.addEventListener('pjax:complete', function() {
+    setTimeout(trackVisit, 100);
+  });
+
+})();
+</script>
+
+<!-- 扇形菜单按钮 -->
+<div class="fan-menu-container" id="fanMenuContainer">
+  <button class="fan-menu-toggle" id="fanMenuToggle">
+    <i class="fa fa-bars"></i>
+    <i class="fa fa-times"></i>
+  </button>
+  <div class="fan-menu-items" id="fanMenuItems">
+    <!-- 菜单项将由 JS 动态生成 -->
+  </div>
+</div>
+
+<!-- 扇形菜单脚本 -->
+<script>
+(function() {
+  'use strict';
+
+  // 从主题配置读取菜单项
+  const menuItems = [
+    { path: '/about/', icon: 'fa fa-user', title: '关于' },
+    { path: '/categories/', icon: 'fa fa-th', title: '分类' },
+    { path: '/archives/', icon: 'fa fa-archive', title: '归档' },
+    { path: '/videos/', icon: 'fa fa-video', title: '视频' }
+  ];
+
+  const container = document.getElementById('fanMenuContainer');
+  const toggle = document.getElementById('fanMenuToggle');
+  const itemsContainer = document.getElementById('fanMenuItems');
+
+  // 生成扇形菜单项
+  function createMenuItems() {
+    const total = menuItems.length;
+    const radius = 70; // 扇形半径
+    // 右旋90度：原 -160~-20 变成 -70~70
+    const startAngle = -70;
+    const endAngle = 70;
+
+    menuItems.forEach((item, index) => {
+      const a = document.createElement('a');
+      a.className = 'fan-menu-item';
+      a.href = item.path;
+      a.dataset.title = item.title;
+
+      // 计算扇形位置
+      const angle = startAngle + (endAngle - startAngle) * (index / (total - 1 || 1));
+      const rad = angle * Math.PI / 180;
+      const tx = Math.cos(rad) * radius;
+      const ty = Math.sin(rad) * radius;
+
+      a.style.setProperty('--tx', tx + 'px');
+      a.style.setProperty('--ty', ty + 'px');
+      a.style.transitionDelay = (index * 0.05) + 's';
+
+      // 图标
+      const i = document.createElement('i');
+      i.className = item.icon;
+      a.appendChild(i);
+
+      itemsContainer.appendChild(a);
+    });
+  }
+
+  // 初始化
+  createMenuItems();
+
+  // 鼠标进入容器 - 展开菜单
+  container.addEventListener('mouseenter', function() {
+    toggle.classList.add('active');
+  });
+
+  // 鼠标离开容器 - 收起菜单
+  container.addEventListener('mouseleave', function() {
+    toggle.classList.remove('active');
+  });
+
+  // 检测侧边栏状态，侧边栏打开时隐藏菜单
+  function updateMenuVisibility() {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      // 检查侧边栏是否有 sidebar-active 类
+      const isActive = sidebar.classList.contains('sidebar-active');
+      container.style.opacity = isActive ? '0' : '1';
+      container.style.pointerEvents = isActive ? 'none' : 'auto';
+      container.style.visibility = isActive ? 'hidden' : 'visible';
+    }
+  }
+
+  // 初始检测
+  updateMenuVisibility();
+
+  // 监听侧边栏状态变化
+  const sidebar = document.querySelector('.sidebar');
+  if (sidebar) {
+    // 使用 MutationObserver 监听侧边栏 class 变化
+    const observer = new MutationObserver(updateMenuVisibility);
+    observer.observe(sidebar, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+  }
+
+  // 窗口大小变化时重新检测
+  window.addEventListener('resize', updateMenuVisibility);
+
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"march-7th.tech","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="古典密码: Atbash -&gt; base64 -&gt; 栅栏: AnU7NnR4NassOGp3BDJgAGonMaJayTwrBqZ3ODMoMWxgMnFdNqtdMTM9 直接CybeyChef就可以。  hash: 爆破用的必须得是Python2.7. 比较烦，就不想用itertools了，直接一个一个循环打吧 1234567891011121314151617181920imp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2024-CISCN-Crypto-WP">
+<meta property="og:url" content="https://march-7th.tech/2024/05/20/2024-CISCN-Crypto-WP/index.html">
+<meta property="og:site_name" content="三顺七的笔记">
+<meta property="og:description" content="古典密码: Atbash -&gt; base64 -&gt; 栅栏: AnU7NnR4NassOGp3BDJgAGonMaJayTwrBqZ3ODMoMWxgMnFdNqtdMTM9 直接CybeyChef就可以。  hash: 爆破用的必须得是Python2.7. 比较烦，就不想用itertools了，直接一个一个循环打吧 1234567891011121314151617181920imp">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-05-19T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-08-10T19:52:05.129Z">
+<meta property="article:author" content="March-7th">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://march-7th.tech/2024/05/20/2024-CISCN-Crypto-WP/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>2024-CISCN-Crypto-WP | 三顺七的笔记</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">三顺七的笔记</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-videos">
+
+    <a href="/videos/" rel="section"><i class="fa fa-video fa-fw"></i>视频展示</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://march-7th.tech/2024/05/20/2024-CISCN-Crypto-WP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/march7th.jpg">
+      <meta itemprop="name" content="March-7th">
+      <meta itemprop="description" content="信键鼠真神得永生">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="三顺七的笔记">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2024-CISCN-Crypto-WP
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-05-20 00:00:00" itemprop="dateCreated datePublished" datetime="2024-05-20T00:00:00+08:00">2024-05-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-08-11 03:52:05" itemprop="dateModified" datetime="2024-08-11T03:52:05+08:00">2024-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WP/" itemprop="url" rel="index"><span itemprop="name">WP</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="古典密码"><a class="markdownIt-Anchor" href="#古典密码"></a> 古典密码:</h4>
+<p>Atbash -&gt; base64 -&gt; 栅栏:</p>
+<p>AnU7NnR4NassOGp3BDJgAGonMaJayTwrBqZ3ODMoMWxgMnFdNqtdMTM9</p>
+<p>直接CybeyChef就可以。</p>
+<h4 id="hash"><a class="markdownIt-Anchor" href="#hash"></a> hash:</h4>
+<p>爆破用的必须得是Python2.7.</p>
+<p>比较烦，就不想用itertools了，直接一个一个循环打吧</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> binascii</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">to_bytes</span>(<span class="params">i</span>):<span class="keyword">return</span> binascii.unhexlify(<span class="built_in">hex</span>(i)[<span class="number">2</span>:].zfill(<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i0 <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">255</span>,-<span class="number">1</span>,-<span class="number">1</span>):</span><br><span class="line">	<span class="built_in">print</span>(i0)</span><br><span class="line">	<span class="keyword">for</span> i1 <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):</span><br><span class="line">		<span class="keyword">for</span> i2 <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):</span><br><span class="line">			<span class="keyword">for</span> i3 <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):</span><br><span class="line">				pt = to_bytes(i0)+to_bytes(i1)+to_bytes(i2)+to_bytes(i3) + <span class="string">b&#x27;\x01\x01\x01&#x27;</span></span><br><span class="line">				<span class="keyword">if</span> <span class="built_in">str</span>(<span class="built_in">hash</span>(pt))[:<span class="number">4</span>] == <span class="string">&#x27;7457&#x27;</span>:</span><br><span class="line">					<span class="keyword">for</span> i4 <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):			</span><br><span class="line">						pt = to_bytes(i0)+to_bytes(i1)+to_bytes(i2)+to_bytes(i3)+to_bytes(i4)+<span class="string">b&#x27;\x01\x01&#x27;</span></span><br><span class="line">						<span class="keyword">if</span> <span class="built_in">str</span>(<span class="built_in">hash</span>(pt))[:<span class="number">13</span>] == <span class="string">&#x27;7457312583301&#x27;</span>:</span><br><span class="line">							<span class="built_in">print</span> <span class="string">&#x27;finally!&#x27;</span></span><br><span class="line">							<span class="keyword">for</span> i5 <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):</span><br><span class="line">								<span class="keyword">for</span> i6 <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):</span><br><span class="line">									pt = to_bytes(i0)+to_bytes(i1)+to_bytes(i2)+to_bytes(i3)+to_bytes(i4)+to_bytes(i5)+to_bytes(i6)</span><br><span class="line">									<span class="keyword">if</span> <span class="built_in">str</span>(<span class="built_in">hash</span>(pt)) == <span class="string">&#x27;7457312583301101235&#x27;</span>:</span><br><span class="line">										<span class="built_in">print</span> <span class="built_in">int</span>(hashlib.sha384(binascii.hexlify(pt)).hexdigest(), <span class="number">16</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="ovo"><a class="markdownIt-Anchor" href="#ovo"></a> OvO:</h4>
+<p>e=65537+kp+(k+2)(p+1)(q+1)+1\ e=65537+(k+2)n+2(k+1)p+(k+2)q+k+3\ ep=65537p+(k+2)np+2(k+1) p^2+(k+2)n+(k+3)p\ 令k = e // 2 - 2</p>
+<p>因为e的信息缺失，通过上式求根的办法只能得到q的高位，接下来还得利用q高位泄露的办法去解q的低位。</p>
+<p>得到所有信息之后正常代数解密就可以。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> Crypto.Util.number <span class="keyword">import</span> *</span><br><span class="line">n = <span class="number">111922722351752356094117957341697336848130397712588425954225300832977768690114834703654895285440684751636198779555891692340301590396539921700125219784729325979197290342352480495970455903120265334661588516182848933843212275742914269686197484648288073599387074325226321407600351615258973610780463417788580083967</span></span><br><span class="line">e = <span class="number">37059679294843322451875129178470872595128216054082068877693632035071251762179299783152435312052608685562859680569924924133175684413544051218945466380415013172416093939670064185752780945383069447693745538721548393982857225386614608359109463927663728739248286686902750649766277564516226052064304547032760477638585302695605907950461140971727150383104</span></span><br><span class="line">c = <span class="number">14999622534973796113769052025256345914577762432817016713135991450161695032250733213228587506601968633155119211807176051329626895125610484405486794783282214597165875393081405999090879096563311452831794796859427268724737377560053552626220191435015101496941337770496898383092414492348672126813183368337602023823</span></span><br><span class="line"></span><br><span class="line">k = e//n-<span class="number">2</span></span><br><span class="line">g = <span class="number">65537</span> + (k+<span class="number">2</span>)*n + (k+<span class="number">2</span>) + <span class="number">1</span></span><br><span class="line">R.&lt;x&gt; = PolynomialRing(RealField(<span class="number">1024</span>))</span><br><span class="line">f = e*x - (<span class="number">2</span>*(k+<span class="number">1</span>)*x**<span class="number">2</span> + (k+<span class="number">2</span>)*n + g*x)</span><br><span class="line">MSBs = f.roots()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;[+] MSB = <span class="subst">&#123;MSBs&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> MSB <span class="keyword">in</span> MSBs:</span><br><span class="line">    PR.&lt;x&gt; = PolynomialRing(Zmod(n))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;[+] test = <span class="subst">&#123;<span class="built_in">int</span>(MSB[<span class="number">0</span>])&#125;</span>&#x27;</span>)</span><br><span class="line">    t = <span class="built_in">int</span>(MSB[<span class="number">0</span>])</span><br><span class="line">    f_= x+t</span><br><span class="line">    root = f_.small_roots(X=<span class="number">2</span>**<span class="number">200</span>,beta=<span class="number">0.4</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;[+] find root = <span class="subst">&#123;root&#125;</span>&#x27;</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        p = root[<span class="number">0</span>]+t</span><br><span class="line">        <span class="keyword">if</span> n%p==<span class="number">0</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&#x27;[+] p=<span class="subst">&#123;p&#125;</span>&#x27;</span>)</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">q = <span class="built_in">int</span>(n//<span class="built_in">int</span>(p))</span><br><span class="line">phi = (q-<span class="number">1</span>)*(p-<span class="number">1</span>)</span><br><span class="line"><span class="keyword">assert</span> isPrime(<span class="built_in">int</span>(k))</span><br><span class="line">k = <span class="built_in">int</span>(k)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;k = <span class="subst">&#123;k&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;p = <span class="subst">&#123;p&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;q = <span class="subst">&#123;q&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;c = <span class="subst">&#123;c&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="comment">#拿参数</span></span><br></pre></td></tr></table></figure>
+<p>解密：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> Crypto.Util.number <span class="keyword">import</span> *</span><br><span class="line">p=<span class="number">9915449532466780441980882114644132757469503045317741049786571327753160105973102603393585703801838713884852201325856459312958617061522496169870935934745091</span></span><br><span class="line">q=<span class="number">11287710353955888973017088237331029225772085726230749705174733853385754367993775916873684714795084329569719147149432367637098107466393989095020167706071637</span></span><br><span class="line">n=q*p</span><br><span class="line">c=<span class="number">14999622534973796113769052025256345914577762432817016713135991450161695032250733213228587506601968633155119211807176051329626895125610484405486794783282214597165875393081405999090879096563311452831794796859427268724737377560053552626220191435015101496941337770496898383092414492348672126813183368337602023823</span></span><br><span class="line">k = <span class="number">331118458487559161870846961263454730637</span></span><br><span class="line">e = <span class="number">65537</span> + k*p + (k+<span class="number">2</span>) * ((p+<span class="number">1</span>) * (q+<span class="number">1</span>)) + <span class="number">1</span></span><br><span class="line">phi = (q-<span class="number">1</span>)*(p-<span class="number">1</span>)</span><br><span class="line">d = inverse(e,phi)</span><br><span class="line">m = <span class="built_in">pow</span>(c,d,n)</span><br><span class="line"><span class="built_in">print</span>(long_to_bytes(m))</span><br><span class="line"><span class="comment">#b&#x27;flag&#123;b5f771c6-18df-49a9-9d6d-ee7804f5416c&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+<h4 id="mouth"><a class="markdownIt-Anchor" href="#mouth"></a> Mouth:</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</span><br><span class="line"><span class="keyword">from</span> Crypto.Util.number <span class="keyword">import</span> long_to_bytes</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime, timedelta</span><br><span class="line"><span class="keyword">from</span> pickle <span class="keyword">import</span> loads</span><br><span class="line"><span class="keyword">from</span> hashlib <span class="keyword">import</span> md5</span><br><span class="line"><span class="keyword">from</span> requests <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> math <span class="keyword">import</span> floor</span><br><span class="line"><span class="keyword">from</span> libnum <span class="keyword">import</span> n2s</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line">A = md5(<span class="string">b&#x27;A&#x27;</span>).hexdigest()[:<span class="number">16</span>]</span><br><span class="line">B = md5(<span class="string">b&#x27;B&#x27;</span>).hexdigest()[:<span class="number">16</span>]</span><br><span class="line">S = md5(<span class="string">b&#x27;S&#x27;</span>).hexdigest()[:<span class="number">16</span>]</span><br><span class="line">delta_8_hours = timedelta(hours=<span class="number">8</span>)</span><br><span class="line">url = <span class="string">&#x27;http://8.147.131.163:15917&#x27;</span></span><br><span class="line">token_A = A</span><br><span class="line">token_B = B</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">regist</span>(<span class="params">url,token</span>):</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">f&#x27;[+] use token : <span class="subst">&#123;token&#125;</span>&#x27;</span>)</span><br><span class="line">	prefix = <span class="string">&#x27;/register&#x27;</span></span><br><span class="line">	params = &#123;<span class="string">&#x27;token&#x27;</span>:token&#125;</span><br><span class="line">	result = get(url+prefix,params)</span><br><span class="line">	<span class="comment">#cur_key_token</span></span><br><span class="line">	<span class="built_in">print</span>(result.text)</span><br><span class="line">	cur_key = <span class="built_in">eval</span>(result.text)[<span class="string">&quot;key_to_server&quot;</span>]</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">f&#x27;[+] get key : <span class="subst">&#123;cur_key&#125;</span>&#x27;</span>)</span><br><span class="line">	<span class="keyword">return</span> cur_key</span><br><span class="line"><span class="comment">#时间少八小时</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">send_msg</span>(<span class="params">url,token,target_token,target,cur_key_token</span>):</span><br><span class="line">	<span class="comment">#source就是我们要控制的token</span></span><br><span class="line">	<span class="comment">#cur_key_token = regist(url,token)</span></span><br><span class="line">	prefix = <span class="string">&#x27;/send_message&#x27;</span></span><br><span class="line">	<span class="comment">#friend 也就是source由我们构造，之后通讯的cur_key，也是由我们构造，24秒内通过构造就行</span></span><br><span class="line">	</span><br><span class="line">	timestamp_minus_8_hours = datetime.fromtimestamp(time.time()) - delta_8_hours</span><br><span class="line">	t = timestamp_minus_8_hours.timestamp()</span><br><span class="line">	<span class="comment">#t = bytes.fromhex(hex(floor(t))[2:].zfill(32))</span></span><br><span class="line">	t = n2s(<span class="built_in">int</span>(t)).rjust(<span class="number">16</span>, <span class="string">b&#x27;0&#x27;</span>)</span><br><span class="line">	source = <span class="built_in">bytes</span>.fromhex(target_token)</span><br><span class="line">	key = <span class="string">b&#x27;\x00&#x27;</span> * <span class="number">16</span></span><br><span class="line">	pad = <span class="string">b&#x27;\x00&#x27;</span> * <span class="number">8</span></span><br><span class="line">	msg = t + source + key + pad</span><br><span class="line"></span><br><span class="line">	Cipher = AES.new(<span class="built_in">bytes</span>.fromhex(cur_key_token), AES.MODE_ECB)</span><br><span class="line">	message = Cipher.encrypt(msg) <span class="comment">#记得传的时候是hex字符串</span></span><br><span class="line">	payload = message.<span class="built_in">hex</span>()</span><br><span class="line">	<span class="keyword">assert</span> <span class="built_in">len</span>(payload) == <span class="number">16</span> * <span class="number">3</span> * <span class="number">2</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> <span class="built_in">len</span>(payload) == <span class="number">16</span> * <span class="number">3</span> * <span class="number">2</span>:<span class="built_in">print</span>(<span class="string">&#x27;?&#x27;</span>)</span><br><span class="line">	params = &#123;<span class="string">&#x27;token&#x27;</span>:token,<span class="string">&#x27;to&#x27;</span>:target,<span class="string">&#x27;message&#x27;</span>:payload&#125;</span><br><span class="line">	result = get(url+prefix,params)</span><br><span class="line">	<span class="keyword">return</span> result.text</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">send_flag</span>(<span class="params">url,token</span>):</span><br><span class="line">	prefix = <span class="string">&#x27;/send_flag&#x27;</span></span><br><span class="line">	params = &#123;<span class="string">&#x27;token&#x27;</span>:token&#125;</span><br><span class="line">	result = get(url+prefix,params)</span><br><span class="line">	<span class="keyword">return</span> result.text</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">exchange</span>(<span class="params">url,token</span>):</span><br><span class="line">	prefix = <span class="string">&#x27;/A_and_B&#x27;</span></span><br><span class="line">	params = &#123;<span class="string">&#x27;token&#x27;</span>:token&#125;</span><br><span class="line">	result = get(url+prefix,params)</span><br><span class="line">	<span class="keyword">return</span> result.text</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">view_history</span>(<span class="params">url,token</span>):</span><br><span class="line">	prefix = <span class="string">&#x27;/view_history&#x27;</span></span><br><span class="line">	params = &#123;<span class="string">&#x27;token&#x27;</span>:token&#125;</span><br><span class="line">	result = get(url+prefix,params)</span><br><span class="line">	<span class="keyword">return</span>(result.text)</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">#打法一，直接伪造A对B的发信密钥，让A和B交换一次会话密钥，用发信密钥解密，之后通话就随便监听了</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">A_key = regist(url,A)</span></span><br><span class="line"><span class="string">#B_key = regist(url,B)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">print(f&#x27;A_key=&#123;A_key&#125;&#x27;)</span></span><br><span class="line"><span class="string">#print(f&#x27;B_key=&#123;B_key&#125;&#x27;)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">exchange(url,A)</span></span><br><span class="line"><span class="string">#view_history(A)</span></span><br><span class="line"><span class="string">send_flag(url,A)</span></span><br><span class="line"><span class="string">print(view_history(url,A))</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">#打法二，利用send_message函数去控制双方的会话密钥，强行让他们相等</span></span><br><span class="line"><span class="string">A_key = regist(url,A)</span></span><br><span class="line"><span class="string">send_msg(url,A,B,&#x27;A&#x27;,A_Key)</span></span><br><span class="line"><span class="string">send_msg(url,A,A,&#x27;B&#x27;,A_Key)</span></span><br><span class="line"><span class="string">send_flag(url,A)</span></span><br><span class="line"><span class="string">print(view_history(url,A))</span></span><br><span class="line"><span class="string">#凭记忆写的，可能流程不太对，大致这个思路能过，好处是直接一次性拿下会话密钥。</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#拿到密文之后，手动解一下密</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">print(A)</span></span><br><span class="line"><span class="string">key = &#x27;5fa11352bb62df887404c4da9a8357c9&#x27;</span></span><br><span class="line"><span class="string">Cipher = AES.new(bytes.fromhex(key),AES.MODE_ECB)</span></span><br><span class="line"><span class="string">orin_key_cipher = &#x27;ad6c4e00649df28c1e89ea2c19ed49c8257e4cf9d66ed7b76fc76b17254fd5859c10b0c5983f4b3d35e78ac8d2649594&#x27;</span></span><br><span class="line"><span class="string">print(bytes.fromhex(orin_key_cipher))</span></span><br><span class="line"><span class="string">key_ = Cipher.decrypt(bytes.fromhex(orin_key_cipher))</span></span><br><span class="line"><span class="string">print(key_)</span></span><br><span class="line"><span class="string">print(key_[32: 48].hex())</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">key0 = &#x27;b5768d25a0c3a76516136dc81e852300&#x27;</span></span><br><span class="line"><span class="string">Cipher = AES.new(bytes.fromhex(key0),AES.MODE_ECB)</span></span><br><span class="line"><span class="string">orin_cipher = &#x27;90ceb8ced60d9ed6d244edb9345505273ec51c9e32ff15bfd4bba14b0b1cbefdeb699c3a18affbf5fab5b91051f893f6&#x27;</span></span><br><span class="line"><span class="string">flag = Cipher.decrypt(bytes.fromhex(orin_cipher))</span></span><br><span class="line"><span class="string">print(flag)</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>很烦，一开始做的时候用的send_message的接口，本地能通，远程的服务器根本通不了，原因在于time check这步，我们不知道服务器的时间，导致根本没办法主动去控制send_flag的会话密钥。经过测试，去调到服务器的时间也不行，不知道说什么好了。浪费时间。</p>
+<h4 id="ezrsa"><a class="markdownIt-Anchor" href="#ezrsa"></a> EzRSA</h4>
+<p>证书是加密过的，要拿到泄露的信息有点麻烦。</p>
+<p>先进函数库里面下Hook，把import key这个函数的解密拿来用，这样就不用造轮子去解析密钥了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Python312\Lib\site-packages\Crypto\Util\asn1.py</span><br><span class="line">在Class BytesIO_EOF里面的Read函数下个：</span><br><span class="line">print(self._buffer[self._index:new_index].hex())</span><br><span class="line">这样就能直接解析错误的证书。</span><br></pre></td></tr></table></figure>
+<p>接下来去爆解密的口令:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> Crypto.Util.number <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> Crypto.PublicKey <span class="keyword">import</span> RSA</span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line"><span class="comment">#range(316999+166584,316999+166586)</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> tqdm(<span class="built_in">range</span>(<span class="number">100000</span>,<span class="number">999999</span>)):</span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		<span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;priv.pem&quot;</span>, <span class="string">&quot;rb&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">		    data = f.read()</span><br><span class="line">		    key = RSA.import_key(data, passphrase=<span class="built_in">str</span>(i).encode())</span><br><span class="line">	<span class="keyword">except</span>:</span><br><span class="line">		<span class="keyword">continue</span></span><br></pre></td></tr></table></figure>
+<p>直接在console里面看打出来的结果哪个正确就可以，经过二分查找得到口令483584</p>
+<p>读密钥:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">passw = b&#x27;483584&#x27;</span><br><span class="line">with open(&quot;priv.pem&quot;, &quot;rb&quot;) as f:</span><br><span class="line">	data = f.read()</span><br><span class="line">	key = RSA.import_key(data, passphrase=passw)</span><br></pre></td></tr></table></figure>
+<p>手动解析一下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">n = 0xa18f011bebacceda1c6812730b9e62720d3cbd6857af2cf8431860f5dc83c5520f242f3be7c9e96d7f96b41898ff000fdb7e43ef6f1e717b2b7900f35660a21d1b16b51849be97a0b0f7cbcf5cfe0f00370cce6193fefa1fed97b37bd367a673565162ce17b0225708c032961d175bbc2c829bf2e16eabc7e0881feca0975c81</span><br><span class="line">e = 0x010001</span><br><span class="line">what = 0x6a033064c5a0dffc8f2363b340e502405f152c429871a7acdd28be1b643b4652800b88a3d23cc57477d75dd5555b635167616ef5c609d69ce3c2aedcb03b62f929bbcd891cadc0ba031ae6fec8a2116d</span><br><span class="line">d_low = what&gt;&gt;512</span><br><span class="line">p_q = what - (d_low&lt;&lt;512)</span><br><span class="line">print(n)</span><br><span class="line">print(d_low)</span><br><span class="line">print(p_q)</span><br></pre></td></tr></table></figure>
+<p>具体手撕方案参考 : <a target="_blank" rel="noopener" href="https://blog.csdn.net/fengshenyun/article/details/124596279">PEM与DER格式解析</a></p>
+<p>撕完参考蓝帽杯的题：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_53283643/article/details/125727453?spm=1001.2014.3001.5501">这个</a></p>
+<p>直接抄脚本解就可以。</p>
+<p>我感觉在做的是杂项，而不是密码</p>
+<h4 id="最后"><a class="markdownIt-Anchor" href="#最后"></a> 最后：</h4>
+<p>可信计算？三月七都不做。</p>
+<p>可能太久没做题了，做的真不爽。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/04/29/2024-D3CTF-Crypto-WP/" rel="prev" title="2024-D3CTF-Crypto-WP">
+      <i class="fa fa-chevron-left"></i> 2024-D3CTF-Crypto-WP
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/08/10/Math-Test/" rel="next" title="数学测试">
+      数学测试 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%A4%E5%85%B8%E5%AF%86%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text"> 古典密码:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hash"><span class="nav-number">2.</span> <span class="nav-text"> hash:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ovo"><span class="nav-number">3.</span> <span class="nav-text"> OvO:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mouth"><span class="nav-number">4.</span> <span class="nav-text"> Mouth:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ezrsa"><span class="nav-number">5.</span> <span class="nav-text"> EzRSA</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%80%E5%90%8E"><span class="nav-number">6.</span> <span class="nav-text"> 最后：</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="March-7th"
+      src="/images/march7th.jpg">
+  <p class="site-author-name" itemprop="name">March-7th</p>
+  <div class="site-description" itemprop="description">信键鼠真神得永生</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+
+
+<div class="sidebar-footer-info motion-element">
+    <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">桂ICP备2023000644号-2</a>
+    </div>
+
+  <div class="copyright">
+    &copy; 2024 – 2025
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span>March-7th</span>
+  </div>
+</div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">桂ICP备2023000644号-2 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">March-7th</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+<!-- Visitor Tracker -->
+<script>
+(function() {
+  'use strict';
+
+  // 配置 - 本地开发指向 API 服务端口，生产环境使用相对路径
+  const TRACKER_API = window.location.hostname === 'localhost'
+    ? 'http://127.0.0.1:3721/track'
+    : '/api/track';
+
+  // 获取页面信息
+  function getPageInfo() {
+    return {
+      url: window.location.pathname,
+      title: document.title,
+      referrer: document.referrer,
+      ua: navigator.userAgent
+    };
+  }
+
+  // 发送访问记录（使用 sendBeacon 确保页面关闭时也能发送）
+  function trackVisit() {
+    const data = getPageInfo();
+
+    // 优先使用 sendBeacon（不会阻塞页面关闭）
+    if (navigator.sendBeacon) {
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      navigator.sendBeacon(TRACKER_API, blob);
+    } else {
+      // 降级到 fetch
+      fetch(TRACKER_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).catch(() => {}); // 静默失败，不影响用户体验
+    }
+  }
+
+  // 页面加载时记录
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', trackVisit);
+  } else {
+    trackVisit();
+  }
+
+  // 支持 PJAX 页面切换时记录（Next 主题支持 PJAX）
+  document.addEventListener('pjax:complete', function() {
+    setTimeout(trackVisit, 100);
+  });
+
+})();
+</script>
+
+<!-- 扇形菜单按钮 -->
+<div class="fan-menu-container" id="fanMenuContainer">
+  <button class="fan-menu-toggle" id="fanMenuToggle">
+    <i class="fa fa-bars"></i>
+    <i class="fa fa-times"></i>
+  </button>
+  <div class="fan-menu-items" id="fanMenuItems">
+    <!-- 菜单项将由 JS 动态生成 -->
+  </div>
+</div>
+
+<!-- 扇形菜单脚本 -->
+<script>
+(function() {
+  'use strict';
+
+  // 从主题配置读取菜单项
+  const menuItems = [
+    { path: '/about/', icon: 'fa fa-user', title: '关于' },
+    { path: '/categories/', icon: 'fa fa-th', title: '分类' },
+    { path: '/archives/', icon: 'fa fa-archive', title: '归档' },
+    { path: '/videos/', icon: 'fa fa-video', title: '视频' }
+  ];
+
+  const container = document.getElementById('fanMenuContainer');
+  const toggle = document.getElementById('fanMenuToggle');
+  const itemsContainer = document.getElementById('fanMenuItems');
+
+  // 生成扇形菜单项
+  function createMenuItems() {
+    const total = menuItems.length;
+    const radius = 70; // 扇形半径
+    // 右旋90度：原 -160~-20 变成 -70~70
+    const startAngle = -70;
+    const endAngle = 70;
+
+    menuItems.forEach((item, index) => {
+      const a = document.createElement('a');
+      a.className = 'fan-menu-item';
+      a.href = item.path;
+      a.dataset.title = item.title;
+
+      // 计算扇形位置
+      const angle = startAngle + (endAngle - startAngle) * (index / (total - 1 || 1));
+      const rad = angle * Math.PI / 180;
+      const tx = Math.cos(rad) * radius;
+      const ty = Math.sin(rad) * radius;
+
+      a.style.setProperty('--tx', tx + 'px');
+      a.style.setProperty('--ty', ty + 'px');
+      a.style.transitionDelay = (index * 0.05) + 's';
+
+      // 图标
+      const i = document.createElement('i');
+      i.className = item.icon;
+      a.appendChild(i);
+
+      itemsContainer.appendChild(a);
+    });
+  }
+
+  // 初始化
+  createMenuItems();
+
+  // 鼠标进入容器 - 展开菜单
+  container.addEventListener('mouseenter', function() {
+    toggle.classList.add('active');
+  });
+
+  // 鼠标离开容器 - 收起菜单
+  container.addEventListener('mouseleave', function() {
+    toggle.classList.remove('active');
+  });
+
+  // 检测侧边栏状态，侧边栏打开时隐藏菜单
+  function updateMenuVisibility() {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      // 检查侧边栏是否有 sidebar-active 类
+      const isActive = sidebar.classList.contains('sidebar-active');
+      container.style.opacity = isActive ? '0' : '1';
+      container.style.pointerEvents = isActive ? 'none' : 'auto';
+      container.style.visibility = isActive ? 'hidden' : 'visible';
+    }
+  }
+
+  // 初始检测
+  updateMenuVisibility();
+
+  // 监听侧边栏状态变化
+  const sidebar = document.querySelector('.sidebar');
+  if (sidebar) {
+    // 使用 MutationObserver 监听侧边栏 class 变化
+    const observer = new MutationObserver(updateMenuVisibility);
+    observer.observe(sidebar, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+  }
+
+  // 窗口大小变化时重新检测
+  window.addEventListener('resize', updateMenuVisibility);
+
+})();
+</script>
+
+</body>
+</html>

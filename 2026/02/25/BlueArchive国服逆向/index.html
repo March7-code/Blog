@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"march-7th.tech","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="我爱玩碧蓝档案，鏖战了两三天，可以把frida打进去了，平心而论我觉得技术含量还是非常高的，对抗强度最高的一次，学到的非常多，这里记录一下。  起点 和之前il2cpp分析的一样，要想拿到静态的资源表、结构体、函数签名之类的，就需要通过il2cpp中的meta_init，il2cpp dump的原理就是这样，meta_init需要通过global-metadata.dat来获取全局的字符串信息，然">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BlueArchive国服逆向">
+<meta property="og:url" content="https://march-7th.tech/2026/02/25/BlueArchive%E5%9B%BD%E6%9C%8D%E9%80%86%E5%90%91/index.html">
+<meta property="og:site_name" content="三顺七的笔记">
+<meta property="og:description" content="我爱玩碧蓝档案，鏖战了两三天，可以把frida打进去了，平心而论我觉得技术含量还是非常高的，对抗强度最高的一次，学到的非常多，这里记录一下。  起点 和之前il2cpp分析的一样，要想拿到静态的资源表、结构体、函数签名之类的，就需要通过il2cpp中的meta_init，il2cpp dump的原理就是这样，meta_init需要通过global-metadata.dat来获取全局的字符串信息，然">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://march-7th.tech/uploads/9ac2cc16-8c37-4e8e-a6c6-9f80aa69967a.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/21f5a209-05b5-42df-9cba-30526e281f6f.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/48a91e98-09f2-4f1a-bbef-d2f85b0c1f03.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/0bf963a4-0167-47ad-8676-ce545d0382cf.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/2d32940a-b155-44b5-b3de-c84ecf40ffd4.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/image-20260219180123224.png">
+<meta property="og:image" content="https://march-7th.tech/uploads/3a353657-f7ba-4d9d-ac34-0134ce6a0420.png">
+<meta property="article:published_time" content="2026-02-24T17:21:02.000Z">
+<meta property="article:modified_time" content="2026-02-24T18:37:18.718Z">
+<meta property="article:author" content="March-7th">
+<meta property="article:tag" content="安卓">
+<meta property="article:tag" content="Unity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://march-7th.tech/uploads/9ac2cc16-8c37-4e8e-a6c6-9f80aa69967a.png">
+
+<link rel="canonical" href="https://march-7th.tech/2026/02/25/BlueArchive%E5%9B%BD%E6%9C%8D%E9%80%86%E5%90%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>BlueArchive国服逆向 | 三顺七的笔记</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">三顺七的笔记</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-videos">
+
+    <a href="/videos/" rel="section"><i class="fa fa-video fa-fw"></i>视频展示</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://march-7th.tech/2026/02/25/BlueArchive%E5%9B%BD%E6%9C%8D%E9%80%86%E5%90%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/march7th.jpg">
+      <meta itemprop="name" content="March-7th">
+      <meta itemprop="description" content="信键鼠真神得永生">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="三顺七的笔记">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          BlueArchive国服逆向
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-02-25 01:21:02 / 修改时间：02:37:18" itemprop="dateCreated datePublished" datetime="2026-02-25T01:21:02+08:00">2026-02-25</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>我爱玩碧蓝档案，鏖战了两三天，可以把frida打进去了，平心而论我觉得技术含量还是非常高的，对抗强度最高的一次，学到的非常多，这里记录一下。</p>
+<h2 id="起点"><a class="markdownIt-Anchor" href="#起点"></a> 起点</h2>
+<p>和之前il2cpp分析的一样，要想拿到静态的资源表、结构体、函数签名之类的，就需要通过il2cpp中的meta_init，il2cpp dump的原理就是这样，meta_init需要通过global-metadata.dat来获取全局的字符串信息，然后把C#转译出来的Cpp跑起来，这个转移出来的CPP本身就有一定的混淆效果，像是写代码时用到的字符串之类的信息都会被转储到global-metadata.dat中。（这一段准备工作，网上有大量的资料和工具）</p>
+<p>而BA的global-metadat是加密了的（通过魔术头和熵值就能分析出来）、直接上手il2cpp.so去分析，也找不到解密的逻辑在哪里，最离谱的是我拿着Unity的源码找特征字符串引用、也是一无所获，找不到关键的逻辑，这就是第一步难关了。</p>
+<p><a target="_blank" rel="noopener" href="http://xn--libtprt-1w3ls8uu1tnvd1oy4n6bcse0z5h.so">合理地怀疑应该是libtprt.so</a>，一搜发现旧的处理逻辑还有别人的分析，最终发现确实啊 global-metadata.dat是交由这个函数库解密后，提供给il2cpp使用的，接下来的操作就比较骚了（我都想笑了）：</p>
+<ul>
+<li>
+<p>看见别人分析（25年的帖子、不是同一款游戏），有一些特征字符串，我顺着去在libtprt里面搜，发现真能找到对应的函数。神奇的是BA的global-metadata.dat的魔术头和他分析的版本一样，虽然内容不同。</p>
+</li>
+<li>
+<p>在他帖子里看见，，他用了frida去做各种调试，在我这里是不行的，我没法动态调（这个下文会说BA的动态反作弊、难度真的非常大），最重要的是漏了一个mmap函数，我一想觉得就非常合理啊、载入静态资源分配内存，然后对内存做处理，提供给后续使用。</p>
+</li>
+<li>
+<img src="\uploads\9ac2cc16-8c37-4e8e-a6c6-9f80aa69967a.png" style="zoom: 50%;" />
+</li>
+<li>
+<p>而这个函数在我这边一搜索发现：引用数量不多，可以分析！随手找了下真撞见了：有个很明显的魔术头匹配逻辑，最重要的是没多少混淆，往下追就是解密的逻辑，流程：识别魔术头→走解密分支→再做头部抹除，抄了一下解密的逻辑如下（其实也就是AES解密、密钥都写在里面）：</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"><span class="keyword">from</span> pathlib <span class="keyword">import</span> Path</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES  <span class="comment"># pip install pycryptodome</span></span><br><span class="line"><span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">    <span class="keyword">raise</span> SystemExit(<span class="string">&quot;Need pycryptodome: pip install pycryptodome&quot;</span>) <span class="keyword">from</span> e</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">MAGIC = <span class="string">b&quot;\x94\x43\x72\x12&quot;</span>       <span class="comment"># 0x12724394 (LE)</span></span><br><span class="line">ARG3_CONST = <span class="number">0xD96603C0</span></span><br><span class="line">IV_16 = <span class="built_in">bytes</span>(<span class="built_in">range</span>(<span class="number">0x02</span>, <span class="number">0x12</span>))  <span class="comment"># 02..11</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># sub_5670f8 checks these 32-bit signed fields are &lt; file_size</span></span><br><span class="line">CHECK_OFFSETS = [</span><br><span class="line">    <span class="number">0x08</span>, <span class="number">0x0C</span>, <span class="number">0x10</span>, <span class="number">0x14</span>, <span class="number">0x18</span>, <span class="number">0x1C</span>, <span class="number">0x20</span>, <span class="number">0x24</span>, <span class="number">0x28</span>, <span class="number">0x2C</span>, <span class="number">0x30</span>, <span class="number">0x34</span>,</span><br><span class="line">    <span class="number">0x58</span>, <span class="number">0x5C</span>, <span class="number">0x60</span>, <span class="number">0x64</span>, <span class="number">0x68</span>, <span class="number">0x6C</span>,</span><br><span class="line">    <span class="number">0x88</span>, <span class="number">0x8C</span>, <span class="number">0x90</span>, <span class="number">0x94</span>, <span class="number">0x98</span>, <span class="number">0x9C</span>, <span class="number">0xA0</span>, <span class="number">0xA4</span>,</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">xor_region</span>(<span class="params">buf: <span class="built_in">bytearray</span>, start: <span class="built_in">int</span>, length: <span class="built_in">int</span>, key_byte: <span class="built_in">int</span></span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">    end = <span class="built_in">min</span>(<span class="built_in">len</span>(buf), start + <span class="built_in">max</span>(<span class="number">0</span>, length))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">max</span>(<span class="number">0</span>, start), end):</span><br><span class="line">        buf[i] ^= key_byte</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">check_offsets</span>(<span class="params">buf: <span class="built_in">bytes</span></span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">    n = <span class="built_in">len</span>(buf)</span><br><span class="line">    <span class="keyword">for</span> off <span class="keyword">in</span> CHECK_OFFSETS:</span><br><span class="line">        <span class="keyword">if</span> off + <span class="number">4</span> &gt; n:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        v = struct.unpack_from(<span class="string">&quot;&lt;i&quot;</span>, buf, off)[<span class="number">0</span>]  <span class="comment"># signed int32</span></span><br><span class="line">        <span class="keyword">if</span> v &gt;= n:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">transform_0x4000_area</span>(<span class="params">buf: <span class="built_in">bytearray</span>, aes_key_16: <span class="built_in">bytes</span>, use_decrypt: <span class="built_in">bool</span></span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">    <span class="comment"># sub_5537f8(mode=2): 0x1000..0x4FFF, split into 0x800 chunks</span></span><br><span class="line">    base = <span class="number">0x1000</span></span><br><span class="line">    total = <span class="number">0x4000</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(buf) &lt; base:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    real_total = <span class="built_in">min</span>(total, <span class="built_in">len</span>(buf) - base)</span><br><span class="line">    pos = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> pos &lt; real_total:</span><br><span class="line">        chunk_len = <span class="built_in">min</span>(<span class="number">0x800</span>, real_total - pos)</span><br><span class="line">        <span class="comment"># AES-CBC needs block aligned; this region should be aligned in sample logic</span></span><br><span class="line">        <span class="keyword">if</span> chunk_len % <span class="number">16</span> != <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        st = base + pos</span><br><span class="line">        ed = st + chunk_len</span><br><span class="line">        chunk = <span class="built_in">bytes</span>(buf[st:ed])</span><br><span class="line"></span><br><span class="line">        cipher = AES.new(aes_key_16, AES.MODE_CBC, iv=IV_16)</span><br><span class="line">        out = cipher.decrypt(chunk) <span class="keyword">if</span> use_decrypt <span class="keyword">else</span> cipher.encrypt(chunk)</span><br><span class="line">        buf[st:ed] = out</span><br><span class="line">        pos += <span class="number">0x800</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">core_decrypt_try</span>(<span class="params">src: <span class="built_in">bytes</span>, use_decrypt_for_aes: <span class="built_in">bool</span></span>) -&gt; <span class="built_in">bytes</span>:</span><br><span class="line">    b = <span class="built_in">bytearray</span>(src)</span><br><span class="line">    size = <span class="built_in">len</span>(b)</span><br><span class="line"></span><br><span class="line">    key_byte = (ARG3_CONST &gt;&gt; <span class="number">16</span>) &amp; <span class="number">0xFF</span></span><br><span class="line">    <span class="keyword">if</span> key_byte == <span class="number">0</span>:</span><br><span class="line">        key_byte = <span class="number">0x87</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> size &gt;= <span class="number">0x100000</span>:</span><br><span class="line">        <span class="comment"># 1) XOR [8, 0x1000)</span></span><br><span class="line">        xor_region(b, <span class="number">8</span>, <span class="number">0x1000</span> - <span class="number">8</span>, key_byte)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 2) key = &quot;%08x%08x&quot; % (size, 0xD96603C0)</span></span><br><span class="line">        aes_key = <span class="string">f&quot;<span class="subst">&#123;size:08x&#125;</span><span class="subst">&#123;ARG3_CONST:08x&#125;</span>&quot;</span>.encode(<span class="string">&quot;ascii&quot;</span>)  <span class="comment"># 16 bytes</span></span><br><span class="line">        transform_0x4000_area(b, aes_key, use_decrypt_for_aes)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 3) XOR from 0x11000 onward:</span></span><br><span class="line">        <span class="comment">#    each full 0x10000 block: XOR first 0x4000</span></span><br><span class="line">        <span class="comment">#    then XOR remaining tail bytes continuously</span></span><br><span class="line">        rem_total = size - <span class="number">0x11000</span></span><br><span class="line">        <span class="keyword">if</span> rem_total &gt; <span class="number">0</span>:</span><br><span class="line">            full = rem_total // <span class="number">0x10000</span></span><br><span class="line">            <span class="keyword">for</span> blk <span class="keyword">in</span> <span class="built_in">range</span>(full):</span><br><span class="line">                start = <span class="number">0x11000</span> + blk * <span class="number">0x10000</span></span><br><span class="line">                xor_region(b, start, <span class="number">0x4000</span>, key_byte)</span><br><span class="line"></span><br><span class="line">            done = full &lt;&lt; <span class="number">16</span></span><br><span class="line">            tail = rem_total - done</span><br><span class="line">            <span class="keyword">if</span> tail &gt; <span class="number">0</span>:</span><br><span class="line">                xor_region(b, <span class="number">0x11000</span> + done, tail, key_byte)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="comment"># small path: XOR [8, size)</span></span><br><span class="line">        xor_region(b, <span class="number">8</span>, size - <span class="number">8</span>, key_byte)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">bytes</span>(b)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">decrypt_like_sub_5674cc</span>(<span class="params">src: <span class="built_in">bytes</span></span>) -&gt; <span class="built_in">tuple</span>[<span class="built_in">bytes</span>, <span class="built_in">str</span>]:</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(src) &lt; <span class="number">8</span>:</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">&quot;file too small&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> src[:<span class="number">4</span>] != MAGIC:</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">&quot;magic mismatch (not encrypted target format)&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Try both AES directions; pick one that passes sub_5670f8-style checks.</span></span><br><span class="line">    <span class="keyword">for</span> mode <span class="keyword">in</span> (<span class="literal">True</span>, <span class="literal">False</span>):  <span class="comment"># True=decrypt, False=encrypt</span></span><br><span class="line">        out = core_decrypt_try(src, use_decrypt_for_aes=mode)</span><br><span class="line">        <span class="keyword">if</span> check_offsets(out):</span><br><span class="line">            <span class="comment"># header wipe exactly as binary:</span></span><br><span class="line">            <span class="comment"># [0..3]=0, [5..7]=0, keep byte[4]</span></span><br><span class="line">            out_b = <span class="built_in">bytearray</span>(out)</span><br><span class="line">            out_b[<span class="number">0</span>:<span class="number">4</span>] = <span class="string">b&quot;\x00\x00\x00\x00&quot;</span></span><br><span class="line">            out_b[<span class="number">5</span>:<span class="number">8</span>] = <span class="string">b&quot;\x00\x00\x00&quot;</span></span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">bytes</span>(out_b), (<span class="string">&quot;aes-decrypt&quot;</span> <span class="keyword">if</span> mode <span class="keyword">else</span> <span class="string">&quot;aes-encrypt&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">raise</span> ValueError(<span class="string">&quot;no AES mode passed offset checks&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    ap = argparse.ArgumentParser()</span><br><span class="line">    ap.add_argument(<span class="string">&quot;input&quot;</span>, <span class="built_in">type</span>=Path)</span><br><span class="line">    ap.add_argument(<span class="string">&quot;-o&quot;</span>, <span class="string">&quot;--output&quot;</span>, <span class="built_in">type</span>=Path, default=<span class="literal">None</span>)</span><br><span class="line">    args = ap.parse_args()</span><br><span class="line"></span><br><span class="line">    data = args.<span class="built_in">input</span>.read_bytes()</span><br><span class="line">    dec, mode = decrypt_like_sub_5674cc(data)</span><br><span class="line"></span><br><span class="line">    out = args.output <span class="keyword">or</span> args.<span class="built_in">input</span>.with_suffix(args.<span class="built_in">input</span>.suffix + <span class="string">&quot;.dec&quot;</span>)</span><br><span class="line">    out.write_bytes(dec)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;[+] ok -&gt; <span class="subst">&#123;out&#125;</span> (<span class="subst">&#123;mode&#125;</span>)&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>魔术头这个：</p>
+<img src="\uploads\21f5a209-05b5-42df-9cba-30526e281f6f.png" style="zoom: 50%;" />
+<p>解密后：</p>
+<img src="\uploads\48a91e98-09f2-4f1a-bbef-d2f85b0c1f03.png" style="zoom: 50%;" />
+<p>往下一翻就是各种明文字符串，至此也就正式迈出了第一步，不过试了下il2cpp dump是不支持这个版本的unity还是怎么样不知道，我感觉il2cpp dump其实也没那么好用，因为导出的符号表、再倒回IDA里面非常非常慢，大型游戏一堆资源、我又不一定每个函数都看，就不太喜欢那个方案。</p>
+<p>所以这里还有第二种办法：Zygisk il2cpp dump，Github搜搜就有，从内存中dump下来，结果是一样的：</p>
+<img src="\uploads\0bf963a4-0167-47ad-8676-ce545d0382cf.png" style="zoom: 50%;" />
+<p>虽然我觉得拿到这些静态符号一样都是没卵用，里面可能也有些有意思的东西吧，接下来就是注入、调试。</p>
+<h2 id="开日"><a class="markdownIt-Anchor" href="#开日"></a> 开日</h2>
+<p>要日就必须调试、要调试就必须动态、要动态就必然需要通过某些工具、某些手段来调试、这些都是痕迹，反作弊就是阻止工具的使用、拖慢逆向进度就行，工具都附加不上、手动调的话得调到天荒地老，我对frida比较熟就一定要用frida！</p>
+<p>前段子分析过别人的作弊手段，其实漏了不少的东西，例如他对libc还做了一点手脚，通过dobbyhook来inlinehook的内容之类的，应该是用来过掉保护的，我写了个Zygisk模块来仿造那个功能，不过策略更加激进一点：我想要把frida-gadget打入游戏内部爽调，像这些静态资源表对我而言其实没有Stalker好用。</p>
+<p>首先就是注入Frida啊、肯定失败了。翻看libtprt.so里面又有一堆混淆，CFF、CFG、FLA一堆，梦到什么往里加什么混淆，继续翻看前辈们的日法，自己也写了个去控制流平坦化的，不过只能去CFF，后面两种我还没研究明白。<br />
+原理：CFF依赖分发块来执行不同的真实块逻辑、然后真实块尾部回到分发块继续跑下一个真实块，而分发依赖的就是某个寄存器变量，通过binary ninja + unidbg可以看的非常清楚。</p>
+<p>所以处理也挺简单的，选定分发器的寄存器变量遍历所有真实块，再通过真实块尾部下一个跳转的区域判定下一个连接的真实块就行。脚本、看以后再说要不要放出来吧，写得很乱，我都不想看第二遍。</p>
+<p>处理部分之后全部跑了一遍函数，才发现的CFG、FLA之类的一堆混淆，就摆了、直接硬来吧，结果发现真行：</p>
+<ul>
+<li>
+<p>入手点：Frida检测、首先我通过Frida-sever的办法去注入Frida-agent挂掉了，第一时间想到的就是检测127.0.0.1、/data/local/tmp这种特征嘛：</p>
+<img src="\uploads\2d32940a-b155-44b5-b3de-c84ecf40ffd4.png" style="zoom: 50%;" />
+</li>
+<li>
+<p>一找一堆，有些混淆我是去过了的，有些是没有，不过不影响：</p>
+<img src="\uploads\image-20260219180123224.png" style="zoom: 50%;" />
+</li>
+</ul>
+<h2 id="噩梦の起点"><a class="markdownIt-Anchor" href="#噩梦の起点"></a> 噩梦の起点</h2>
+<p>看过前几篇博客的话，针对Frida、我看了源码，里面的特征比想象中要多得多，一个一个去改、专门适配这个tprt，我觉得根本就不现实：</p>
+<p>只有Frida-gadget的改动量能够接受、不过还是会因为大大小小未知的问题导致无法使用的，今天是以后也肯定会是。</p>
+<img src="\uploads\3a353657-f7ba-4d9d-ac34-0134ce6a0420.png" style="zoom: 50%;" />
+<p>也去尝试了自己改源码编译，后来还是不行，差点就放弃了。他比想象中的问题还要多得多，一定要hook libart、一定要通过libc来初始化，还有几个线程名是在依赖库里面起的，改完源码得把依赖库的源码下载下来编译一轮，再重新编译frida，因为Stalker功能太好用、付出点代价是正常的。</p>
+<p>正常人都会选择自己手动来调试更加方便，但我偏不哈哈、后来干脆换了个思路：ZygiskIl2cpp能起作用？ZygiskFrida难道不行？但一样失败了。</p>
+<p>写到这里有点困了，有空再继续写吧。总之下半部分都是围绕：攻守互换、我来检测你的检测来的、写了个行为分析ptrace+secommap来专门针对安卓反调试检测，太长了一时半会说不完，有空再继续写。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AE%89%E5%8D%93/" rel="tag"># 安卓</a>
+              <a href="/tags/Unity/" rel="tag"># Unity</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/02/21/Frida%E6%A3%80%E6%B5%8B%E5%AF%B9%E6%8A%97/" rel="prev" title="Frida检测对抗">
+      <i class="fa fa-chevron-left"></i> Frida检测对抗
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%B7%E7%82%B9"><span class="nav-number">1.</span> <span class="nav-text"> 起点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E6%97%A5"><span class="nav-number">2.</span> <span class="nav-text"> 开日</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%99%A9%E6%A2%A6%E3%81%AE%E8%B5%B7%E7%82%B9"><span class="nav-number">3.</span> <span class="nav-text"> 噩梦の起点</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="March-7th"
+      src="/images/march7th.jpg">
+  <p class="site-author-name" itemprop="name">March-7th</p>
+  <div class="site-description" itemprop="description">信键鼠真神得永生</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+
+
+<div class="sidebar-footer-info motion-element">
+    <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">桂ICP备2023000644号-2</a>
+    </div>
+
+  <div class="copyright">
+    &copy; 2024 – 2025
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span>March-7th</span>
+  </div>
+</div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">桂ICP备2023000644号-2 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">March-7th</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+<!-- Visitor Tracker -->
+<script>
+(function() {
+  'use strict';
+
+  // 配置 - 本地开发指向 API 服务端口，生产环境使用相对路径
+  const TRACKER_API = window.location.hostname === 'localhost'
+    ? 'http://127.0.0.1:3721/track'
+    : '/api/track';
+
+  // 获取页面信息
+  function getPageInfo() {
+    return {
+      url: window.location.pathname,
+      title: document.title,
+      referrer: document.referrer,
+      ua: navigator.userAgent
+    };
+  }
+
+  // 发送访问记录（使用 sendBeacon 确保页面关闭时也能发送）
+  function trackVisit() {
+    const data = getPageInfo();
+
+    // 优先使用 sendBeacon（不会阻塞页面关闭）
+    if (navigator.sendBeacon) {
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      navigator.sendBeacon(TRACKER_API, blob);
+    } else {
+      // 降级到 fetch
+      fetch(TRACKER_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).catch(() => {}); // 静默失败，不影响用户体验
+    }
+  }
+
+  // 页面加载时记录
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', trackVisit);
+  } else {
+    trackVisit();
+  }
+
+  // 支持 PJAX 页面切换时记录（Next 主题支持 PJAX）
+  document.addEventListener('pjax:complete', function() {
+    setTimeout(trackVisit, 100);
+  });
+
+})();
+</script>
+
+<!-- 扇形菜单按钮 -->
+<div class="fan-menu-container" id="fanMenuContainer">
+  <button class="fan-menu-toggle" id="fanMenuToggle">
+    <i class="fa fa-bars"></i>
+    <i class="fa fa-times"></i>
+  </button>
+  <div class="fan-menu-items" id="fanMenuItems">
+    <!-- 菜单项将由 JS 动态生成 -->
+  </div>
+</div>
+
+<!-- 扇形菜单脚本 -->
+<script>
+(function() {
+  'use strict';
+
+  // 从主题配置读取菜单项
+  const menuItems = [
+    { path: '/about/', icon: 'fa fa-user', title: '关于' },
+    { path: '/categories/', icon: 'fa fa-th', title: '分类' },
+    { path: '/archives/', icon: 'fa fa-archive', title: '归档' },
+    { path: '/videos/', icon: 'fa fa-video', title: '视频' }
+  ];
+
+  const container = document.getElementById('fanMenuContainer');
+  const toggle = document.getElementById('fanMenuToggle');
+  const itemsContainer = document.getElementById('fanMenuItems');
+
+  // 生成扇形菜单项
+  function createMenuItems() {
+    const total = menuItems.length;
+    const radius = 70; // 扇形半径
+    // 右旋90度：原 -160~-20 变成 -70~70
+    const startAngle = -70;
+    const endAngle = 70;
+
+    menuItems.forEach((item, index) => {
+      const a = document.createElement('a');
+      a.className = 'fan-menu-item';
+      a.href = item.path;
+      a.dataset.title = item.title;
+
+      // 计算扇形位置
+      const angle = startAngle + (endAngle - startAngle) * (index / (total - 1 || 1));
+      const rad = angle * Math.PI / 180;
+      const tx = Math.cos(rad) * radius;
+      const ty = Math.sin(rad) * radius;
+
+      a.style.setProperty('--tx', tx + 'px');
+      a.style.setProperty('--ty', ty + 'px');
+      a.style.transitionDelay = (index * 0.05) + 's';
+
+      // 图标
+      const i = document.createElement('i');
+      i.className = item.icon;
+      a.appendChild(i);
+
+      itemsContainer.appendChild(a);
+    });
+  }
+
+  // 初始化
+  createMenuItems();
+
+  // 鼠标进入容器 - 展开菜单
+  container.addEventListener('mouseenter', function() {
+    toggle.classList.add('active');
+  });
+
+  // 鼠标离开容器 - 收起菜单
+  container.addEventListener('mouseleave', function() {
+    toggle.classList.remove('active');
+  });
+
+  // 检测侧边栏状态，侧边栏打开时隐藏菜单
+  function updateMenuVisibility() {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      // 检查侧边栏是否有 sidebar-active 类
+      const isActive = sidebar.classList.contains('sidebar-active');
+      container.style.opacity = isActive ? '0' : '1';
+      container.style.pointerEvents = isActive ? 'none' : 'auto';
+      container.style.visibility = isActive ? 'hidden' : 'visible';
+    }
+  }
+
+  // 初始检测
+  updateMenuVisibility();
+
+  // 监听侧边栏状态变化
+  const sidebar = document.querySelector('.sidebar');
+  if (sidebar) {
+    // 使用 MutationObserver 监听侧边栏 class 变化
+    const observer = new MutationObserver(updateMenuVisibility);
+    observer.observe(sidebar, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+  }
+
+  // 窗口大小变化时重新检测
+  window.addEventListener('resize', updateMenuVisibility);
+
+})();
+</script>
+
+</body>
+</html>

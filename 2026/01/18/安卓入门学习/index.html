@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"march-7th.tech","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="随便记一点学习的内容，凭感觉写的可能有误，主要是懂个大概就行，一时半会也摸不到内核里面的操作，还是使用各种框架、工具的脚本小子。  开始的想法 首先想要通过外部调试安卓应用：frida、xposed这种工具够用，一般是通过jadx或者是别的il2cppdump获取到应用运行时的类，然后进行插桩、hook、查看函数调用链、篡改程序执行行为这些，感觉能找到关键类在哪里就够用。 所以了解要怎么找到对应的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="安卓学习">
+<meta property="og:url" content="https://march-7th.tech/2026/01/18/%E5%AE%89%E5%8D%93%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="三顺七的笔记">
+<meta property="og:description" content="随便记一点学习的内容，凭感觉写的可能有误，主要是懂个大概就行，一时半会也摸不到内核里面的操作，还是使用各种框架、工具的脚本小子。  开始的想法 首先想要通过外部调试安卓应用：frida、xposed这种工具够用，一般是通过jadx或者是别的il2cppdump获取到应用运行时的类，然后进行插桩、hook、查看函数调用链、篡改程序执行行为这些，感觉能找到关键类在哪里就够用。 所以了解要怎么找到对应的">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-01-18T15:34:44.000Z">
+<meta property="article:modified_time" content="2026-02-05T06:57:56.457Z">
+<meta property="article:author" content="March-7th">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://march-7th.tech/2026/01/18/%E5%AE%89%E5%8D%93%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>安卓学习 | 三顺七的笔记</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">三顺七的笔记</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-videos">
+
+    <a href="/videos/" rel="section"><i class="fa fa-video fa-fw"></i>视频展示</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://march-7th.tech/2026/01/18/%E5%AE%89%E5%8D%93%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/march7th.jpg">
+      <meta itemprop="name" content="March-7th">
+      <meta itemprop="description" content="信键鼠真神得永生">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="三顺七的笔记">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          安卓学习
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-01-18 23:34:44" itemprop="dateCreated datePublished" datetime="2026-01-18T23:34:44+08:00">2026-01-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-02-05 14:57:56" itemprop="dateModified" datetime="2026-02-05T14:57:56+08:00">2026-02-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AE%89%E5%8D%93/" itemprop="url" rel="index"><span itemprop="name">安卓</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>随便记一点学习的内容，凭感觉写的可能有误，主要是懂个大概就行，一时半会也摸不到内核里面的操作，还是使用各种框架、工具的脚本小子。</p>
+<h2 id="开始的想法"><a class="markdownIt-Anchor" href="#开始的想法"></a> 开始的想法</h2>
+<p>首先想要通过外部调试安卓应用：frida、xposed这种工具够用，一般是通过jadx或者是别的il2cppdump获取到应用运行时的类，然后进行插桩、hook、查看函数调用链、篡改程序执行行为这些，感觉能找到关键类在哪里就够用。<br />
+所以了解要怎么找到对应的函数、以及这两个工具的运行原理就变得重要。下面一点一点来。</p>
+<h2 id="两个工具的原理-区别"><a class="markdownIt-Anchor" href="#两个工具的原理-区别"></a> 两个工具的原理、区别</h2>
+<h3 id="frida"><a class="markdownIt-Anchor" href="#frida"></a> Frida</h3>
+<p>Frida是通过进程注入：ptrace系统调用或者其他注入技术，将Frida的引擎注入到目标进程中，提供修改的入口，并通过inlinehook来实现的调试。Frida的引擎里面就包含了Javascript的V8/QuickJS引擎、允许使用js编写hook脚本，而动态插桩是通过在运行时修改函数的机器码，插入jump命令拦截函数调用后再恢复 原调用 实现的。<br />
+听起来就像 Windows 里面的 远程线程注入、再inlinehook，作为动态调试的工具十分方便。</p>
+<h3 id="xposed"><a class="markdownIt-Anchor" href="#xposed"></a> Xposed</h3>
+<p>Xposed是在Zygote fork进程时加载，相当于DLL劫持，把自身的模块功能插入到应用里面执行，一般不适合调试的时候使用、而是作为最终 补丁/插件 打到应用中，要求必须有ROOT权限的环境，相较于frida的进程注入也更加容易被检测。</p>
+<h2 id="继续深入了解android架构"><a class="markdownIt-Anchor" href="#继续深入了解android架构"></a> 继续深入了解Android架构</h2>
+<h3 id="操作系统间的区别"><a class="markdownIt-Anchor" href="#操作系统间的区别"></a> 操作系统间的区别：</h3>
+<p>与Linux、Windows不太一样的是，安卓的进程分配比较效率：从主Zygote (受精卵) 里面fork（孵化）出来，并继承android framework的类，通过反射获取其他共享只读内存资源、相当于直接传递指针数据，不需要创建更多新内存空间，所以效率非常高。<br />
+Linux中的进程都是独立的个体，Windows也最多共享DLL，到了安卓就是共享整个framework。</p>
+<h3 id="关于framework"><a class="markdownIt-Anchor" href="#关于framework"></a> 关于Framework：</h3>
+<p>我的理解就是：共享的动态链接库，相当于Kernel.dll（当然framework之上还有一层Linux架构，这个并非真的Kernel），里面包含了很多系统调用类。在开发安卓应用的时候使得开发者无需关心底层实现，只需要调用framework中的类、就可以让同样的代码运行在不同的手机上，结合之前Xposed的原理、以及安卓应用启动的了解可以得出安卓应用进程的启动链：<br />
+Zygote收到frok信号 -&gt; (这一段可以注入Xposed模块) -&gt; 继承framework的类(指针数据) -&gt; 载入应用自身的类 -&gt; 进程成功创建 (-&gt; Frida远程注入进程来修改执行)</p>
+<p>不同进程之间的通信是通过Binder来实现的，类似于linux中的socket/pipe、windows的远程线程调用。理解这个之后很多安卓攻防也就懂个大概了，应用层、native层的对抗不就是windows的R0、R3对抗吗？只要有了firda这样进程注入的工具可以访问到内存、也就可以像CE一样动态修改应用里面的数据。</p>
+<h3 id="这么强大的功能当然需要root"><a class="markdownIt-Anchor" href="#这么强大的功能当然需要root"></a> 这么强大的功能当然需要Root</h3>
+<p>在Android系统里面的系统安全主要是由SELinux来负责的，管理了不同应用有什么不同的权限，能够干哪些事情，这块目前而言笔者比较模糊：像Magisk这种Root应用实现原理就是在boot启动阶段通过系统漏洞去强行获得Root账户的权限，相当于以管理员账户登录windows，而在Magisk的框架下就允许使用模块去修改内核的执行行为（层层套娃：Xposed修改应用的framework，Magisk修改系统的内核允许Xposed修改应用的framework）。</p>
+<h2 id="大致攻防"><a class="markdownIt-Anchor" href="#大致攻防"></a> 大致攻防：</h2>
+<p>有了framework这个应用运行基础，安卓应用能够执行的行为非常有限：无法直接访问硬件、无法直接查看系统敏感信息、要向其他应用交互还得发个请求什么的，<br />
+一般应用开发的话：Java层就有点类似于 前端页面js、html什么的都塞在里面，而native层就有点类似于 游戏引擎负责底层操作、跨平台复用、敏感数据调用，</p>
+<h2 id="总而言之"><a class="markdownIt-Anchor" href="#总而言之"></a> 总而言之</h2>
+<p>大概有了这个背景知识了解之后，对安卓逆向就没有那么陌生了，一切像回家一样。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/10/21/test/" rel="prev" title="C#开发相关思考">
+      <i class="fa fa-chevron-left"></i> C#开发相关思考
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2026/02/07/Unity%E6%89%8B%E6%B8%B8%E9%80%86%E5%90%91%E8%A7%81%E8%A7%A3/" rel="next" title="Unity手游逆向见解">
+      Unity手游逆向见解 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E7%9A%84%E6%83%B3%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text"> 开始的想法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%A4%E4%B8%AA%E5%B7%A5%E5%85%B7%E7%9A%84%E5%8E%9F%E7%90%86-%E5%8C%BA%E5%88%AB"><span class="nav-number">2.</span> <span class="nav-text"> 两个工具的原理、区别</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#frida"><span class="nav-number">2.1.</span> <span class="nav-text"> Frida</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xposed"><span class="nav-number">2.2.</span> <span class="nav-text"> Xposed</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%A7%E7%BB%AD%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3android%E6%9E%B6%E6%9E%84"><span class="nav-number">3.</span> <span class="nav-text"> 继续深入了解Android架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%97%B4%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">3.1.</span> <span class="nav-text"> 操作系统间的区别：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8Eframework"><span class="nav-number">3.2.</span> <span class="nav-text"> 关于Framework：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%99%E4%B9%88%E5%BC%BA%E5%A4%A7%E7%9A%84%E5%8A%9F%E8%83%BD%E5%BD%93%E7%84%B6%E9%9C%80%E8%A6%81root"><span class="nav-number">3.3.</span> <span class="nav-text"> 这么强大的功能当然需要Root</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E8%87%B4%E6%94%BB%E9%98%B2"><span class="nav-number">4.</span> <span class="nav-text"> 大致攻防：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E8%80%8C%E8%A8%80%E4%B9%8B"><span class="nav-number">5.</span> <span class="nav-text"> 总而言之</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="March-7th"
+      src="/images/march7th.jpg">
+  <p class="site-author-name" itemprop="name">March-7th</p>
+  <div class="site-description" itemprop="description">信键鼠真神得永生</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+
+
+<div class="sidebar-footer-info motion-element">
+    <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">桂ICP备2023000644号-2</a>
+    </div>
+
+  <div class="copyright">
+    &copy; 2024 – 2025
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span>March-7th</span>
+  </div>
+</div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">桂ICP备2023000644号-2 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">March-7th</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+<!-- Visitor Tracker -->
+<script>
+(function() {
+  'use strict';
+
+  // 配置 - 本地开发指向 API 服务端口，生产环境使用相对路径
+  const TRACKER_API = window.location.hostname === 'localhost'
+    ? 'http://127.0.0.1:3721/track'
+    : '/api/track';
+
+  // 获取页面信息
+  function getPageInfo() {
+    return {
+      url: window.location.pathname,
+      title: document.title,
+      referrer: document.referrer,
+      ua: navigator.userAgent
+    };
+  }
+
+  // 发送访问记录（使用 sendBeacon 确保页面关闭时也能发送）
+  function trackVisit() {
+    const data = getPageInfo();
+
+    // 优先使用 sendBeacon（不会阻塞页面关闭）
+    if (navigator.sendBeacon) {
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      navigator.sendBeacon(TRACKER_API, blob);
+    } else {
+      // 降级到 fetch
+      fetch(TRACKER_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).catch(() => {}); // 静默失败，不影响用户体验
+    }
+  }
+
+  // 页面加载时记录
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', trackVisit);
+  } else {
+    trackVisit();
+  }
+
+  // 支持 PJAX 页面切换时记录（Next 主题支持 PJAX）
+  document.addEventListener('pjax:complete', function() {
+    setTimeout(trackVisit, 100);
+  });
+
+})();
+</script>
+
+<!-- 扇形菜单按钮 -->
+<div class="fan-menu-container" id="fanMenuContainer">
+  <button class="fan-menu-toggle" id="fanMenuToggle">
+    <i class="fa fa-bars"></i>
+    <i class="fa fa-times"></i>
+  </button>
+  <div class="fan-menu-items" id="fanMenuItems">
+    <!-- 菜单项将由 JS 动态生成 -->
+  </div>
+</div>
+
+<!-- 扇形菜单脚本 -->
+<script>
+(function() {
+  'use strict';
+
+  // 从主题配置读取菜单项
+  const menuItems = [
+    { path: '/about/', icon: 'fa fa-user', title: '关于' },
+    { path: '/categories/', icon: 'fa fa-th', title: '分类' },
+    { path: '/archives/', icon: 'fa fa-archive', title: '归档' },
+    { path: '/videos/', icon: 'fa fa-video', title: '视频' }
+  ];
+
+  const container = document.getElementById('fanMenuContainer');
+  const toggle = document.getElementById('fanMenuToggle');
+  const itemsContainer = document.getElementById('fanMenuItems');
+
+  // 生成扇形菜单项
+  function createMenuItems() {
+    const total = menuItems.length;
+    const radius = 70; // 扇形半径
+    // 右旋90度：原 -160~-20 变成 -70~70
+    const startAngle = -70;
+    const endAngle = 70;
+
+    menuItems.forEach((item, index) => {
+      const a = document.createElement('a');
+      a.className = 'fan-menu-item';
+      a.href = item.path;
+      a.dataset.title = item.title;
+
+      // 计算扇形位置
+      const angle = startAngle + (endAngle - startAngle) * (index / (total - 1 || 1));
+      const rad = angle * Math.PI / 180;
+      const tx = Math.cos(rad) * radius;
+      const ty = Math.sin(rad) * radius;
+
+      a.style.setProperty('--tx', tx + 'px');
+      a.style.setProperty('--ty', ty + 'px');
+      a.style.transitionDelay = (index * 0.05) + 's';
+
+      // 图标
+      const i = document.createElement('i');
+      i.className = item.icon;
+      a.appendChild(i);
+
+      itemsContainer.appendChild(a);
+    });
+  }
+
+  // 初始化
+  createMenuItems();
+
+  // 鼠标进入容器 - 展开菜单
+  container.addEventListener('mouseenter', function() {
+    toggle.classList.add('active');
+  });
+
+  // 鼠标离开容器 - 收起菜单
+  container.addEventListener('mouseleave', function() {
+    toggle.classList.remove('active');
+  });
+
+  // 检测侧边栏状态，侧边栏打开时隐藏菜单
+  function updateMenuVisibility() {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      // 检查侧边栏是否有 sidebar-active 类
+      const isActive = sidebar.classList.contains('sidebar-active');
+      container.style.opacity = isActive ? '0' : '1';
+      container.style.pointerEvents = isActive ? 'none' : 'auto';
+      container.style.visibility = isActive ? 'hidden' : 'visible';
+    }
+  }
+
+  // 初始检测
+  updateMenuVisibility();
+
+  // 监听侧边栏状态变化
+  const sidebar = document.querySelector('.sidebar');
+  if (sidebar) {
+    // 使用 MutationObserver 监听侧边栏 class 变化
+    const observer = new MutationObserver(updateMenuVisibility);
+    observer.observe(sidebar, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+  }
+
+  // 窗口大小变化时重新检测
+  window.addEventListener('resize', updateMenuVisibility);
+
+})();
+</script>
+
+</body>
+</html>

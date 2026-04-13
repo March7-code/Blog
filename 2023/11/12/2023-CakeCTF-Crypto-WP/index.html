@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"march-7th.tech","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="CakeCTF Crypto WP 强网拟态看了几眼题，不想打了，去做隔壁的比赛。  Simple_Signature: 题目： 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2023-CakeCTF-Crypto-WP">
+<meta property="og:url" content="https://march-7th.tech/2023/11/12/2023-CakeCTF-Crypto-WP/index.html">
+<meta property="og:site_name" content="三顺七的笔记">
+<meta property="og:description" content="CakeCTF Crypto WP 强网拟态看了几眼题，不想打了，去做隔壁的比赛。  Simple_Signature: 题目： 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-12T07:11:06.000Z">
+<meta property="article:modified_time" content="2024-08-10T19:51:05.226Z">
+<meta property="article:author" content="March-7th">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://march-7th.tech/2023/11/12/2023-CakeCTF-Crypto-WP/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>2023-CakeCTF-Crypto-WP | 三顺七的笔记</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">三顺七的笔记</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-videos">
+
+    <a href="/videos/" rel="section"><i class="fa fa-video fa-fw"></i>视频展示</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://march-7th.tech/2023/11/12/2023-CakeCTF-Crypto-WP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/march7th.jpg">
+      <meta itemprop="name" content="March-7th">
+      <meta itemprop="description" content="信键鼠真神得永生">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="三顺七的笔记">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2023-CakeCTF-Crypto-WP
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-11-12 15:11:06" itemprop="dateCreated datePublished" datetime="2023-11-12T15:11:06+08:00">2023-11-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-08-11 03:51:05" itemprop="dateModified" datetime="2024-08-11T03:51:05+08:00">2024-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WP/" itemprop="url" rel="index"><span itemprop="name">WP</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>CakeCTF Crypto WP</p>
+<p>强网拟态看了几眼题，不想打了，去做隔壁的比赛。</p>
+<h2 id="simple_signature"><a class="markdownIt-Anchor" href="#simple_signature"></a> Simple_Signature:</h2>
+<p>题目：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> hashlib <span class="keyword">import</span> sha512</span><br><span class="line"><span class="keyword">from</span> Crypto.Util.number <span class="keyword">import</span> getRandomRange, getStrongPrime, inverse, GCD</span><br><span class="line"><span class="keyword">import</span> signal</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">flag = os.environ.get(<span class="string">&quot;FLAG&quot;</span>, <span class="string">&quot;neko&#123;cat_does_not_eat_cake&#125;&quot;</span>)</span><br><span class="line"></span><br><span class="line">p = getStrongPrime(<span class="number">512</span>)</span><br><span class="line">g = <span class="number">2</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">keygen</span>():</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        x = getRandomRange(<span class="number">2</span>, p-<span class="number">1</span>)</span><br><span class="line">        y = getRandomRange(<span class="number">2</span>, p-<span class="number">1</span>)</span><br><span class="line">        w = getRandomRange(<span class="number">2</span>, p-<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        v = w * y % (p-<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">if</span> GCD(v, p-<span class="number">1</span>) != <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        u = (w * x - <span class="number">1</span>) * inverse(v, p-<span class="number">1</span>) % (p-<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> (x, y, u), (w, v)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sign</span>(<span class="params">m, key</span>):</span><br><span class="line">    x, y, u = key</span><br><span class="line">    r = getRandomRange(<span class="number">2</span>, p-<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">pow</span>(g, x*m + r*y, p), <span class="built_in">pow</span>(g, u*m + r, p)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">verify</span>(<span class="params">m, sig, key</span>):</span><br><span class="line">    w, v = key</span><br><span class="line">    s, t = sig</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">pow</span>(g, m, p) == <span class="built_in">pow</span>(s, w, p) * <span class="built_in">pow</span>(t, -v, p) % p</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">h</span>(<span class="params">m</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">int</span>(sha512(m.encode()).hexdigest(), <span class="number">16</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    magic_word = <span class="string">&quot;cake_does_not_eat_cat&quot;</span></span><br><span class="line">    skey, vkey = keygen()</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;p = <span class="subst">&#123;p&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;g = <span class="subst">&#123;g&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;vkey = <span class="subst">&#123;vkey&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">    signal.alarm(<span class="number">1000</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        choice = <span class="built_in">input</span>(<span class="string">&quot;[S]ign, [V]erify: &quot;</span>).strip()</span><br><span class="line">        <span class="keyword">if</span> choice == <span class="string">&quot;S&quot;</span>:</span><br><span class="line">            message = <span class="built_in">input</span>(<span class="string">&quot;message: &quot;</span>).strip()</span><br><span class="line">            <span class="keyword">assert</span> message != magic_word</span><br><span class="line"></span><br><span class="line">            sig = sign(h(message), skey)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;(s, t) = <span class="subst">&#123;sig&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">elif</span> choice == <span class="string">&quot;V&quot;</span>:</span><br><span class="line">            message = <span class="built_in">input</span>(<span class="string">&quot;message: &quot;</span>).strip()</span><br><span class="line">            s = <span class="built_in">int</span>(<span class="built_in">input</span>(<span class="string">&quot;s: &quot;</span>).strip())</span><br><span class="line">            t = <span class="built_in">int</span>(<span class="built_in">input</span>(<span class="string">&quot;t: &quot;</span>).strip())</span><br><span class="line"></span><br><span class="line">            <span class="keyword">assert</span> <span class="number">2</span> &lt;= s &lt; p</span><br><span class="line">            <span class="keyword">assert</span> <span class="number">2</span> &lt;= t &lt; p</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> verify(h(message), (s, t), vkey):</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&quot;invalid signature&quot;</span>)</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;verified&quot;</span>)</span><br><span class="line">            <span class="keyword">if</span> message == magic_word:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&quot;flag = <span class="subst">&#123;flag&#125;</span>&quot;</span>)</span><br><span class="line">                sys.exit(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+<p>exp:</p>
+<p>服务器上面dump数据直接丢进脚本就好了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">p = </span><br><span class="line">vkey = </span><br><span class="line">w,v = vkey[<span class="number">0</span>],vkey[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">m = <span class="string">&quot;cake_does_not_eat_cat&quot;</span></span><br><span class="line">s = <span class="built_in">pow</span>(g,(h(m)-<span class="number">1</span>)*invert(w,p-<span class="number">1</span>),p)</span><br><span class="line">t = <span class="built_in">pow</span>(g,invert(-v,p-<span class="number">1</span>),p)</span><br><span class="line"><span class="built_in">print</span>(s)</span><br><span class="line"><span class="built_in">print</span>(t)</span><br><span class="line"><span class="built_in">print</span>(verify(h(m),(s,t),vkey))</span><br></pre></td></tr></table></figure>
+<h2 id="janken-vs-yoshiking-2"><a class="markdownIt-Anchor" href="#janken-vs-yoshiking-2"></a> janken-vs-yoshiking-2</h2>
+<p>石头剪刀布，要求预测出手。</p>
+<p>本质上是个矩阵离散对数问题。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># This file was *autogenerated* from the file server.sage</span></span><br><span class="line"><span class="keyword">from</span> sage.all_cmdline <span class="keyword">import</span> *   <span class="comment"># import sage library</span></span><br><span class="line"></span><br><span class="line">_sage_const_1 = Integer(<span class="number">1</span>); _sage_const_2 = Integer(<span class="number">2</span>); _sage_const_3 = Integer(<span class="number">3</span>); _sage_const_256 = Integer(<span class="number">256</span>); _sage_const_1000 = Integer(<span class="number">1000</span>); _sage_const_1719620105458406433483340568317543019584575635895742560438771105058321655238562613083979651479555788009994557822024565226932906295208262756822275663694111 = Integer(<span class="number">1719620105458406433483340568317543019584575635895742560438771105058321655238562613083979651479555788009994557822024565226932906295208262756822275663694111</span>); _sage_const_5 = Integer(<span class="number">5</span>); _sage_const_0 = Integer(<span class="number">0</span>); _sage_const_100 = Integer(<span class="number">100</span>)</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> signal</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">HANDNAMES = &#123;</span><br><span class="line">    _sage_const_1 : <span class="string">&quot;Rock&quot;</span>,</span><br><span class="line">    _sage_const_2 : <span class="string">&quot;Scissors&quot;</span>,</span><br><span class="line">    _sage_const_3 : <span class="string">&quot;Paper&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">commit</span>(<span class="params">M, m</span>):</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        r = random.randint(_sage_const_2 , _sage_const_2 **_sage_const_256 )</span><br><span class="line">        <span class="keyword">if</span> r % _sage_const_3  + _sage_const_1  == m:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">return</span> M**r, r</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">signal.alarm(_sage_const_1000 )</span><br><span class="line"></span><br><span class="line">flag = os.environ.get(<span class="string">&quot;FLAG&quot;</span>, <span class="string">&quot;neko&#123;old_yoshiking_never_die,simply_fade_away&#125;&quot;</span>)</span><br><span class="line">p = _sage_const_1719620105458406433483340568317543019584575635895742560438771105058321655238562613083979651479555788009994557822024565226932906295208262756822275663694111 </span><br><span class="line">M = random_matrix(GF(p), _sage_const_5 )</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;[yoshiking]: Hello! Let&#x27;s play Janken(RPS)&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;[yoshiking]: Here is p: &#123;&#125;, and M: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(p, M.<span class="built_in">list</span>()))</span><br><span class="line"></span><br><span class="line"><span class="built_in">round</span> = _sage_const_0 </span><br><span class="line">wins = _sage_const_0 </span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="built_in">round</span> += _sage_const_1 </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;[system]: ROUND &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">round</span>))</span><br><span class="line"></span><br><span class="line">    yoshiking_hand = random.randint(_sage_const_1 , _sage_const_3 )</span><br><span class="line">    C, r = commit(M, yoshiking_hand)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;[yoshiking]: my commitment is=&#123;&#125;&quot;</span>.<span class="built_in">format</span>(C.<span class="built_in">list</span>()))</span><br><span class="line"></span><br><span class="line">    hand = <span class="built_in">input</span>(<span class="string">&quot;[system]: your hand(1-3): &quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;&quot;</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        hand = <span class="built_in">int</span>(hand)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> (_sage_const_1  &lt;= hand &lt;= _sage_const_3 ):</span><br><span class="line">            <span class="keyword">raise</span> ValueError()</span><br><span class="line">    <span class="keyword">except</span> ValueError:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;[yoshiking]: Ohhhhhhhhhhhhhhhh no! :(&quot;</span>)</span><br><span class="line">        exit()</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;[yoshiking]: My hand is ... &#123;&#125;&quot;</span>.<span class="built_in">format</span>(HANDNAMES[yoshiking_hand]))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;[yoshiking]: Your hand is ... &#123;&#125;&quot;</span>.<span class="built_in">format</span>(HANDNAMES[hand]))</span><br><span class="line">    result = (yoshiking_hand - hand + _sage_const_3 ) % _sage_const_3 </span><br><span class="line">    <span class="keyword">if</span> result == _sage_const_0 :</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;[yoshiking]: Draw, draw, draw!!!&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;[yoshiking]: I&#x27;m only respect to win!&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;[system]: you can check that yoshiking doesn&#x27;t cheat&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;[system]: here&#x27;s the secret value: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(r))</span><br><span class="line">        exit()</span><br><span class="line">    <span class="keyword">elif</span> result == _sage_const_1 :</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;[yoshiking]: Yo! You win!!! Ho!&quot;</span>)</span><br><span class="line">        wins += _sage_const_1 </span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;[system]: wins: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(wins))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> wins &gt;= _sage_const_100 :</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">elif</span> result == _sage_const_2 :</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;[yoshiking]: Ahahahaha! I&#x27;m the winnnnnnner!!!!&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;[yoshiking]: You, good loser!&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;[system]: you can check that yoshiking doesn&#x27;t cheat&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;[system]: here&#x27;s the secret value: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(r))</span><br><span class="line">        exit()</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;[yoshiking]: Wow! You are the king of roshambo!&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;[yoshiking]: suge- flag ageru&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(flag)</span><br></pre></td></tr></table></figure>
+<p>先贴WP：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> sage.<span class="built_in">all</span> <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context(log_level=&#x27;debug&#x27;)</span></span><br><span class="line">p = <span class="number">1719620105458406433483340568317543019584575635895742560438771105058321655238562613083979651479555788009994557822024565226932906295208262756822275663694111</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">MakeMatrix</span>(<span class="params">A</span>):</span><br><span class="line">    T = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">        tmp = []</span><br><span class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">            tmp .append(A[_+i*<span class="number">5</span>])</span><br><span class="line">        T.append(tmp)</span><br><span class="line">    T = matrix(Zmod(p), T)</span><br><span class="line">    <span class="keyword">return</span> T</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    io = remote(<span class="string">&#x27;crypto.2023.cakectf.com&#x27;</span>,<span class="number">10555</span>)</span><br><span class="line">    io.recvuntil(<span class="string">b&#x27;and M: &#x27;</span>)</span><br><span class="line">    M = <span class="built_in">eval</span>(io.recvuntil(<span class="string">b&#x27;\n&#x27;</span>))</span><br><span class="line">    M = MakeMatrix(M)</span><br><span class="line">    <span class="built_in">print</span>(M)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        B,P = M.eigenmatrix_right()</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">except</span> NotImplementedError:</span><br><span class="line">        io.close()</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">P_inv = P.inverse()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;????????????????????????????????????&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">getC</span>(<span class="params">io</span>):</span><br><span class="line">    io.recvuntil(<span class="string">b&#x27;commitment is=&#x27;</span>)</span><br><span class="line">    C = <span class="built_in">eval</span>(io.recvuntil(<span class="string">b&#x27;]&#x27;</span>))</span><br><span class="line">    <span class="keyword">return</span> C</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">Calc</span>(<span class="params">B,P,C,P_inv</span>):</span><br><span class="line">    B_=((P_inv*C*P)[<span class="number">0</span>])[<span class="number">0</span>]</span><br><span class="line">    b=(B[<span class="number">0</span>])[<span class="number">0</span>]</span><br><span class="line">    x=discrete_log(mod(B_,p),mod(b,p))</span><br><span class="line">    m = x%<span class="number">3</span>+<span class="number">1</span></span><br><span class="line">    result = (m+<span class="number">2</span>) %<span class="number">3</span></span><br><span class="line">    <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">3</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line">    C = MakeMatrix(getC(io))</span><br><span class="line">    <span class="comment">#print(f&#x27;____C=&#123;C&#125;&#x27;)</span></span><br><span class="line">    my_hand = <span class="built_in">str</span>(Calc(B,P,C,P_inv)).encode()</span><br><span class="line">    io.recvuntil(<span class="string">b&#x27;(1-3): &#x27;</span>)</span><br><span class="line">    io.sendline(my_hand)</span><br><span class="line">io.interactive()</span><br><span class="line"><span class="comment">#CakeCTF&#123;though_yoshiking_may_die_janken_will_never_perish&#125;</span></span><br></pre></td></tr></table></figure>
+<p>轰炸东京</p>
+<h2 id="dingdong"><a class="markdownIt-Anchor" href="#dingdong"></a> dingdong:</h2>
+<p>task:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> base64 <span class="keyword">import</span> b64decode, b64encode</span><br><span class="line"><span class="keyword">from</span> hashlib <span class="keyword">import</span> md5</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime</span><br><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</span><br><span class="line"></span><br><span class="line">FLAG = os.environ.get(<span class="string">&quot;FLAG&quot;</span>, <span class="string">&quot;neko&#123;cat_does_not_eat_cake&#125;&quot;</span>)</span><br><span class="line">PREFIX = os.environ.get(<span class="string">&quot;PREFIX&quot;</span>, <span class="string">&quot;cake&quot;</span>).encode()</span><br><span class="line"></span><br><span class="line">KEY = os.urandom(<span class="number">16</span>)</span><br><span class="line">IV = os.urandom(<span class="number">16</span>)</span><br><span class="line">aes = AES.new(KEY, AES.MODE_ECB)</span><br><span class="line"></span><br><span class="line">xor = <span class="keyword">lambda</span> a, b: <span class="built_in">bytes</span>([x^y <span class="keyword">for</span> x, y <span class="keyword">in</span> <span class="built_in">zip</span>(a, b)])</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">pad</span>(<span class="params">data: <span class="built_in">bytes</span></span>):</span><br><span class="line">    l = <span class="number">16</span> - <span class="built_in">len</span>(data) % <span class="number">16</span></span><br><span class="line">    <span class="keyword">return</span> data + <span class="built_in">bytes</span>([l]*l)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">unpad</span>(<span class="params">data: <span class="built_in">bytes</span></span>):</span><br><span class="line">    <span class="keyword">return</span> data[:-data[-<span class="number">1</span>]]</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">encrypt</span>(<span class="params">plain: <span class="built_in">bytes</span></span>):</span><br><span class="line">    plain = pad(plain)</span><br><span class="line">    blocks = [plain[i:i+<span class="number">16</span>] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(plain), <span class="number">16</span>)]</span><br><span class="line">    ciphers = [IV]</span><br><span class="line">    <span class="keyword">for</span> block <span class="keyword">in</span> blocks:</span><br><span class="line">        block = xor(block, md5(ciphers[-<span class="number">1</span>]).digest())</span><br><span class="line">        ciphers.append(aes.encrypt(block))</span><br><span class="line">    <span class="keyword">return</span> <span class="string">b&quot;&quot;</span>.join(ciphers)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">decrypt</span>(<span class="params">cipher: <span class="built_in">bytes</span></span>):</span><br><span class="line">    blocks = [cipher[i:i+<span class="number">16</span>] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(cipher), <span class="number">16</span>)]</span><br><span class="line">    h = md5(blocks[<span class="number">0</span>]).digest() <span class="comment"># IV</span></span><br><span class="line">    plains = []</span><br><span class="line">    <span class="keyword">for</span> block <span class="keyword">in</span> blocks[<span class="number">1</span>:]:</span><br><span class="line">        plains.append(xor(aes.decrypt(block), h))</span><br><span class="line">        h = md5(block).digest()</span><br><span class="line">    <span class="keyword">return</span> unpad(<span class="string">b&quot;&quot;</span>.join(plains))    </span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">register</span>():</span><br><span class="line">    username = b64decode(<span class="built_in">input</span>(<span class="string">&quot;username(base64): &quot;</span>).strip())</span><br><span class="line">    <span class="keyword">if</span> <span class="string">b&quot;root&quot;</span> <span class="keyword">in</span> username:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Cannot register as root user!&quot;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        cookie = <span class="string">b&quot;|&quot;</span>.join([PREFIX, <span class="string">b&quot;user=&quot;</span>+username, <span class="built_in">str</span>(datetime.now()).encode()])</span><br><span class="line">        cookie = encrypt(cookie)</span><br><span class="line">        cookie = b64encode(cookie)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;your cookie =&gt;&quot;</span>, cookie.decode())</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">login</span>():</span><br><span class="line">    cookie = <span class="built_in">input</span>(<span class="string">&quot;cookie: &quot;</span>).strip()</span><br><span class="line">    cookie = decrypt(b64decode(cookie))</span><br><span class="line">    data = cookie.split(<span class="string">b&quot;|&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> (data[<span class="number">0</span>] == PREFIX) <span class="keyword">and</span> data[<span class="number">1</span>].startswith(<span class="string">b&quot;user=&quot;</span>):</span><br><span class="line">        username = data[<span class="number">1</span>].split(<span class="string">b&quot;=&quot;</span>)[<span class="number">1</span>]</span><br><span class="line">        time = data[<span class="number">2</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Authentication unsuccessful...&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Hi, <span class="subst">&#123;username.decode()&#125;</span>! [registered at <span class="subst">&#123;time.decode()&#125;</span>]&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> username != <span class="string">b&quot;root&quot;</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;You&#x27;re not the root user...&quot;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Ding-Dong, Ding-Dong, Welcome, root. The ultimate authority has logged in.&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;This is for you =&gt; &quot;</span>, FLAG)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;===== MENU =====&quot;</span>)</span><br><span class="line">    choice = <span class="built_in">int</span>(<span class="built_in">input</span>(<span class="string">&quot;[1]register [2]login: &quot;</span>).strip())</span><br><span class="line">    <span class="keyword">if</span> choice == <span class="number">1</span>:</span><br><span class="line">        register()</span><br><span class="line">    <span class="keyword">elif</span> choice == <span class="number">2</span>:</span><br><span class="line">        login()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Invalid choice&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>()</span><br></pre></td></tr></table></figure>
+<p>字节翻转攻击，但是md5</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment">#p = process([&#x27;python3&#x27;, &#x27;server.py&#x27;])</span></span><br><span class="line">p = remote(<span class="string">&#x27;crypto.2023.cakectf.com&#x27;</span>, <span class="number">11111</span>)</span><br><span class="line"></span><br><span class="line">want = <span class="string">b&#x27;|user=root|date&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">query</span>(<span class="params">query</span>):</span><br><span class="line">    p.sendlineafter(<span class="string">b&#x27;: &#x27;</span>, <span class="string">b&#x27;1&#x27;</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">b&#x27;: &#x27;</span>, b64e(query).encode())</span><br><span class="line">    p.recvuntil(<span class="string">b&#x27;=&gt; &#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> b64d(p.recvline())</span><br><span class="line"></span><br><span class="line">cipher = query(<span class="string">b&#x27;room|date&#x27;</span>)</span><br><span class="line"></span><br><span class="line">IV = cipher[:<span class="number">16</span>]</span><br><span class="line">prefix_enc = cipher[<span class="number">16</span>:<span class="number">32</span>]</span><br><span class="line">first_enc = cipher[<span class="number">32</span>:<span class="number">48</span>]</span><br><span class="line"></span><br><span class="line">prefix_hash = md5sum(prefix_enc)</span><br><span class="line">first_hash = md5sum(first_enc)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> log.progress(<span class="string">&#x27;guess&#x27;</span>) <span class="keyword">as</span> prog:</span><br><span class="line">    <span class="keyword">for</span> guess <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">256</span>):</span><br><span class="line">        prog.status(<span class="string">f&#x27;<span class="subst">&#123;guess&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        cur_want = <span class="built_in">bytes</span>([guess]) + want</span><br><span class="line">        block = xor(cur_want, first_hash, prefix_hash)</span><br><span class="line"></span><br><span class="line">        resp = query(<span class="string">b&#x27;room|date&#x27;</span> + block)</span><br><span class="line">        resp = resp[<span class="number">48</span>:]</span><br><span class="line"></span><br><span class="line">        p.sendlineafter(<span class="string">b&#x27;: &#x27;</span>, <span class="string">b&#x27;2&#x27;</span>)</span><br><span class="line">        p.sendlineafter(<span class="string">b&#x27;cookie: &#x27;</span>, b64e(IV + prefix_enc + resp).encode())</span><br><span class="line"></span><br><span class="line">        line = p.recvline().decode()</span><br><span class="line">        <span class="keyword">if</span> <span class="string">&#x27;root&#x27;</span> <span class="keyword">in</span> line:</span><br><span class="line">            prog.success()</span><br><span class="line">            p.interactive()</span><br><span class="line">            <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/11/10/2023-HITCON-CTF-Crypto-WP/" rel="prev" title="2023-HITCON-CTF-Crypto-WP">
+      <i class="fa fa-chevron-left"></i> 2023-HITCON-CTF-Crypto-WP
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/11/14/Differential-Cryptanalysis-Analyse/" rel="next" title="Differential-Cryptanalysis-Analyse">
+      Differential-Cryptanalysis-Analyse <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#simple_signature"><span class="nav-number">1.</span> <span class="nav-text"> Simple_Signature:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#janken-vs-yoshiking-2"><span class="nav-number">2.</span> <span class="nav-text"> janken-vs-yoshiking-2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dingdong"><span class="nav-number">3.</span> <span class="nav-text"> dingdong:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="March-7th"
+      src="/images/march7th.jpg">
+  <p class="site-author-name" itemprop="name">March-7th</p>
+  <div class="site-description" itemprop="description">信键鼠真神得永生</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+
+
+<div class="sidebar-footer-info motion-element">
+    <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">桂ICP备2023000644号-2</a>
+    </div>
+
+  <div class="copyright">
+    &copy; 2024 – 2025
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span>March-7th</span>
+  </div>
+</div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">桂ICP备2023000644号-2 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">March-7th</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+<!-- Visitor Tracker -->
+<script>
+(function() {
+  'use strict';
+
+  // 配置 - 本地开发指向 API 服务端口，生产环境使用相对路径
+  const TRACKER_API = window.location.hostname === 'localhost'
+    ? 'http://127.0.0.1:3721/track'
+    : '/api/track';
+
+  // 获取页面信息
+  function getPageInfo() {
+    return {
+      url: window.location.pathname,
+      title: document.title,
+      referrer: document.referrer,
+      ua: navigator.userAgent
+    };
+  }
+
+  // 发送访问记录（使用 sendBeacon 确保页面关闭时也能发送）
+  function trackVisit() {
+    const data = getPageInfo();
+
+    // 优先使用 sendBeacon（不会阻塞页面关闭）
+    if (navigator.sendBeacon) {
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      navigator.sendBeacon(TRACKER_API, blob);
+    } else {
+      // 降级到 fetch
+      fetch(TRACKER_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).catch(() => {}); // 静默失败，不影响用户体验
+    }
+  }
+
+  // 页面加载时记录
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', trackVisit);
+  } else {
+    trackVisit();
+  }
+
+  // 支持 PJAX 页面切换时记录（Next 主题支持 PJAX）
+  document.addEventListener('pjax:complete', function() {
+    setTimeout(trackVisit, 100);
+  });
+
+})();
+</script>
+
+<!-- 扇形菜单按钮 -->
+<div class="fan-menu-container" id="fanMenuContainer">
+  <button class="fan-menu-toggle" id="fanMenuToggle">
+    <i class="fa fa-bars"></i>
+    <i class="fa fa-times"></i>
+  </button>
+  <div class="fan-menu-items" id="fanMenuItems">
+    <!-- 菜单项将由 JS 动态生成 -->
+  </div>
+</div>
+
+<!-- 扇形菜单脚本 -->
+<script>
+(function() {
+  'use strict';
+
+  // 从主题配置读取菜单项
+  const menuItems = [
+    { path: '/about/', icon: 'fa fa-user', title: '关于' },
+    { path: '/categories/', icon: 'fa fa-th', title: '分类' },
+    { path: '/archives/', icon: 'fa fa-archive', title: '归档' },
+    { path: '/videos/', icon: 'fa fa-video', title: '视频' }
+  ];
+
+  const container = document.getElementById('fanMenuContainer');
+  const toggle = document.getElementById('fanMenuToggle');
+  const itemsContainer = document.getElementById('fanMenuItems');
+
+  // 生成扇形菜单项
+  function createMenuItems() {
+    const total = menuItems.length;
+    const radius = 70; // 扇形半径
+    // 右旋90度：原 -160~-20 变成 -70~70
+    const startAngle = -70;
+    const endAngle = 70;
+
+    menuItems.forEach((item, index) => {
+      const a = document.createElement('a');
+      a.className = 'fan-menu-item';
+      a.href = item.path;
+      a.dataset.title = item.title;
+
+      // 计算扇形位置
+      const angle = startAngle + (endAngle - startAngle) * (index / (total - 1 || 1));
+      const rad = angle * Math.PI / 180;
+      const tx = Math.cos(rad) * radius;
+      const ty = Math.sin(rad) * radius;
+
+      a.style.setProperty('--tx', tx + 'px');
+      a.style.setProperty('--ty', ty + 'px');
+      a.style.transitionDelay = (index * 0.05) + 's';
+
+      // 图标
+      const i = document.createElement('i');
+      i.className = item.icon;
+      a.appendChild(i);
+
+      itemsContainer.appendChild(a);
+    });
+  }
+
+  // 初始化
+  createMenuItems();
+
+  // 鼠标进入容器 - 展开菜单
+  container.addEventListener('mouseenter', function() {
+    toggle.classList.add('active');
+  });
+
+  // 鼠标离开容器 - 收起菜单
+  container.addEventListener('mouseleave', function() {
+    toggle.classList.remove('active');
+  });
+
+  // 检测侧边栏状态，侧边栏打开时隐藏菜单
+  function updateMenuVisibility() {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      // 检查侧边栏是否有 sidebar-active 类
+      const isActive = sidebar.classList.contains('sidebar-active');
+      container.style.opacity = isActive ? '0' : '1';
+      container.style.pointerEvents = isActive ? 'none' : 'auto';
+      container.style.visibility = isActive ? 'hidden' : 'visible';
+    }
+  }
+
+  // 初始检测
+  updateMenuVisibility();
+
+  // 监听侧边栏状态变化
+  const sidebar = document.querySelector('.sidebar');
+  if (sidebar) {
+    // 使用 MutationObserver 监听侧边栏 class 变化
+    const observer = new MutationObserver(updateMenuVisibility);
+    observer.observe(sidebar, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+  }
+
+  // 窗口大小变化时重新检测
+  window.addEventListener('resize', updateMenuVisibility);
+
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"march-7th.tech","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="推荐阅读文章:  [AES算法的数学原理(知乎)1] [AES算法的流程(知乎)2] [Square Attack(知乎)3]  本篇文章主要作为个人学习记录，分享仅作为日后复习资料。 在文章[1]中，给出了较为详细的数学原理，至少能让我理解了AES的轮加密密钥是怎么工作的。在学习如何分析AES算法，理解Square Attack之前还是推荐看看的。  预处理： AES是一种分组对称加密算法，原">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AES-Analyse">
+<meta property="og:url" content="https://march-7th.tech/2024/03/06/AES-Analyse/index.html">
+<meta property="og:site_name" content="三顺七的笔记">
+<meta property="og:description" content="推荐阅读文章:  [AES算法的数学原理(知乎)1] [AES算法的流程(知乎)2] [Square Attack(知乎)3]  本篇文章主要作为个人学习记录，分享仅作为日后复习资料。 在文章[1]中，给出了较为详细的数学原理，至少能让我理解了AES的轮加密密钥是怎么工作的。在学习如何分析AES算法，理解Square Attack之前还是推荐看看的。  预处理： AES是一种分组对称加密算法，原">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://march-7th.tech/upload/AES.jpg">
+<meta property="og:image" content="https://march-7th.tech/upload/AES_round.jpg">
+<meta property="article:published_time" content="2024-03-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-08-10T19:52:24.385Z">
+<meta property="article:author" content="March-7th">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://march-7th.tech/upload/AES.jpg">
+
+<link rel="canonical" href="https://march-7th.tech/2024/03/06/AES-Analyse/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>AES-Analyse | 三顺七的笔记</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">三顺七的笔记</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-videos">
+
+    <a href="/videos/" rel="section"><i class="fa fa-video fa-fw"></i>视频展示</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://march-7th.tech/2024/03/06/AES-Analyse/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/march7th.jpg">
+      <meta itemprop="name" content="March-7th">
+      <meta itemprop="description" content="信键鼠真神得永生">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="三顺七的笔记">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AES-Analyse
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-03-06 00:00:00" itemprop="dateCreated datePublished" datetime="2024-03-06T00:00:00+08:00">2024-03-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-08-11 03:52:24" itemprop="dateModified" datetime="2024-08-11T03:52:24+08:00">2024-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="推荐阅读文章"><a class="markdownIt-Anchor" href="#推荐阅读文章"></a> 推荐阅读文章:</h2>
+<ul>
+<li>[AES算法的数学原理(知乎)<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/41648498">1]</a></li>
+<li>[AES算法的流程(知乎)<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/41716899">2]</a></li>
+<li>[Square Attack(知乎)<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/589141550">3]</a></li>
+</ul>
+<p>本篇文章主要作为个人学习记录，分享仅作为日后复习资料。</p>
+<p>在文章[<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/41648498">1]</a>中，给出了较为详细的数学原理，至少能让我理解了AES的轮加密密钥是怎么工作的。在学习如何分析AES算法，理解Square Attack之前还是推荐看看的。</p>
+<h2 id="预处理"><a class="markdownIt-Anchor" href="#预处理"></a> 预处理：</h2>
+<p>AES是一种分组对称加密算法，原文进入处理之前，将按照16bytes(128bits)的块大小进行切割分组，逐块进行处理(明文字符总长度不满16倍数就填充。）</p>
+<h2 id="aes的大致工作流程"><a class="markdownIt-Anchor" href="#aes的大致工作流程"></a> AES的大致工作流程:</h2>
+<p><img src="/upload/AES.jpg" alt="AES.jpg" /></p>
+<p>我按照几个模块的方式去记忆：</p>
+<ul>
+<li>将字节替换(BS)，行位移(SR)，列混淆(MC)，轮密钥加(KA)记作一个<strong>模块</strong>。</li>
+<li>将字节替换(BS)，行位移(SR)，轮密钥加(KA)记作<strong>特殊模块</strong>。</li>
+<li>首先进行一次轮密钥加(KA)。</li>
+<li>中间用正常模块处理。</li>
+<li>最后一轮用特殊模块处理。</li>
+</ul>
+<p>详细的单轮流程图：</p>
+<p><img src="/upload/AES_round.jpg" alt="AES_round.jpg" /></p>
+<ul>
+<li>字节替换：直接查表(表的设计原理见文章[<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/41716899">2]</a>)。</li>
+<li>行位移，列混淆：按照图中的顺序打乱就完了，用来扰乱结构的。</li>
+<li>轮密钥加：将轮输入与轮密钥在有限域(GF)上与轮密钥相加</li>
+</ul>
+<p>其中轮密钥由拓展密钥算法求出，根据输入Key进行定义，根据密钥编排摁加就行，这个不重要，确保够乱够数就行。</p>
+<h3 id="q为什么会有一个特殊模块"><a class="markdownIt-Anchor" href="#q为什么会有一个特殊模块"></a> Q：为什么会有一个特殊模块？</h3>
+<p>A：设计上方便正逆向处理，可以在流程图中看得出加解密流程是对称进行的，解密的时候按照加密的逆过程来就行，这种设计有利于硬件设计、处理吧。</p>
+<h2 id="大致算法实现"><a class="markdownIt-Anchor" href="#大致算法实现"></a> 大致算法实现：</h2>
+<p>在有限域GF(3^2)上的实现(抄TCTF题目抄来的)：</p>
+<p><strong>GF(有限域的实现算法):</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GF</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, value</span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">type</span>(value) == <span class="built_in">int</span>:</span><br><span class="line">            <span class="variable language_">self</span>.value = [(value // (<span class="number">3</span> ** i)) % <span class="number">3</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>)]</span><br><span class="line">            <span class="built_in">print</span>(<span class="variable language_">self</span>.value)</span><br><span class="line">        <span class="keyword">elif</span> <span class="built_in">type</span>(value) == <span class="built_in">list</span> <span class="keyword">and</span> <span class="built_in">len</span>(value) == <span class="number">5</span>:</span><br><span class="line">            <span class="variable language_">self</span>.value = value</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">assert</span> <span class="literal">False</span>, <span class="string">&quot;Wrong input to the constructor&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__str__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">f&quot;GF(<span class="subst">&#123;self.to_int()&#125;</span>)&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__repr__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">str</span>(<span class="variable language_">self</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__hash__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">hash</span>(<span class="built_in">tuple</span>(<span class="variable language_">self</span>.value))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__eq__</span>(<span class="params">self, other</span>):</span><br><span class="line">        <span class="keyword">assert</span> <span class="built_in">type</span>(other) == GF</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.value == other.value</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__add__</span>(<span class="params">self, other</span>):</span><br><span class="line">        <span class="keyword">assert</span> <span class="built_in">type</span>(other) == GF</span><br><span class="line">        <span class="keyword">return</span> GF([(x + y) % <span class="number">3</span> <span class="keyword">for</span> x, y <span class="keyword">in</span> <span class="built_in">zip</span>(<span class="variable language_">self</span>.value, other.value)])</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__sub__</span>(<span class="params">self, other</span>):</span><br><span class="line">        <span class="keyword">assert</span> <span class="built_in">type</span>(other) == GF</span><br><span class="line">        <span class="keyword">return</span> GF([(x - y) % <span class="number">3</span> <span class="keyword">for</span> x, y <span class="keyword">in</span> <span class="built_in">zip</span>(<span class="variable language_">self</span>.value, other.value)])</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__mul__</span>(<span class="params">self, other</span>):</span><br><span class="line">        <span class="keyword">assert</span> <span class="built_in">type</span>(other) == GF</span><br><span class="line"></span><br><span class="line">        arr = [<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">9</span>)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">                arr[i + j] = (arr[i + j] + <span class="variable language_">self</span>.value[i] * other.value[j]) % <span class="number">3</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Modulus: x^5 + 2*x + 1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>, <span class="number">4</span>, -<span class="number">1</span>):</span><br><span class="line">            arr[i - <span class="number">4</span>] = (arr[i - <span class="number">4</span>] - <span class="number">2</span> * arr[i]) % <span class="number">3</span></span><br><span class="line">            arr[i - <span class="number">5</span>] = (arr[i - <span class="number">5</span>] - arr[i]) % <span class="number">3</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> GF(arr[:<span class="number">5</span>])</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__pow__</span>(<span class="params">self, other</span>):</span><br><span class="line">        <span class="keyword">assert</span> <span class="built_in">type</span>(other) == <span class="built_in">int</span></span><br><span class="line">        base, ret = <span class="variable language_">self</span>, GF(<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">while</span> other &gt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">if</span> other &amp; <span class="number">1</span>:</span><br><span class="line">                ret = ret * base</span><br><span class="line">            other &gt;&gt;= <span class="number">1</span></span><br><span class="line">            base = base * base</span><br><span class="line">        <span class="keyword">return</span> ret</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">inverse</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span> ** <span class="number">241</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__div__</span>(<span class="params">self, other</span>):</span><br><span class="line">        <span class="keyword">assert</span> <span class="built_in">type</span>(other) == GF</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span> * other.inverse()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">to_int</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">sum</span>([<span class="variable language_">self</span>.value[i] * (<span class="number">3</span> ** i) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>)])</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">	#测试代码可行性，测试与理论是否相符，，</span></span><br><span class="line"><span class="string">    print(GF(2)*GF(2))</span></span><br><span class="line"><span class="string">    assert GF(3) * GF(3) == GF(9)</span></span><br><span class="line"><span class="string">    assert GF(9) * GF(27) == GF(5)</span></span><br><span class="line"><span class="string">    assert GF(5).inverse() == GF(240)</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p><strong>Cipher(加解密实现算法):</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> GF <span class="keyword">import</span> GF</span><br><span class="line"></span><br><span class="line">SBOX, INV_SBOX = <span class="built_in">dict</span>(), <span class="built_in">dict</span>()</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span> ** <span class="number">5</span>):</span><br><span class="line">    v = GF(<span class="number">23</span>) + (GF(<span class="number">0</span>) <span class="keyword">if</span> i == <span class="number">0</span> <span class="keyword">else</span> GF(i).inverse())</span><br><span class="line">    SBOX[GF(i)] = v</span><br><span class="line">    INV_SBOX[v] = GF(i)</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BlockCipher</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, key: <span class="built_in">bytes</span>, rnd: <span class="built_in">int</span></span>):</span><br><span class="line">        <span class="keyword">assert</span> <span class="built_in">len</span>(key) == <span class="number">9</span></span><br><span class="line">        sks = [GF(b) <span class="keyword">for</span> b <span class="keyword">in</span> key]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(rnd * <span class="number">9</span>):</span><br><span class="line">            sks.append(sks[-<span class="number">1</span>] + SBOX[sks[-<span class="number">9</span>]])</span><br><span class="line">        <span class="variable language_">self</span>.subkeys = [sks[i:i+<span class="number">9</span>] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, (rnd + <span class="number">1</span>) * <span class="number">9</span>, <span class="number">9</span>)]</span><br><span class="line">        <span class="variable language_">self</span>.rnd = rnd</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_add_key</span>(<span class="params">self, l1, l2</span>):</span><br><span class="line">        <span class="keyword">return</span> [x + y <span class="keyword">for</span> x, y <span class="keyword">in</span> <span class="built_in">zip</span>(l1, l2)]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_sub_key</span>(<span class="params">self, l1, l2</span>):</span><br><span class="line">        <span class="keyword">return</span> [x - y <span class="keyword">for</span> x, y <span class="keyword">in</span> <span class="built_in">zip</span>(l1, l2)]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_sub</span>(<span class="params">self, l</span>):</span><br><span class="line">        <span class="keyword">return</span> [SBOX[x] <span class="keyword">for</span> x <span class="keyword">in</span> l]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_sub_inv</span>(<span class="params">self, l</span>):</span><br><span class="line">        <span class="keyword">return</span> [INV_SBOX[x] <span class="keyword">for</span> x <span class="keyword">in</span> l]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_shift</span>(<span class="params">self, b</span>):</span><br><span class="line">        <span class="keyword">return</span> [</span><br><span class="line">            b[<span class="number">0</span>], b[<span class="number">1</span>], b[<span class="number">2</span>],</span><br><span class="line">            b[<span class="number">4</span>], b[<span class="number">5</span>], b[<span class="number">3</span>],</span><br><span class="line">            b[<span class="number">8</span>], b[<span class="number">6</span>], b[<span class="number">7</span>]</span><br><span class="line">        ]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_shift_inv</span>(<span class="params">self, b</span>):</span><br><span class="line">        <span class="keyword">return</span> [</span><br><span class="line">            b[<span class="number">0</span>], b[<span class="number">1</span>], b[<span class="number">2</span>],</span><br><span class="line">            b[<span class="number">5</span>], b[<span class="number">3</span>], b[<span class="number">4</span>],</span><br><span class="line">            b[<span class="number">7</span>], b[<span class="number">8</span>], b[<span class="number">6</span>]</span><br><span class="line">        ]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_mix</span>(<span class="params">self, b</span>):</span><br><span class="line">        b = b[:] <span class="comment"># Copy</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>):</span><br><span class="line">            x = GF(<span class="number">7</span>) * b[i] + GF(<span class="number">2</span>) * b[<span class="number">3</span> + i] + b[<span class="number">6</span> + i]</span><br><span class="line">            y = GF(<span class="number">2</span>) * b[i] + b[<span class="number">3</span> + i] + GF(<span class="number">7</span>) * b[<span class="number">6</span> + i]</span><br><span class="line">            z = b[i] + GF(<span class="number">7</span>) * b[<span class="number">3</span> + i] + GF(<span class="number">2</span>) * b[<span class="number">6</span> + i]</span><br><span class="line">            b[i], b[<span class="number">3</span> + i], b[<span class="number">6</span> + i] = x, y, z</span><br><span class="line">        <span class="keyword">return</span> b</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_mix_inv</span>(<span class="params">self, b</span>):</span><br><span class="line">        b = b[:] <span class="comment"># Copy</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>):</span><br><span class="line">            x = GF(<span class="number">86</span>) * b[i] + GF(<span class="number">222</span>) * b[<span class="number">3</span> + i] + GF(<span class="number">148</span>) * b[<span class="number">6</span> + i]</span><br><span class="line">            y = GF(<span class="number">222</span>) * b[i] + GF(<span class="number">148</span>) * b[<span class="number">3</span> + i] + GF(<span class="number">86</span>) * b[<span class="number">6</span> + i]</span><br><span class="line">            z = GF(<span class="number">148</span>) * b[i] + GF(<span class="number">86</span>) * b[<span class="number">3</span> + i] + GF(<span class="number">222</span>) * b[<span class="number">6</span> + i]</span><br><span class="line">            b[i], b[<span class="number">3</span> + i], b[<span class="number">6</span> + i] = x, y, z</span><br><span class="line">        <span class="keyword">return</span> b</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">encrypt</span>(<span class="params">self, inp: <span class="built_in">bytes</span></span>):</span><br><span class="line">        <span class="keyword">assert</span> <span class="built_in">len</span>(inp) == <span class="number">9</span></span><br><span class="line">        b = [GF(x) <span class="keyword">for</span> x <span class="keyword">in</span> inp]</span><br><span class="line">        </span><br><span class="line">        b = <span class="variable language_">self</span>._add_key(b, <span class="variable language_">self</span>.subkeys[<span class="number">0</span>])</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.rnd):</span><br><span class="line">            b = <span class="variable language_">self</span>._sub(b)</span><br><span class="line">            b = <span class="variable language_">self</span>._shift(b)</span><br><span class="line">            <span class="keyword">if</span> i &lt; <span class="variable language_">self</span>.rnd - <span class="number">2</span>:</span><br><span class="line">                b = <span class="variable language_">self</span>._mix(b)</span><br><span class="line">            b = <span class="variable language_">self</span>._add_key(b, <span class="variable language_">self</span>.subkeys[i + <span class="number">1</span>])</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">bytes</span>([x.to_int() <span class="keyword">for</span> x <span class="keyword">in</span> b])</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">decrypt</span>(<span class="params">self, inp: <span class="built_in">bytes</span></span>):</span><br><span class="line">        <span class="keyword">assert</span> <span class="built_in">len</span>(inp) == <span class="number">9</span></span><br><span class="line">        b = [GF(x) <span class="keyword">for</span> x <span class="keyword">in</span> inp]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">reversed</span>(<span class="built_in">range</span>(<span class="variable language_">self</span>.rnd)):</span><br><span class="line">            b = <span class="variable language_">self</span>._sub_key(b, <span class="variable language_">self</span>.subkeys[i + <span class="number">1</span>])</span><br><span class="line">            <span class="keyword">if</span> i &lt; <span class="variable language_">self</span>.rnd - <span class="number">2</span>:</span><br><span class="line">                b = <span class="variable language_">self</span>._mix_inv(b)</span><br><span class="line">            b = <span class="variable language_">self</span>._shift_inv(b)</span><br><span class="line">            b = <span class="variable language_">self</span>._sub_inv(b)</span><br><span class="line">        b = <span class="variable language_">self</span>._sub_key(b, <span class="variable language_">self</span>.subkeys[<span class="number">0</span>])</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">bytes</span>([x.to_int() <span class="keyword">for</span> x <span class="keyword">in</span> b])</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    <span class="keyword">import</span> random</span><br><span class="line">    key = <span class="built_in">bytes</span>(random.randint(<span class="number">0</span>, <span class="number">242</span>) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">9</span>))</span><br><span class="line">    cipher = BlockCipher(key, <span class="number">5</span>) <span class="comment">#定义密钥与加密轮数</span></span><br><span class="line">    ct = cipher.encrypt(pt)</span><br><span class="line">    pt_ = cipher.decrypt(ct)</span><br><span class="line">    <span class="keyword">assert</span> pt == pt_</span><br></pre></td></tr></table></figure>
+<h2 id="攻击分析"><a class="markdownIt-Anchor" href="#攻击分析"></a> 攻击分析：</h2>
+<p>目前针对AES算法本身比较有效的攻击办法就是文章[<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/589141550">3]</a>所用的Square Attack。（也就是不考虑分组模式影响的前提下）</p>
+<p>当然再考虑侧信道攻击，注入故障的前提下，利用差分去打相邻两轮的处理结果推出密钥也不是不行。</p>
+<p>目前出过的相关赛题有：</p>
+<ul>
+<li>
+<p>2016 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/589141550">TCTF</a></p>
+</li>
+<li>
+<p>2018 强网杯 决赛 revolver</p>
+</li>
+<li>
+<p>2020 [Google CTF](<a target="_blank" rel="noopener" href="https://github.com/nguyenduyhieukma/CTF-Writeups/blob/master/Google">https://github.com/nguyenduyhieukma/CTF-Writeups/blob/master/Google</a> CTF Quals/2020/oracle/oracle-solution.ipynb)</p>
+</li>
+<li>
+<p>2023 <a target="_blank" rel="noopener" href="https://tangcuxiaojikuai.xyz/post/e69bccb7.html">强网拟态</a></p>
+</li>
+<li>
+<p>2023 <a target="_blank" rel="noopener" href="https://zhevitz.top/archives/1702207843790">TCTF</a></p>
+</li>
+</ul>
+<p>做一道吐一道。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/12/25/2023-NCTF-Crypto-WP/" rel="prev" title="2023-NCTF-Crypto-WP">
+      <i class="fa fa-chevron-left"></i> 2023-NCTF-Crypto-WP
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/04/29/2024-D3CTF-Crypto-WP/" rel="next" title="2024-D3CTF-Crypto-WP">
+      2024-D3CTF-Crypto-WP <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A8%E8%8D%90%E9%98%85%E8%AF%BB%E6%96%87%E7%AB%A0"><span class="nav-number">1.</span> <span class="nav-text"> 推荐阅读文章:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text"> 预处理：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#aes%E7%9A%84%E5%A4%A7%E8%87%B4%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text"> AES的大致工作流程:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#q%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E6%9C%89%E4%B8%80%E4%B8%AA%E7%89%B9%E6%AE%8A%E6%A8%A1%E5%9D%97"><span class="nav-number">3.1.</span> <span class="nav-text"> Q：为什么会有一个特殊模块？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E8%87%B4%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.</span> <span class="nav-text"> 大致算法实现：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%BB%E5%87%BB%E5%88%86%E6%9E%90"><span class="nav-number">5.</span> <span class="nav-text"> 攻击分析：</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="March-7th"
+      src="/images/march7th.jpg">
+  <p class="site-author-name" itemprop="name">March-7th</p>
+  <div class="site-description" itemprop="description">信键鼠真神得永生</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+
+
+<div class="sidebar-footer-info motion-element">
+    <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">桂ICP备2023000644号-2</a>
+    </div>
+
+  <div class="copyright">
+    &copy; 2024 – 2025
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span>March-7th</span>
+  </div>
+</div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">桂ICP备2023000644号-2 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">March-7th</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+<!-- Visitor Tracker -->
+<script>
+(function() {
+  'use strict';
+
+  // 配置 - 本地开发指向 API 服务端口，生产环境使用相对路径
+  const TRACKER_API = window.location.hostname === 'localhost'
+    ? 'http://127.0.0.1:3721/track'
+    : '/api/track';
+
+  // 获取页面信息
+  function getPageInfo() {
+    return {
+      url: window.location.pathname,
+      title: document.title,
+      referrer: document.referrer,
+      ua: navigator.userAgent
+    };
+  }
+
+  // 发送访问记录（使用 sendBeacon 确保页面关闭时也能发送）
+  function trackVisit() {
+    const data = getPageInfo();
+
+    // 优先使用 sendBeacon（不会阻塞页面关闭）
+    if (navigator.sendBeacon) {
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      navigator.sendBeacon(TRACKER_API, blob);
+    } else {
+      // 降级到 fetch
+      fetch(TRACKER_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).catch(() => {}); // 静默失败，不影响用户体验
+    }
+  }
+
+  // 页面加载时记录
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', trackVisit);
+  } else {
+    trackVisit();
+  }
+
+  // 支持 PJAX 页面切换时记录（Next 主题支持 PJAX）
+  document.addEventListener('pjax:complete', function() {
+    setTimeout(trackVisit, 100);
+  });
+
+})();
+</script>
+
+<!-- 扇形菜单按钮 -->
+<div class="fan-menu-container" id="fanMenuContainer">
+  <button class="fan-menu-toggle" id="fanMenuToggle">
+    <i class="fa fa-bars"></i>
+    <i class="fa fa-times"></i>
+  </button>
+  <div class="fan-menu-items" id="fanMenuItems">
+    <!-- 菜单项将由 JS 动态生成 -->
+  </div>
+</div>
+
+<!-- 扇形菜单脚本 -->
+<script>
+(function() {
+  'use strict';
+
+  // 从主题配置读取菜单项
+  const menuItems = [
+    { path: '/about/', icon: 'fa fa-user', title: '关于' },
+    { path: '/categories/', icon: 'fa fa-th', title: '分类' },
+    { path: '/archives/', icon: 'fa fa-archive', title: '归档' },
+    { path: '/videos/', icon: 'fa fa-video', title: '视频' }
+  ];
+
+  const container = document.getElementById('fanMenuContainer');
+  const toggle = document.getElementById('fanMenuToggle');
+  const itemsContainer = document.getElementById('fanMenuItems');
+
+  // 生成扇形菜单项
+  function createMenuItems() {
+    const total = menuItems.length;
+    const radius = 70; // 扇形半径
+    // 右旋90度：原 -160~-20 变成 -70~70
+    const startAngle = -70;
+    const endAngle = 70;
+
+    menuItems.forEach((item, index) => {
+      const a = document.createElement('a');
+      a.className = 'fan-menu-item';
+      a.href = item.path;
+      a.dataset.title = item.title;
+
+      // 计算扇形位置
+      const angle = startAngle + (endAngle - startAngle) * (index / (total - 1 || 1));
+      const rad = angle * Math.PI / 180;
+      const tx = Math.cos(rad) * radius;
+      const ty = Math.sin(rad) * radius;
+
+      a.style.setProperty('--tx', tx + 'px');
+      a.style.setProperty('--ty', ty + 'px');
+      a.style.transitionDelay = (index * 0.05) + 's';
+
+      // 图标
+      const i = document.createElement('i');
+      i.className = item.icon;
+      a.appendChild(i);
+
+      itemsContainer.appendChild(a);
+    });
+  }
+
+  // 初始化
+  createMenuItems();
+
+  // 鼠标进入容器 - 展开菜单
+  container.addEventListener('mouseenter', function() {
+    toggle.classList.add('active');
+  });
+
+  // 鼠标离开容器 - 收起菜单
+  container.addEventListener('mouseleave', function() {
+    toggle.classList.remove('active');
+  });
+
+  // 检测侧边栏状态，侧边栏打开时隐藏菜单
+  function updateMenuVisibility() {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      // 检查侧边栏是否有 sidebar-active 类
+      const isActive = sidebar.classList.contains('sidebar-active');
+      container.style.opacity = isActive ? '0' : '1';
+      container.style.pointerEvents = isActive ? 'none' : 'auto';
+      container.style.visibility = isActive ? 'hidden' : 'visible';
+    }
+  }
+
+  // 初始检测
+  updateMenuVisibility();
+
+  // 监听侧边栏状态变化
+  const sidebar = document.querySelector('.sidebar');
+  if (sidebar) {
+    // 使用 MutationObserver 监听侧边栏 class 变化
+    const observer = new MutationObserver(updateMenuVisibility);
+    observer.observe(sidebar, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+  }
+
+  // 窗口大小变化时重新检测
+  window.addEventListener('resize', updateMenuVisibility);
+
+})();
+</script>
+
+</body>
+</html>

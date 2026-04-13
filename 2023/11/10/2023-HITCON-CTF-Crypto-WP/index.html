@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"march-7th.tech","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="HITCON2023 Crypto 部分题解  Careless Padding 题目： 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879808182">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2023-HITCON-CTF-Crypto-WP">
+<meta property="og:url" content="https://march-7th.tech/2023/11/10/2023-HITCON-CTF-Crypto-WP/index.html">
+<meta property="og:site_name" content="三顺七的笔记">
+<meta property="og:description" content="HITCON2023 Crypto 部分题解  Careless Padding 题目： 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879808182">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-09T22:12:52.000Z">
+<meta property="article:modified_time" content="2024-08-10T19:51:11.520Z">
+<meta property="article:author" content="March-7th">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://march-7th.tech/2023/11/10/2023-HITCON-CTF-Crypto-WP/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>2023-HITCON-CTF-Crypto-WP | 三顺七的笔记</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">三顺七的笔记</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-videos">
+
+    <a href="/videos/" rel="section"><i class="fa fa-video fa-fw"></i>视频展示</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://march-7th.tech/2023/11/10/2023-HITCON-CTF-Crypto-WP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/march7th.jpg">
+      <meta itemprop="name" content="March-7th">
+      <meta itemprop="description" content="信键鼠真神得永生">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="三顺七的笔记">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2023-HITCON-CTF-Crypto-WP
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-11-10 06:12:52" itemprop="dateCreated datePublished" datetime="2023-11-10T06:12:52+08:00">2023-11-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-08-11 03:51:11" itemprop="dateModified" datetime="2024-08-11T03:51:11+08:00">2024-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WP/" itemprop="url" rel="index"><span itemprop="name">WP</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>HITCON2023 Crypto 部分题解</p>
+<h2 id="careless-padding"><a class="markdownIt-Anchor" href="#careless-padding"></a> Careless Padding</h2>
+<p>题目：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/local/bin/python</span></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> secret <span class="keyword">import</span> flag</span><br><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</span><br><span class="line"><span class="keyword">from</span> Crypto.Random <span class="keyword">import</span> get_random_bytes</span><br><span class="line"><span class="keyword">import</span> signal</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> socketserver</span><br><span class="line"></span><br><span class="line">N = <span class="number">16</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 0 -&gt; 0, 1~N -&gt; 1, (N+1)~(2N) -&gt; 2 ...</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">count_blocks</span>(<span class="params">length</span>):</span><br><span class="line">    block_count = (length-<span class="number">1</span>) // N + <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> block_count</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">find_repeat_tail</span>(<span class="params">message</span>):</span><br><span class="line">    </span><br><span class="line">    Y = message[-<span class="number">1</span>]</span><br><span class="line">    message_len = <span class="built_in">len</span>(message)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(message)-<span class="number">1</span>, -<span class="number">1</span>, -<span class="number">1</span>):</span><br><span class="line">        <span class="keyword">if</span> message[i] != Y:</span><br><span class="line">            X = message[i]</span><br><span class="line">            message_len = i + <span class="number">1</span></span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">return</span> message_len, X, Y</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">my_padding</span>(<span class="params">message</span>):</span><br><span class="line">    <span class="comment"># X,Y</span></span><br><span class="line">    message_len = <span class="built_in">len</span>(message)</span><br><span class="line">    block_count = count_blocks(message_len)</span><br><span class="line">    result_len =  block_count * N</span><br><span class="line">    <span class="keyword">if</span> message_len % N == <span class="number">0</span>:</span><br><span class="line">        result_len += N</span><br><span class="line">    X = message[-<span class="number">1</span>] </span><br><span class="line">    Y = message[(block_count-<span class="number">2</span>)*N+(X%N)]</span><br><span class="line">    <span class="comment"># ???????? XXXXXXXC</span></span><br><span class="line">    <span class="keyword">if</span> X==Y:</span><br><span class="line">        Y = Y^<span class="number">1</span>  <span class="comment">#防冲突的</span></span><br><span class="line">    padded = message.ljust(result_len, <span class="built_in">bytes</span>([Y]))</span><br><span class="line">    <span class="keyword">return</span> padded</span><br><span class="line"></span><br><span class="line">C = D ^ IV</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">my_unpad</span>(<span class="params">message</span>):</span><br><span class="line">    message_len, X, Y = find_repeat_tail(message)</span><br><span class="line">    block_count = count_blocks(message_len)</span><br><span class="line">    _Y = message[(block_count-<span class="number">2</span>)*N+(X%N)]</span><br><span class="line">    <span class="keyword">if</span> (Y != _Y <span class="keyword">and</span> Y != _Y^<span class="number">1</span>):</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">&quot;Incorrect Padding&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> message[:message_len]</span><br><span class="line"></span><br><span class="line">k = os.urandom(<span class="number">16</span>)</span><br><span class="line">m = json.dumps(&#123;<span class="string">&#x27;key&#x27;</span>:flag&#125;).encode()</span><br><span class="line">iv = os.urandom(<span class="number">16</span>)</span><br><span class="line">cipher = AES.new(k, AES.MODE_CBC, iv)</span><br><span class="line">padded = my_padding(m)</span><br><span class="line">enc = cipher.encrypt(padded)</span><br><span class="line"></span><br><span class="line">band = (<span class="string">f&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">*********************************************************</span></span><br><span class="line"><span class="string">You are put into the careless prison and trying to escape.</span></span><br><span class="line"><span class="string">Thanksfully, someone forged a key for you, but seems like it&#x27;s encrypted... </span></span><br><span class="line"><span class="string">Fortunately they also leave you a copied (and apparently alive) prison door.</span></span><br><span class="line"><span class="string">The replica pairs with this encrypted key. Wait, how are this suppose to help?</span></span><br><span class="line"><span class="string">Anyway, here&#x27;s your encrypted key: <span class="subst">&#123;(iv+enc).<span class="built_in">hex</span>()&#125;</span></span></span><br><span class="line"><span class="string">*********************************************************</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span>).encode()</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Task</span>(socketserver.BaseRequestHandler):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_recvall</span>(<span class="params">self</span>):</span><br><span class="line">        BUFF_SIZE = <span class="number">2048</span></span><br><span class="line">        data = <span class="string">b&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            part = <span class="variable language_">self</span>.request.recv(BUFF_SIZE)</span><br><span class="line">            data += part</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(part) &lt; BUFF_SIZE:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">return</span> data.strip()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">send</span>(<span class="params">self, msg, newline=<span class="literal">True</span></span>):</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="keyword">if</span> newline:</span><br><span class="line">                msg += <span class="string">b&#x27;\n&#x27;</span></span><br><span class="line">            <span class="variable language_">self</span>.request.sendall(msg)</span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">recv</span>(<span class="params">self, prompt=<span class="string">b&#x27;&#x27;</span></span>):</span><br><span class="line">        <span class="variable language_">self</span>.send(prompt, newline=<span class="literal">False</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>._recvall()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">timeout_handler</span>(<span class="params">self, signum, frame</span>):</span><br><span class="line">        <span class="keyword">raise</span> TimeoutError</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">handle</span>(<span class="params">self</span>):</span><br><span class="line">        signal.signal(signal.SIGALRM, <span class="variable language_">self</span>.timeout_handler)</span><br><span class="line">        signal.alarm(<span class="number">300</span>)</span><br><span class="line">        <span class="variable language_">self</span>.send(band)</span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            <span class="variable language_">self</span>.send(<span class="string">b&quot;Try unlock:&quot;</span>)</span><br><span class="line">            enc = <span class="variable language_">self</span>.recv()</span><br><span class="line">            enc = <span class="built_in">bytes</span>.fromhex(enc.decode())</span><br><span class="line">            iv = enc[:<span class="number">16</span>]</span><br><span class="line">            cipher = AES.new(k, AES.MODE_CBC, iv)</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                message = my_unpad(cipher.decrypt(enc[<span class="number">16</span>:]))</span><br><span class="line">                <span class="keyword">if</span> message == m:                </span><br><span class="line">                    <span class="variable language_">self</span>.send(<span class="built_in">str</span>(m).encode())</span><br><span class="line">                    <span class="variable language_">self</span>.send(<span class="string">b&quot;Hey you unlock me! At least you know how to use the key&quot;</span>)</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="variable language_">self</span>.send(<span class="string">b&quot;Bad key... do you even try?&quot;</span>)</span><br><span class="line">            <span class="keyword">except</span> ValueError:</span><br><span class="line">                <span class="variable language_">self</span>.send(<span class="string">b&quot;Don&#x27;t put that weirdo in me!&quot;</span>)</span><br><span class="line">            <span class="keyword">except</span> Exception:</span><br><span class="line">                <span class="variable language_">self</span>.send(<span class="string">b&quot;What? Are you trying to unlock me with a lock pick?&quot;</span>)</span><br><span class="line">            </span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ThreadedServer</span>(socketserver.ThreadingMixIn, socketserver.TCPServer):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ForkedServer</span>(socketserver.ForkingMixIn, socketserver.TCPServer):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    HOST, PORT = <span class="string">&#x27;0.0.0.0&#x27;</span>, <span class="number">10002</span></span><br><span class="line">    server = ForkedServer((HOST, PORT), Task)</span><br><span class="line">    server.allow_reuse_address = <span class="literal">True</span></span><br><span class="line">    <span class="built_in">print</span>(HOST, PORT)</span><br><span class="line">    server.serve_forever()</span><br></pre></td></tr></table></figure>
+<p>(这里稍微改了一下题目的部署方式)</p>
+<p>exp:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> Crypto.Util.number <span class="keyword">import</span> long_to_bytes</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="comment">#context(os=&#x27;linux&#x27;, arch=&#x27;amd64&#x27;, log_level=&#x27;debug&#x27;)</span></span><br><span class="line">N = <span class="number">16</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#p = process(&quot;./chal.py&quot;)</span></span><br><span class="line"><span class="comment">#p = remote(&quot;127.0.0.1&quot;, 11111)</span></span><br><span class="line">p = remote(<span class="string">&quot;0.0.0.0&quot;</span>, <span class="number">10002</span>)</span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">b&quot;key: &quot;</span>)</span><br><span class="line">cipher = p.recvline()</span><br><span class="line">cipher = <span class="built_in">bytes</span>.fromhex(cipher.decode())</span><br><span class="line">p.recvline()</span><br><span class="line">p.recvline()</span><br><span class="line"></span><br><span class="line">IV = cipher[:<span class="number">16</span>]</span><br><span class="line">FB = cipher[<span class="number">16</span>:<span class="number">32</span>]</span><br><span class="line">Z = <span class="string">b&quot;\x00&quot;</span>*<span class="number">16</span></span><br><span class="line">I = [<span class="number">255</span>]*<span class="number">16</span></span><br><span class="line">known = <span class="string">b&#x27;&#123;&quot;key&quot;: &quot;hitcon&#123;&#x27;</span>[:<span class="number">16</span>]</span><br><span class="line">IV0 = xor(IV, known) <span class="comment">#第一个中间向量d</span></span><br><span class="line"></span><br><span class="line">oracle_count = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">oracle</span>(<span class="params">m</span>):</span><br><span class="line">    <span class="keyword">global</span> oracle_count</span><br><span class="line">    oracle_count += <span class="number">1</span></span><br><span class="line">    p.sendline(m.<span class="built_in">hex</span>().encode())</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">not</span> <span class="string">b&quot;weirdo&quot;</span> <span class="keyword">in</span> p.recvline()</span><br><span class="line"></span><br><span class="line"><span class="comment"># async send to reduce network lag</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">oracle_multi</span>(<span class="params">ms</span>):<span class="comment">#用来判断是否是有效攻击的</span></span><br><span class="line">    <span class="comment"># res = [oracle(m) for m in ms]</span></span><br><span class="line">    <span class="comment"># return res</span></span><br><span class="line">    <span class="keyword">global</span> oracle_count</span><br><span class="line">    l = <span class="built_in">len</span>(ms)</span><br><span class="line">    oracle_count += l</span><br><span class="line">    res = [<span class="number">0</span>] * l</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(l):</span><br><span class="line">        p.sendline(ms[i].<span class="built_in">hex</span>().encode())</span><br><span class="line">        res[i] = <span class="keyword">not</span> <span class="string">b&quot;weirdo&quot;</span> <span class="keyword">in</span> p.recvline()</span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">offset_db = [-<span class="number">1</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">16</span>)]</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_offset_db</span>():</span><br><span class="line">    cur = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> -<span class="number">1</span> <span class="keyword">in</span> offset_db:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        ciphers = []</span><br><span class="line">        <span class="keyword">for</span> offset <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">16</span>):</span><br><span class="line">            OFF = (offset ^ FB[-<span class="number">1</span>]) % <span class="number">16</span></span><br><span class="line">            check = I[:]</span><br><span class="line">            check[offset] = <span class="number">0</span></span><br><span class="line">            cipher = xor(IV0, check, i) + FB + xor(IV0, i) + FB</span><br><span class="line">            ciphers.append(cipher)</span><br><span class="line">        res = oracle_multi(ciphers)</span><br><span class="line">        <span class="keyword">if</span> res.count(<span class="literal">True</span>) == <span class="number">1</span>:</span><br><span class="line">            offset = res.index(<span class="literal">True</span>)</span><br><span class="line">            OFF = (offset ^ FB[-<span class="number">1</span>]) % <span class="number">16</span></span><br><span class="line">            offset_db[OFF] = i</span><br><span class="line">    <span class="keyword">return</span> offset_db</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">oracle_block_top</span>(<span class="params">BIV, BC</span>):</span><br><span class="line">    res = [<span class="number">0</span>] * <span class="number">16</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> offset <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">16</span>):</span><br><span class="line">        <span class="comment"># get top 7 bit</span></span><br><span class="line">        real_offset = (offset ^ BC[-<span class="number">1</span>]) % <span class="number">16</span></span><br><span class="line">        IVL = xor(IV0, offset_db[offset])</span><br><span class="line">        top_7 = -<span class="number">1</span></span><br><span class="line">        ciphers = []</span><br><span class="line">        <span class="keyword">for</span> diff <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">256</span>, <span class="number">2</span>):</span><br><span class="line">            check = <span class="built_in">list</span>(BIV[:])</span><br><span class="line">            check[real_offset] ^= diff</span><br><span class="line">            cipher = xor(BIV, check) + BC + IVL + FB</span><br><span class="line">            ciphers.append(cipher)</span><br><span class="line"></span><br><span class="line">        res2 = oracle_multi(ciphers)</span><br><span class="line">        result = <span class="built_in">list</span>(<span class="built_in">zip</span>(res2, <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">256</span>, <span class="number">2</span>)))</span><br><span class="line">        <span class="keyword">for</span> ora, diff <span class="keyword">in</span> result:</span><br><span class="line">            <span class="keyword">if</span> ora:<span class="comment">#如果是有效的就能得到一个顶比特</span></span><br><span class="line">                <span class="built_in">print</span>(offset, diff)</span><br><span class="line">                top_7 = (diff ^ BIV[real_offset] ^ offset_db[offset]) &amp; <span class="number">0xfe</span></span><br><span class="line">                res[real_offset] = top_7</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># honestly I don&#x27;t know what happned here</span></span><br><span class="line">            <span class="comment"># Sometime things just fall through for some reason...</span></span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">&quot;Padding not found&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">oracle_block_lower</span>(<span class="params">BIV, BC, Mtop</span>):</span><br><span class="line">    <span class="comment"># 14th byte first, use as anchor</span></span><br><span class="line">    <span class="comment"># make sure Mtop[-1] != Mtop[-2]</span></span><br><span class="line">    <span class="comment"># cipher: control IV1 | control IV2 | BC</span></span><br><span class="line">    <span class="comment"># IV2 -&gt; BIV + offset to control Mtop decrypt result -&gt; partial known X, Y</span></span><br><span class="line">    <span class="comment"># IV1 -&gt; use to bruteforce all permutation</span></span><br><span class="line">    lowers = [<span class="number">0</span>] * <span class="number">16</span></span><br><span class="line"></span><br><span class="line">    baseIV = xor(BIV, Mtop) <span class="comment"># so decrypt(BC, iv = baseIV) will only contain 0 or 1</span></span><br><span class="line">    diff = [<span class="number">0</span>] * <span class="number">16</span></span><br><span class="line">    diff[-<span class="number">2</span>] = <span class="number">0xf0</span> <span class="comment"># make sure it don&#x27;t propagate</span></span><br><span class="line">    IV2 = xor(baseIV, diff)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># we check if some value in the first location match</span></span><br><span class="line">    <span class="comment"># yes -&gt; last bit of Mtop[-2] is 0</span></span><br><span class="line">    <span class="comment"># no  -&gt; last bit of Mtop[-2] is 1</span></span><br><span class="line">    ciphers = []</span><br><span class="line">    <span class="keyword">for</span> brute <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">256</span>, <span class="number">2</span>):</span><br><span class="line">        IV1 = [brute] + [<span class="number">0</span>] * <span class="number">15</span></span><br><span class="line">        ciphers.append(<span class="built_in">bytes</span>(IV1) + IV2 + BC)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> oracle_multi(ciphers).count(<span class="literal">True</span>) == <span class="number">1</span>:</span><br><span class="line">        lowers[-<span class="number">2</span>] = <span class="number">0</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        lowers[-<span class="number">2</span>] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># now we check if the last bit is the same as Mtop[-2]</span></span><br><span class="line">    diff = [<span class="number">0</span>] * <span class="number">16</span></span><br><span class="line">    diff[-<span class="number">3</span>] = <span class="number">0xf8</span> <span class="comment"># make sure it don&#x27;t propagate</span></span><br><span class="line">    IV2 = xor(baseIV, diff, lowers)</span><br><span class="line">    <span class="comment"># we check if some value in the first location match</span></span><br><span class="line">    <span class="comment"># yes -&gt; Mtop[-2] is X -&gt; last bit of Mtop[-1] is 1</span></span><br><span class="line">    <span class="comment"># no  -&gt; Mtop[-2] is not X -&gt; last bit of Mtop[-1] is 0</span></span><br><span class="line">    ciphers = []</span><br><span class="line">    <span class="keyword">for</span> brute <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">256</span>, <span class="number">2</span>):</span><br><span class="line">        IV1 = [brute] + [<span class="number">0</span>] * <span class="number">15</span></span><br><span class="line">        ciphers.append(<span class="built_in">bytes</span>(IV1) + IV2 + BC)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> oracle_multi(ciphers).count(<span class="literal">True</span>) == <span class="number">1</span>:</span><br><span class="line">        lowers[-<span class="number">1</span>] = <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        lowers[-<span class="number">1</span>] = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># now we can consistantly form repeating tail</span></span><br><span class="line">    <span class="comment"># fill the rest of the lower bits</span></span><br><span class="line">    <span class="keyword">for</span> loc <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">13</span>, -<span class="number">1</span>, -<span class="number">1</span>):</span><br><span class="line">        diff = [<span class="number">0</span>] * <span class="number">16</span></span><br><span class="line">        diff[loc] = <span class="number">0xf0</span> <span class="comment"># make sure it don&#x27;t propagate</span></span><br><span class="line">        IV2 = xor(baseIV, diff, lowers)</span><br><span class="line">        ciphers = []</span><br><span class="line">        <span class="keyword">for</span> brute <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">256</span>, <span class="number">2</span>):</span><br><span class="line">            IV1 = [brute] + [<span class="number">0</span>] * <span class="number">15</span></span><br><span class="line">            ciphers.append(<span class="built_in">bytes</span>(IV1) + IV2 + BC)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> oracle_multi(ciphers).count(<span class="literal">True</span>) == <span class="number">1</span>:</span><br><span class="line">            lowers[loc] = <span class="number">0</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            lowers[loc] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> [i+j <span class="keyword">for</span> i, j <span class="keyword">in</span> <span class="built_in">zip</span>(Mtop, lowers)]</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">oracle_block</span>(<span class="params">BIV, BC</span>):</span><br><span class="line">    tops = oracle_block_top(BIV, BC)</span><br><span class="line">    full = oracle_block_lower(BIV, BC, tops)</span><br><span class="line">    <span class="keyword">return</span> full</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">attack</span>():</span><br><span class="line">    offset_db = get_offset_db()</span><br><span class="line">    <span class="built_in">print</span>(offset_db, oracle_count)</span><br><span class="line">    m = known</span><br><span class="line">    <span class="keyword">for</span> loc <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">32</span>, <span class="built_in">len</span>(cipher), <span class="number">16</span>):</span><br><span class="line">        m+=<span class="built_in">bytes</span>(oracle_block(cipher[loc-<span class="number">16</span>:loc], cipher[loc:loc+<span class="number">16</span>]))</span><br><span class="line">        <span class="built_in">print</span>(m)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(m)</span><br><span class="line">    <span class="built_in">print</span>(oracle_count)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    attack()</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/11/05/LLL-Analyse/" rel="prev" title="LLL-Analyse">
+      <i class="fa fa-chevron-left"></i> LLL-Analyse
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/11/12/2023-CakeCTF-Crypto-WP/" rel="next" title="2023-CakeCTF-Crypto-WP">
+      2023-CakeCTF-Crypto-WP <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#careless-padding"><span class="nav-number">1.</span> <span class="nav-text"> Careless Padding</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="March-7th"
+      src="/images/march7th.jpg">
+  <p class="site-author-name" itemprop="name">March-7th</p>
+  <div class="site-description" itemprop="description">信键鼠真神得永生</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+
+
+<div class="sidebar-footer-info motion-element">
+    <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">桂ICP备2023000644号-2</a>
+    </div>
+
+  <div class="copyright">
+    &copy; 2024 – 2025
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span>March-7th</span>
+  </div>
+</div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">桂ICP备2023000644号-2 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">March-7th</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+<!-- Visitor Tracker -->
+<script>
+(function() {
+  'use strict';
+
+  // 配置 - 本地开发指向 API 服务端口，生产环境使用相对路径
+  const TRACKER_API = window.location.hostname === 'localhost'
+    ? 'http://127.0.0.1:3721/track'
+    : '/api/track';
+
+  // 获取页面信息
+  function getPageInfo() {
+    return {
+      url: window.location.pathname,
+      title: document.title,
+      referrer: document.referrer,
+      ua: navigator.userAgent
+    };
+  }
+
+  // 发送访问记录（使用 sendBeacon 确保页面关闭时也能发送）
+  function trackVisit() {
+    const data = getPageInfo();
+
+    // 优先使用 sendBeacon（不会阻塞页面关闭）
+    if (navigator.sendBeacon) {
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      navigator.sendBeacon(TRACKER_API, blob);
+    } else {
+      // 降级到 fetch
+      fetch(TRACKER_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).catch(() => {}); // 静默失败，不影响用户体验
+    }
+  }
+
+  // 页面加载时记录
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', trackVisit);
+  } else {
+    trackVisit();
+  }
+
+  // 支持 PJAX 页面切换时记录（Next 主题支持 PJAX）
+  document.addEventListener('pjax:complete', function() {
+    setTimeout(trackVisit, 100);
+  });
+
+})();
+</script>
+
+<!-- 扇形菜单按钮 -->
+<div class="fan-menu-container" id="fanMenuContainer">
+  <button class="fan-menu-toggle" id="fanMenuToggle">
+    <i class="fa fa-bars"></i>
+    <i class="fa fa-times"></i>
+  </button>
+  <div class="fan-menu-items" id="fanMenuItems">
+    <!-- 菜单项将由 JS 动态生成 -->
+  </div>
+</div>
+
+<!-- 扇形菜单脚本 -->
+<script>
+(function() {
+  'use strict';
+
+  // 从主题配置读取菜单项
+  const menuItems = [
+    { path: '/about/', icon: 'fa fa-user', title: '关于' },
+    { path: '/categories/', icon: 'fa fa-th', title: '分类' },
+    { path: '/archives/', icon: 'fa fa-archive', title: '归档' },
+    { path: '/videos/', icon: 'fa fa-video', title: '视频' }
+  ];
+
+  const container = document.getElementById('fanMenuContainer');
+  const toggle = document.getElementById('fanMenuToggle');
+  const itemsContainer = document.getElementById('fanMenuItems');
+
+  // 生成扇形菜单项
+  function createMenuItems() {
+    const total = menuItems.length;
+    const radius = 70; // 扇形半径
+    // 右旋90度：原 -160~-20 变成 -70~70
+    const startAngle = -70;
+    const endAngle = 70;
+
+    menuItems.forEach((item, index) => {
+      const a = document.createElement('a');
+      a.className = 'fan-menu-item';
+      a.href = item.path;
+      a.dataset.title = item.title;
+
+      // 计算扇形位置
+      const angle = startAngle + (endAngle - startAngle) * (index / (total - 1 || 1));
+      const rad = angle * Math.PI / 180;
+      const tx = Math.cos(rad) * radius;
+      const ty = Math.sin(rad) * radius;
+
+      a.style.setProperty('--tx', tx + 'px');
+      a.style.setProperty('--ty', ty + 'px');
+      a.style.transitionDelay = (index * 0.05) + 's';
+
+      // 图标
+      const i = document.createElement('i');
+      i.className = item.icon;
+      a.appendChild(i);
+
+      itemsContainer.appendChild(a);
+    });
+  }
+
+  // 初始化
+  createMenuItems();
+
+  // 鼠标进入容器 - 展开菜单
+  container.addEventListener('mouseenter', function() {
+    toggle.classList.add('active');
+  });
+
+  // 鼠标离开容器 - 收起菜单
+  container.addEventListener('mouseleave', function() {
+    toggle.classList.remove('active');
+  });
+
+  // 检测侧边栏状态，侧边栏打开时隐藏菜单
+  function updateMenuVisibility() {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      // 检查侧边栏是否有 sidebar-active 类
+      const isActive = sidebar.classList.contains('sidebar-active');
+      container.style.opacity = isActive ? '0' : '1';
+      container.style.pointerEvents = isActive ? 'none' : 'auto';
+      container.style.visibility = isActive ? 'hidden' : 'visible';
+    }
+  }
+
+  // 初始检测
+  updateMenuVisibility();
+
+  // 监听侧边栏状态变化
+  const sidebar = document.querySelector('.sidebar');
+  if (sidebar) {
+    // 使用 MutationObserver 监听侧边栏 class 变化
+    const observer = new MutationObserver(updateMenuVisibility);
+    observer.observe(sidebar, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+  }
+
+  // 窗口大小变化时重新检测
+  window.addEventListener('resize', updateMenuVisibility);
+
+})();
+</script>
+
+</body>
+</html>
