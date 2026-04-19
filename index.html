@@ -187,7 +187,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2026-04-20 00:00:00 / 修改时间：01:11:37" itemprop="dateCreated datePublished" datetime="2026-04-20T00:00:00+08:00">2026-04-20</time>
+              <time title="创建时间：2026-04-20 00:00:00 / 修改时间：01:17:18" itemprop="dateCreated datePublished" datetime="2026-04-20T00:00:00+08:00">2026-04-20</time>
             </span>
 
           
@@ -201,7 +201,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>展示： 了解目标、确定方向： 打开游戏，触发示例方块得到样例flag，目标是触发屋顶的方块，得到真正的flag，常规游玩、车是开不到那地方的。 所以第一个目标：传送车的坐标到触发块的坐标。 解包APK发现是Godot引擎制作的游戏，gdc脚本也被加密了，本身对godot不是很熟悉，不过既然是开源的就下载源码下来看看，同时上网搜索发现：Godot官方是支持用脚本加密的。 懒了: https://www.52pojie.cn/thread-2002779-1-1.html ，直接照抄思路dump密钥（脚本末尾） 得到ce4df8753b59a5a39ade58ac07ef947a3da39f2af...</p>
+          <p>魔改Godot引擎，加上虚拟机，真做吐了。混淆我是一个没去、就说这思路能不能跑吧 主要操作：模拟执行，过反调试，Frida Hook(相关脚本不放了、太丑，思路肯定是对的就是了) 展示： FLAG1: FLAG2: FLAG3（模拟跑通了、没时间扒下来） 几个不同的触发题触发条件分别是： PART1 对应 trigger2.gd，脚本层确实是 body_entered.connect(_w7)，直接撞上去就能触发。 PART2 对应 trigger3.gd，脚本层入口也是 body_entered -&gt; _w7，但同样要结合 Trigger 节点的碰撞属性要打开monitoring / ...</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/04/20/TencentGameSecurity2026-Android-final/" rel="contents">
